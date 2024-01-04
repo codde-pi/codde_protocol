@@ -14,3 +14,4 @@ syn = "2.0.46"
 
 [lib]
 name = "coddepy"
+crate-type = ["cdylib"]
