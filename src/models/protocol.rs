@@ -1,8 +1,6 @@
-enum CoddeProtocol {
+pub enum Protocol {
     socket,
     bluetooth,
     http,
     usb,
 }
-
-struct CoddeCom {}

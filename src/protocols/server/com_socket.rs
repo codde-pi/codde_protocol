@@ -1,16 +1,15 @@
-use crate::com::codde_com::{CoddeCom, CoddeProtocol};
+use crate::models::com::Com;
 
 struct ComSocket {
     address: String,
     port: i32,
-    protocol: CoddeProtocol,
 }
-impl CoddeCom for ComSocket {
-    fn open(&self) {
+impl Com for ComSocket {
+    fn connect(&self) {
         todo!()
     }
 
-    fn close(&self) {
+    fn disconnect(&self) {
         todo!()
     }
 
