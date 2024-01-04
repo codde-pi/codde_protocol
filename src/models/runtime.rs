@@ -1,13 +1,14 @@
-use pyo3::pyclass;
+use pyo3::{pyclass, types::PyList, FromPyObject, Py};
 
 use super::{protocol::Protocol, widget_action::WidgetAction};
 
-#[pyclass(subclass)]
+#[pyclass]
 pub struct CoddePiBase {
-    protocol: Protocol,
+    pub protocol: Protocol,
 }
 
-#[pyclass(extends=CoddePiBase, subclass)]
+#[pyclass]
 pub struct CoddePiServer {
-    action_registry: &'static [WidgetAction],
+    pub protocol: Protocol,
+    pub action_registry: Py<PyList>,
 }
