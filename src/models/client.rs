@@ -12,11 +12,11 @@ pub trait ClientNotConnected {
 }
 
 pub trait ClientConnected {
-    fn on(&self, action: WidgetAction);
+    fn on(&mut self, action: WidgetAction);
 
-    fn send(&self, data: Frame);
+    fn send(&mut self, data: Frame);
 
-    fn receive(&self) -> Frame;
+    fn receive(&mut self) -> Frame;
 
     fn disconnect(self) -> Box<dyn ClientNotConnected>;
 }

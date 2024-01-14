@@ -12,13 +12,21 @@ pub trait ServerClosed {
 }
 
 pub trait ServerOpen {
-    fn on(&self, action: WidgetAction);
+    fn on(&mut self, action: WidgetAction);
 
-    fn callback(&self, data: Frame);
+    fn callback(&mut self, data: Frame);
 
-    fn listen(&self) -> Frame;
+    fn listen(&mut self) -> Frame;
 
-    fn serve(&self);
+    fn serve(self) -> Box<dyn ServerRunning>;
+
+    fn close(self) -> Box<dyn ServerClosed>;
+}
+
+pub trait ServerRunning {
+    // fn new(self) -> Box<dyn ServerRunning>;
+
+    // fn stop(self) -> Box<dyn ServerOpen>;
 
     fn close(self) -> Box<dyn ServerClosed>;
 }
