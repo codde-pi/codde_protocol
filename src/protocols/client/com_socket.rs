@@ -1,75 +1,74 @@
+use rmp_serde::{Deserializer, Serializer};
+use serde::Serialize;
 use std::{
+    collections::HashMap,
     io::{Read, Write},
     net::{Shutdown, TcpStream},
 };
 
-use crate::models::{
-    client::{ClientCom, ClientConnected, ClientNotConnected},
-    frame::Frame,
-    widget_action::WidgetAction,
-};
+use crate::models::frame::Frame;
 
-pub struct ComSocketClient {
+pub struct ComSocketClient {}
+
+pub struct ComSocketDisconnected {
     address: String,
-    port: i64,
+    port: u16,
 }
 
-struct ComSocketDisconnected {
+pub struct ComSocketConnected {
     address: String,
-    port: i64,
-}
-
-struct ComSocketConnected {
-    address: String,
-    port: i64,
+    port: u16,
     stream: TcpStream,
-    actions: Vec<WidgetAction>,
 }
 
-impl ClientCom for ComSocketClient {
-    fn new(self) -> Box<dyn ClientNotConnected> {
-        Box::new(ComSocketDisconnected {
-            address: self.address,
-            port: self.port,
-        })
+impl ComSocketClient {
+    pub fn new(address: String, port: u16) -> ComSocketDisconnected {
+        ComSocketDisconnected { address, port }
     }
 }
-impl ClientNotConnected for ComSocketDisconnected {
-    fn connect(self) -> Box<dyn crate::models::client::ClientConnected> {
-        let stream = match TcpStream::connect("{self.address}:{self.port}") {
+impl ComSocketDisconnected {
+    pub fn connect(self) -> ComSocketConnected {
+        let stream = match TcpStream::connect((self.address.as_str(), self.port)) {
             Ok(stream) => stream,
             Err(e) => panic!("Failed to connect: {}", e),
         };
-        Box::new(ComSocketConnected {
+        ComSocketConnected {
             address: self.address,
             port: self.port,
-            actions: Vec::new(),
             stream,
-        })
+        }
     }
 }
 
-impl ClientConnected for ComSocketConnected {
+impl ComSocketConnected {
     // TODO: useful ? If so, implement action triggering
-    fn on(&mut self, action: WidgetAction) {
+    /* pub fn on(&mut self, action: Box<dyn Fn(&Box<dyn Widget>) + Send>) {
         self.actions.push(action);
-    }
+    } */
 
-    fn send(&mut self, data: Frame) {
-        self.stream.write_all(&data.bufferize());
+    pub fn send(&mut self, data: Frame) {
+        let mut buf: Vec<u8> = Vec::new();
+        data.serialize(&mut Serializer::new(&mut buf)).unwrap();
+        match self.stream.write_all(&buf) {
+            Ok(_) => (),
+            Err(e) => panic!("Failed to write bytes : {}", e),
+        };
+        // TODO: call receive
+        // let f = self.receive();
+        // println!("value : {}", f.id.to_string());
     }
 
     fn receive(&mut self) -> Frame {
         let mut buf: Vec<u8> = Vec::new();
-        self.stream.read(buf.as_mut());
-        Frame::parse(buf.as_ref())
+        self.stream.read(&mut buf);
+        Frame::parse(&buf)
     }
 
-    fn disconnect(self) -> Box<dyn ClientNotConnected> {
+    pub fn disconnect(self) -> ComSocketDisconnected {
         self.stream.shutdown(Shutdown::Both);
-        Box::new(ComSocketDisconnected {
+        ComSocketDisconnected {
             address: self.address,
             port: self.port,
-        })
+        }
     }
 }

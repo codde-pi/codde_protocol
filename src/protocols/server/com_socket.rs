@@ -1,90 +1,167 @@
 // TODO: refact based on [ServerCom]
 use std::{
+    collections::HashMap,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
+    sync::mpsc::{channel, Receiver, Sender, TryRecvError},
+    thread,
+    time::Duration,
 };
+
+use rmp_serde::{Deserializer, Serializer};
+use serde::Deserialize;
 
 use crate::models::{
-    com::{Com, ComConnected, ComNotConnected},
     frame::Frame,
-    widget_action::WidgetAction,
+    // server::{ServerClosed, ServerCom, ServerOpen, ServerRunning},
+    // widget_action::WidgetAction,
+    widget_registry::{action_identity, ToggleButton, Widget, WidgetAction},
 };
 
-pub struct ComSocket {
+pub struct ComSocketServer {}
+
+pub struct ComSocketClosed {
     address: String,
-    port: i64,
 }
 
-struct ComSocketNotConnected {
+pub struct ComSocketOpen {
     address: String,
-    port: i64,
-}
-
-struct ComSocketConnected {
-    address: String,
-    port: i64,
     stream: TcpStream,
-    actions: Vec<WidgetAction>,
+    pub actions: WidgetAction, // TODO: make private
 }
 
-impl ComNotConnected for ComSocketNotConnected {
-    fn connect(self) -> Box<dyn ComConnected> {
-        let listener = match TcpListener::bind("127.0.0.1:7878") {
+pub struct ComSocketRunning {
+    // stream: ComSocketOpen,
+    address: String,
+    sender: Sender<()>,
+}
+
+impl ComSocketClosed {
+    pub fn open(self) -> ComSocketOpen {
+        let listener = match TcpListener::bind(self.address.as_str()) {
             Ok(listener) => listener,
             Err(err) => panic!("Unable to intanstiate TCP Listener. {:?}", err),
         };
-        match listener.accept() {
-            Ok(res) => {
-                let empty: &[WidgetAction; 0] = &[];
-                Box::new(ComSocketConnected {
-                    address: self.address,
-                    port: self.port,
-                    stream: res.0,
-                    actions: Vec::new(),
-                })
-            }
-            Err(e) => panic!("Unable to connect  emptyget new TCP connection. {:?}", e),
+        let stream = match listener.accept() {
+            Ok(res) => res.0,
+            Err(e) => panic!("Unable to get new TCP connection. {:?}", e),
+        };
+        // drop(listener);
+        ComSocketOpen {
+            address: self.address,
+            stream,
+            actions: HashMap::new(),
         }
     }
 }
 
-impl Com for ComSocket {
-    fn new(self) -> Box<dyn ComNotConnected> {
-        Box::new(ComSocketNotConnected {
-            address: self.address,
-            port: self.port,
-        })
+impl ComSocketServer {
+    pub fn new(address: &str) -> ComSocketClosed {
+        ComSocketClosed {
+            address: String::from(address),
+        }
     }
 }
 
-impl ComConnected for ComSocketConnected {
-    fn disconnect(self) -> Box<dyn ComNotConnected> {
+impl ComSocketOpen {
+    pub fn close(self) -> ComSocketClosed {
         self.stream.shutdown(std::net::Shutdown::Both);
-        Box::new(ComSocketNotConnected {
+        ComSocketClosed {
             address: self.address,
-            port: self.port,
-        })
-    }
-
-    fn on(&self, action: WidgetAction) {
-        self.actions.push(action);
-    }
-
-    fn send(&self, data: Frame) {
-        self.stream.write_all(data.bufferize());
-    }
-
-    /* fn serve(&self) {
-        loop {
-            let frame: Frame = self.receive();
-            // self.actions.iter().for_each(|action| println!('{action}'));
-            // TODO: catch error, stop loop
         }
+    }
+
+    pub fn on(&mut self, id: u8, widget: &str, action: Box<dyn Fn(&Box<dyn Widget>) + Send>) {
+        self.actions.insert(action_identity(id, widget), action);
+    }
+
+    pub fn callback(&mut self, data: Frame) {
+        self.stream.write_all(&data.bufferize()); // TODO
+    }
+
+    pub fn serve(mut self) -> ComSocketRunning {
+        let (tx, rx): (Sender<()>, Receiver<()>) = channel();
+        let address = self.address.clone();
+
+        thread::spawn(move || loop {
+            let frame: Frame = self.listen();
+            println!("Found frame ! {}", frame.id);
+            /* for action in &self.actions {
+                if frame.data.try_match(action.widget) {
+                    (action.action)(&frame.data);
+                }
+            } */
+            if self.actions.contains_key(frame.data.typetag_name()) {
+                (&self.actions.get(frame.data.typetag_name()).unwrap())(&frame.data)
+            }
+
+            thread::sleep(Duration::from_millis(500));
+            // catch errors, stop loop
+            match rx.try_recv() {
+                // TODO: auto closing :/
+                Ok(_) | Err(TryRecvError::Disconnected) => {
+                    println!("Terminating.");
+                    self.close();
+                    break;
+                }
+                Err(TryRecvError::Empty) => {}
+            }
+        })
+        .join(); // TODO: remove `join`
+        ComSocketRunning {
+            // stream: self,
+            sender: tx,
+            address,
+        }
+    }
+
+    pub fn listen(&mut self) -> Frame {
+        println!("listening");
+        // let mut buf: Vec<u8> = Vec::new();
+        let mut buffer = [0; 1024];
+        let data = match self.stream.read(&mut buffer) {
+            Ok(size) => {
+                println!("Received size : {}", size);
+                &buffer[..size]
+            }
+            Err(e) => panic!("Failed to read frame : {}", e),
+        };
+        let mut de = Deserializer::new(data);
+        match Deserialize::deserialize(&mut de) {
+            Ok(f) => {
+                // println!("HELLO : {}", f.id);
+                f
+            }
+            Err(e) => {
+                eprintln!("Deserialization error : {}", e);
+                panic!("Argh !")
+            }
+        }
+    }
+}
+
+impl ComSocketRunning {
+    /* pub fn new(self) -> Box<dyn ServerRunning> {
+        Box::new(ComSocketRunning {
+            stream: self.stream,
+            sender: self.sender,
+        })
     } */
 
-    fn receive(&self) -> Frame {
-        let mut buf: &[u8];
-        self.stream.read(&mut buf);
-        Frame::parse(buf)
+    /* pub fn stop(self) -> Box<dyn ServerOpen> {
+        self.sender.send(());
+        Box::new(self.stream)
+    } */
+
+    pub fn close(self) -> ComSocketClosed {
+        /* {
+            self.sender.send(());
+            Box::new(self.stream)
+        }
+        .close() */
+        self.sender.send(());
+        ComSocketClosed {
+            address: self.address,
+        }
     }
 }

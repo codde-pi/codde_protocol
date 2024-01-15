@@ -1,11 +1,13 @@
-use super::widget_registry::Widget;
+use std::{any::Any, collections::HashMap};
+
+use super::widget_registry::{ServerStatus, Widget};
 use serde::{Deserialize, Serialize};
 
 // TODO: PartialEq ?
 #[derive(Deserialize, Serialize)]
 pub struct Frame {
-    id: u8,
-    data: Box<dyn Widget>,
+    pub id: u8,
+    pub data: Box<dyn Widget>,
 }
 
 impl Frame {
@@ -29,18 +31,32 @@ impl Frame {
         from_read(data)
     } */
     pub fn parse(data: &[u8]) -> Frame {
-        let s = flexbuffers::Reader::get_root(data).unwrap();
+        // println!("parsing {}", data.get(0).unwrap());
+        println!("parsing");
+        let s = match flexbuffers::Reader::get_root(data) {
+            Ok(s) => s,
+            Err(e) => panic!("Unable to parse message buffer : {}", e),
+        };
 
-        // TODO: error catching not clean
+        println!("deserializing");
         match Frame::deserialize(s) {
             Ok(f) => f,
             Err(e) => panic!("Deserialization error : {}", e),
         }
     }
 
-    pub fn bufferize(&self) -> &[u8] {
+    pub fn bufferize(&self) -> Vec<u8> {
         let mut s = flexbuffers::FlexbufferSerializer::new();
         self.serialize(&mut s).unwrap();
-        s.view()
+        s.view().to_owned()
     }
+
+    pub fn identity() -> String {
+        todo!()
+    }
+}
+
+pub struct ResultFrame {
+    pub status: ServerStatus,
+    pub data: Option<Box<dyn Any>>,
 }

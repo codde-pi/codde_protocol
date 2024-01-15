@@ -13,11 +13,13 @@ pyo3 = "0.20.1"
 quote = "1.0.35"
 serde = {version= "1.0.194",  features = ["derive"] }
 syn = "2.0.46"
+# codde_pi_protocol = { version = "0.1.0", path = "" }
 codde_pi_protocol_derive = { path = "codde_pi_protocol_derive"  }
 cbor = "0.4.1"
 typetag = "0.2.15"
-flexbuffers = "2.0.0"
+flexbuffers = "2.0.0" # TODO: choose (flexbuffer VS rmp_serde)
+rmp-serde = "1.1.2"
 
 [lib]
 name = "codde_pi_protocol"
-crate-type = ["cdylib"]
+# crate-type = ["cdylib"]
