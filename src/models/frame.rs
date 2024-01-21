@@ -1,13 +1,13 @@
 use std::{any::Any, collections::HashMap};
 
-use super::widget_registry::{ServerStatus, Widget};
+use super::widget_registry::{ServerStatus, Widget, WidgetRegistry};
 use serde::{Deserialize, Serialize};
 
 // TODO: PartialEq ?
 #[derive(Deserialize, Serialize)]
 pub struct Frame {
     pub id: u8,
-    pub data: Box<dyn Widget>,
+    pub data: WidgetRegistry,
 }
 
 impl Frame {

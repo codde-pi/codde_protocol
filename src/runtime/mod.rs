@@ -1,3 +1,4 @@
-pub mod codde_pi_client;
+// TODO: remove ?
+// pub mod codde_pi_client;
 pub mod codde_pi_server;
-pub mod codde_pi_server_py;
+// pub mod codde_pi_server_py;

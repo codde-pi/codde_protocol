@@ -1,5 +1,3 @@
-use crate::models::server::ServerClosed;
-
 use self::com_socket::ComSocketServer;
 
 // python destination code

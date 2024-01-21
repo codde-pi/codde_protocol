@@ -1,7 +1,7 @@
 use crate::{
     models::{
         protocol::Protocol,
-        server::{ServerClosed, ServerStateError},
+        server::{ServerCom, ServerStateError},
     },
     protocols::server::{com_socket::ComSocketServer, ServerProtocol},
 };
@@ -15,9 +15,7 @@ impl CoddePiServer {
         // CoddePiServer { protocol }
         match protocol {
             Protocol::socket => CoddePiServer {
-                protocol: ServerProtocol::Socket(ComSocketServer::ComSocketClosed {
-                    address: String::from(address),
-                }),
+                protocol: ServerProtocol::Socket(ComSocketServer::new(address)),
             }, // CoddePiServer::use_socket(address),,
             Protocol::bluetooth => todo!(),
             Protocol::http => todo!(),
@@ -27,18 +25,40 @@ impl CoddePiServer {
 
     fn use_socket(address: &str) -> Self {
         CoddePiServer {
-            protocol: ServerProtocol::Socket(ComSocketServer::ComSocketClosed {
-                address: String::from(address),
-            }),
+            protocol: ServerProtocol::Socket(ComSocketServer::new(address)),
         }
-        // CoddePiServer::new(ComSocketServer::new(address).unwrap(), address)
     }
 }
 
-impl ServerClosed for CoddePiServer {
+impl ServerCom for CoddePiServer {
     fn open(self) -> Result<ServerProtocol, ServerStateError> {
         match self.protocol {
             ServerProtocol::Socket(this) => this.open(),
         }
+    }
+
+    fn on(
+        &mut self,
+        id: u8,
+        widget: &str,
+        action: crate::models::widget_registry::Action,
+    ) -> Result<(), ServerStateError> {
+        todo!()
+    }
+
+    fn callback(&mut self, data: crate::models::frame::Frame) -> Result<(), ServerStateError> {
+        todo!()
+    }
+
+    fn listen(&mut self) -> Result<crate::models::frame::Frame, ServerStateError> {
+        todo!()
+    }
+
+    fn serve(self) -> Result<ServerProtocol, ServerStateError> {
+        todo!()
+    }
+
+    fn close(self) -> Result<ServerProtocol, ServerStateError> {
+        todo!()
     }
 }
