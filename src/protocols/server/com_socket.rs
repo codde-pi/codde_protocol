@@ -1,6 +1,7 @@
 // TODO: refact based on [ServerCom]
 use std::{
     collections::HashMap,
+    error::Error,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
     sync::mpsc::{channel, Receiver, Sender, TryRecvError},
@@ -13,31 +14,159 @@ use serde::Deserialize;
 
 use crate::models::{
     frame::Frame,
-    // server::{ServerClosed, ServerCom, ServerOpen, ServerRunning},
+    server::{ServerClosed, ServerOpen, ServerStateError},
     // widget_action::WidgetAction,
-    widget_registry::{action_identity, ToggleButton, Widget, WidgetAction},
+    widget_registry::{
+        action_identity, Action, ToggleButton, Widget, WidgetAction, WidgetRegistry,
+    },
 };
 
-pub struct ComSocketServer {}
+use super::ServerProtocol;
 
-pub struct ComSocketClosed {
-    address: String,
+// #[derive(Debug, PartialEq)]
+pub enum ComSocketServer {
+    ComSocketClosed {
+        address: String,
+    },
+    ComSocketOpen {
+        address: String,
+        stream: TcpStream,
+        actions: WidgetAction, // TODO: make private
+    },
+
+    ComSocketRunning {
+        // stream: ComSocketOpen,
+        address: String,
+        sender: Sender<()>,
+    },
 }
 
-pub struct ComSocketOpen {
-    address: String,
-    stream: TcpStream,
-    pub actions: WidgetAction, // TODO: make private
+impl ComSocketServer {
+    pub fn new(address: &str) -> ComSocketServer {
+        ComSocketServer::ComSocketClosed {
+            address: String::from(address),
+        }
+    }
 }
 
-pub struct ComSocketRunning {
-    // stream: ComSocketOpen,
-    address: String,
-    sender: Sender<()>,
+impl ServerClosed for ComSocketServer {
+    fn open(self) -> Result<ServerProtocol, ServerStateError> {
+        match self {
+            ComSocketServer::ComSocketClosed { address } => {
+                let listener = match TcpListener::bind(address.as_str()) {
+                    Ok(listener) => listener,
+                    Err(err) => panic!("Unable to intanstiate TCP Listener. {:?}", err),
+                };
+                let stream = match listener.accept() {
+                    Ok(res) => res.0,
+                    Err(e) => panic!("Unable to get new TCP connection. {:?}", e),
+                };
+                // drop(listener);
+                Ok(ServerProtocol::Socket(ComSocketServer::ComSocketOpen {
+                    address,
+                    stream,
+                    actions: HashMap::new(),
+                }))
+            }
+            _ => Err(ServerStateError),
+        }
+    }
 }
 
-impl ComSocketClosed {
-    pub fn open(self) -> ComSocketOpen {
+impl ServerOpen for ComSocketServer {
+    fn callback(&mut self, data: Frame) {
+        todo!()
+    }
+
+    fn listen(&mut self) -> Frame {
+        todo!()
+    }
+
+    fn serve(mut self) -> Result<ServerProtocol, ServerStateError> {
+        let tuple: Result<(String, WidgetAction), ServerStateError> = match self {
+            ComSocketServer::ComSocketOpen {
+                ref address,
+                stream: _,
+                ref actions,
+            } => Ok((address.clone(), actions.clone())),
+            _ => Err(ServerStateError),
+        };
+        let addr: String = tuple.as_ref().unwrap().0.clone(); // TODO: to much clone
+        let (tx, rx): (Sender<()>, Receiver<()>) = channel();
+        // let address = address.clone();
+        // let mut acts: WidgetAction = HashMap::new();
+        // acts.clone_from(&tuple.as_ref().unwrap().1);
+
+        thread::spawn(move || loop {
+            let frame: Frame = ComSocketServer::listen(&mut self);
+            let acts = &tuple.as_ref().unwrap().1;
+            println!("Found frame ! {}", frame.id);
+            /* for action in &self.actions {
+                if frame.data.try_match(action.widget) {
+                    (action.action)(&frame.data);
+                }
+            } */
+            if acts.contains_key(&frame.data.name()) {
+                (acts.get(&frame.data.name()).unwrap().value)(frame.data);
+            }
+
+            thread::sleep(Duration::from_millis(500));
+            // catch errors, stop loop
+            match rx.try_recv() {
+                // TODO: auto closing :/
+                Ok(_) => {
+                    println!("Terminating.");
+                    self.close();
+                    break;
+                }
+                Err(TryRecvError::Disconnected) => println!("Link broken"),
+                Err(TryRecvError::Empty) => {}
+            }
+        })
+        .join(); // TODO: remove `join`
+        Ok(ServerProtocol::Socket(ComSocketServer::ComSocketRunning {
+            // stream: self,
+            sender: tx,
+            address: addr.to_string(),
+        }))
+    }
+
+    fn close(self) -> Result<ServerProtocol, ServerStateError> {
+        match self {
+            ComSocketServer::ComSocketRunning { sender: _, address } => {
+                self.stream.shutdown(std::net::Shutdown::Both);
+                match self {
+                    ComSocketServer::ComSocketOpen {
+                        address: _,
+                        actions,
+                        stream: _,
+                    } => Ok(ServerProtocol::Socket(ComSocketServer::ComSocketClosed {
+                        address,
+                    })),
+                    _ => Err(ServerStateError),
+                }
+            }
+            _ => Err(ServerStateError),
+        }
+    }
+
+    fn on(&mut self, id: u8, widget: &str, action: Action) -> Result<(), ServerStateError> {
+        match self {
+            ComSocketServer::ComSocketOpen {
+                address: _,
+                actions,
+                stream: _,
+            } => {
+                actions.insert(action_identity(id, widget), action);
+                Ok(())
+            }
+            _ => Err(ServerStateError),
+        }
+    }
+}
+
+/* impl ServerCom for ComSocket {
+    pub fn open(self) -> ComSocket {
         let listener = match TcpListener::bind(self.address.as_str()) {
             Ok(listener) => listener,
             Err(err) => panic!("Unable to intanstiate TCP Listener. {:?}", err),
@@ -53,17 +182,9 @@ impl ComSocketClosed {
             actions: HashMap::new(),
         }
     }
-}
+} */
 
-impl ComSocketServer {
-    pub fn new(address: &str) -> ComSocketClosed {
-        ComSocketClosed {
-            address: String::from(address),
-        }
-    }
-}
-
-impl ComSocketOpen {
+/* impl ComSocketOpen {
     pub fn close(self) -> ComSocketClosed {
         self.stream.shutdown(std::net::Shutdown::Both);
         ComSocketClosed {
@@ -164,4 +285,4 @@ impl ComSocketRunning {
             address: self.address,
         }
     }
-}
+} */
