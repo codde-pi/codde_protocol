@@ -1,3 +1,4 @@
+use anyhow::Result;
 use std::{
     error::Error,
     fmt::{self},
@@ -22,7 +23,7 @@ pub trait ServerCom {
 
     fn listen(&mut self) -> Result<Option<Frame>, ServerStateError>;
 
-    fn serve(&'static mut self) -> Result<ComServerLegacy, ServerStateError>; // TODO
+    fn serve(&mut self) -> Result<ComServerLegacy>; // TODO
 
     fn close(&mut self) -> Result<(), ServerStateError>;
 }
@@ -71,6 +72,12 @@ impl std::convert::From<ServerStateError> for PyErr {
         PyOSError::new_err(err.to_string())
     }
 }
+
+/* impl std::ops::FromResidual<Result<std::convert::Infallible, std::io::Error>> for ServerStateError {
+    fn from_residual(residual: Result<std::convert::Infallible, std::io::Error>) -> Self {
+        ServerStateError
+    }
+} */
 
 /* impl From<frame::_::_serde::Deserialize<'_>> for ServerStateError {
     fn from(error: rmp_serde::decode::Error) -> Self {

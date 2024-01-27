@@ -37,8 +37,9 @@ fn end_to_end(f: Frame) {
     let mut server: ComSocketServer = CoddePiServer::use_socket("localhost:12345");
     server.open();
     server.on(1, f.data.name(), Action { value: action_test });
-    let mut sender: ComServerLegacy = server.serve().unwrap();
-    sender.close();
+    let _: ComServerLegacy = server.serve().unwrap();
+    thread::sleep(Duration::new(2, 0));
+    // _.close();
     server.close();
 }
 

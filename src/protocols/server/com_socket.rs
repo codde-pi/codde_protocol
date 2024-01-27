@@ -1,9 +1,11 @@
 // TODO: refact based on [ServerCom]
+use anyhow::Result;
 use std::{
     borrow::BorrowMut,
     collections::HashMap,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
+    ops::DerefMut,
     sync::mpsc::{channel, Receiver, Sender, TryRecvError},
     thread,
     time::Duration,
@@ -13,6 +15,7 @@ use rmp_serde::{decode::ReadReader, Deserializer};
 use serde::Deserialize;
 
 use crate::models::{
+    error::CoddeProtocolError,
     frame::Frame,
     server::{ComServerLegacy, ServerCom, ServerStateError},
     widget_registry::{action_identity, Action, ClickButton, WidgetAction, WidgetRegistry},
@@ -51,13 +54,13 @@ impl ComSocketServer {
         ServerCom::open(self)
     }
 
-    pub fn serve<'a>(&'a mut self) -> Result<ComServerLegacy, ServerStateError> {
+    pub fn serve(&mut self) -> Result<ComServerLegacy> {
         ServerCom::serve(self)
     }
 }
 
 impl ComSocketServer {
-    fn _listen(stream: &mut Option<TcpStream>) -> Result<Option<Frame>, ServerStateError> {
+    fn _listen(stream: &mut Option<&TcpStream>) -> Result<Option<Frame>, ServerStateError> {
         match stream {
             Some(stream) => {
                 // let mut buf: Vec<u8> = Vec::new();
@@ -154,76 +157,82 @@ impl ServerCom for ComSocketServer {
     fn listen(&mut self) -> Result<Option<Frame>, ServerStateError> {
         // TODO: return Result
         println!("listening");
-        let stream = &mut *self.stream.borrow_mut();
+        let stream = &mut self.stream.as_ref();
         ComSocketServer::_listen(stream)
     }
 
-    fn serve<'a>(&'a mut self) -> Result<ComServerLegacy, ServerStateError> {
+    fn serve(&mut self) -> Result<ComServerLegacy> {
         // let stream = &mut *self.stream.borrow_mut();
-        match self.stream {
-            Some(_) => {
-                let addr: String = self.address.clone(); // TODO: to much clone
-                let actions = self.actions.clone();
-                let (tx, rx): (Sender<bool>, Receiver<bool>) = channel();
-                // let address = address.clone();
-                // let mut acts: WidgetAction = HashMap::new();
-                // acts.clone_from(&tuple.as_ref().unwrap().1);
-                // self.trigger = Some(tx.clone());
-
-                thread::spawn({
-                    move || loop {
-                        thread::sleep(Duration::from_millis(500));
-                        // catch errors, stop loop
-                        match rx.try_recv() {
-                            // TODO: auto closing :/
-                            Ok(_) => {
-                                println!("Terminating.");
-                                self.close();
-                                break;
-                            }
-                            Err(TryRecvError::Disconnected) => println!("Link broken"),
-                            Err(TryRecvError::Empty) => {}
-                        }
-                        match ComSocketServer::_listen(&mut self.stream) {
-                            Ok(data) => match data {
-                                Some(frame) => {
-                                    // security
-                                    let acts = &self.actions;
-                                    println!("Found frame ! {}", frame.id);
-                                    if acts.contains_key(
-                                        action_identity(frame.id, frame.data.name()).as_str(),
-                                    ) {
-                                        match acts.get(
-                                            action_identity(frame.id, frame.data.name()).as_str(),
-                                        ) {
-                                            Some(a) => {
-                                                println!("running action");
-                                                (a.value)(frame.data);
-                                            }
-                                            None => panic!("Action not found !"),
-                                        }
-                                    } else {
-                                        println!("No key {} found", frame.data.name())
-                                    }
-                                    println!("done");
-                                }
-                                None => continue,
-                            },
-                            Err(e) => panic!("{}", e),
-                        };
-                    }
-                });
-                // .join(); // TODO: remove `join`
-                /* Ok(ServerProtocol::Socket(ComSocketServer {
-                    stream: None,
-                    trigger: Some(tx),
-                    address: addr.to_string(),
-                    actions,
-                })) */
-                Ok(ComServerLegacy::new(tx.clone()))
-            }
+        let tmp_stream: Result<(), ServerStateError> = match &mut self.stream.borrow_mut() {
+            Some(stream) => Ok({}),
             None => Err(ServerStateError),
-        }
+        };
+
+        tmp_stream?;
+        // let tmp_stream = self.stream.unwrap();
+        let mut new_stream = self.stream.as_ref().unwrap().try_clone()?;
+
+        let addr: String = self.address.clone(); // TODO: to much clone
+        let actions = self.actions.clone();
+        let (tx, rx): (Sender<bool>, Receiver<bool>) = channel();
+        // let address = address.clone();
+        // let mut acts: WidgetAction = HashMap::new();
+        // acts.clone_from(&tuple.as_ref().unwrap().1);
+        self.trigger = Some(tx.clone());
+        drop(self);
+
+        thread::spawn({
+            move || loop {
+                thread::sleep(Duration::from_millis(500));
+                // catch errors, stop loop
+                match rx.try_recv() {
+                    // TODO: auto closing :/
+                    Ok(_) => {
+                        println!("Terminating.");
+                        // self.close();
+                        new_stream.shutdown(std::net::Shutdown::Both);
+                        break;
+                    }
+                    Err(TryRecvError::Disconnected) => println!("Link broken"),
+                    Err(TryRecvError::Empty) => {}
+                }
+                match ComSocketServer::_listen(Some(&new_stream).borrow_mut()) {
+                    Ok(data) => match data {
+                        Some(frame) => {
+                            // security
+                            let acts = &actions;
+                            println!("Found frame ! {}", frame.id);
+                            if acts
+                                .contains_key(action_identity(frame.id, frame.data.name()).as_str())
+                            {
+                                match acts
+                                    .get(action_identity(frame.id, frame.data.name()).as_str())
+                                {
+                                    Some(a) => {
+                                        println!("running action");
+                                        (a.value)(frame.data);
+                                    }
+                                    None => panic!("Action not found !"),
+                                }
+                            } else {
+                                println!("No key {} found", frame.data.name())
+                            }
+                            println!("done");
+                        }
+                        None => continue,
+                    },
+                    Err(e) => panic!("{}", e),
+                };
+            }
+        });
+        // .join(); // TODO: remove `join`
+        /* Ok(ServerProtocol::Socket(ComSocketServer {
+            stream: None,
+            trigger: Some(tx),
+            address: addr.to_string(),
+            actions,
+        })) */
+        Ok(ComServerLegacy::new(tx.clone()))
     }
 
     fn close(&mut self) -> Result<(), ServerStateError> {
