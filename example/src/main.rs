@@ -1,33 +1,24 @@
 use codde_pi_protocol::{
     models::{
+        client::ClientCom,
         frame::Frame,
-        // server::{ServerClosed, ServerCom},
-        widget_registry::{ToggleButton, Widget, WidgetAction},
+        widget_registry::{ToggleButton, Widget, WidgetAction, WidgetRegistry},
     },
-    protocols::{
-        client::com_socket::{ComSocketClient, ComSocketDisconnected},
-        server::com_socket::{ComSocketClosed, ComSocketServer},
-    },
+    protocols::client::com_socket::ComSocketClient,
 };
-use std::{
-    collections::HashMap,
-    io::{Read, Write},
-    net::{TcpListener, TcpStream},
-    sync::mpsc::{channel, Receiver, Sender, TryRecvError},
-    thread,
-    time::Duration,
-};
+use std::{thread, time::Duration};
 fn main() {
     let f = Frame {
         id: 1,
-        data: Box::new(ToggleButton { value: true }),
+        data: WidgetRegistry::Toggle(ToggleButton { value: true }),
     };
-    let client: ComSocketDisconnected = ComSocketClient::new(String::from("localhost"), 12345);
-    let mut client = client.connect();
+    let mut client: ComSocketClient = ComSocketClient::new("localhost:12345");
+    client.connect();
     println!("connected");
     thread::sleep(Duration::from_millis(500));
     // open.listen();
     println!("sending data");
     client.send(f);
+    client.disconnect();
     // client.close();
 }

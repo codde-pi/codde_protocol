@@ -1,55 +1,48 @@
+use std::sync::mpsc::Sender;
 use std::{collections::HashMap, thread, time::Duration};
 
-use codde_pi_protocol::{
-    models::{
-        frame::Frame,
-        // server::{ServerClosed, ServerCom},
-        widget_registry::{ToggleButton, Widget, WidgetAction},
-    },
-    protocols::{
-        client::com_socket::{ComSocketClient, ComSocketDisconnected},
-        server::com_socket::{ComSocketClosed, ComSocketServer},
-    },
+use codde_pi_protocol::models::protocol::Protocol;
+use codde_pi_protocol::models::server::{ComServerLegacy, ServerCom};
+use codde_pi_protocol::models::widget_registry::*;
+use codde_pi_protocol::models::{
+    frame::Frame,
+    widget_registry::{ToggleButton, Widget, WidgetAction},
 };
+use codde_pi_protocol::protocols::server::com_socket::ComSocketServer;
+use codde_pi_protocol::protocols::server::ServerProtocol;
+use codde_pi_protocol::runtime::codde_pi_server::CoddePiServer;
 use serde::{Deserialize, Serialize};
 
-fn action_test(data: &Box<dyn Widget>) {
-    println!(
-        "Value = {}",
-        match data.as_any().downcast_ref::<ToggleButton>() {
-            Some(r) => r.value,
-            None => false,
-        }
-    );
+fn action_test(data: WidgetRegistry) {
+    println!("hello func !");
+    let widget = match data {
+        WidgetRegistry::Toggle(d) => d,
+        _ => panic!("Data error"),
+    };
+    println!("Value = {}", widget.value);
 }
 
 fn main() {
     println!("Hello, world!");
     let f = Frame {
         id: 1,
-        data: Box::new(ToggleButton { value: true }),
+        data: WidgetRegistry::Toggle(ToggleButton { value: true }),
     };
-    /* let action = WidgetAction {
-        id: 1,
-        widget: "ToggleButton",
-        action: Box::new(action_test),
-    }; */
-    let mut action: WidgetAction = HashMap::new();
-    action.insert(String::from("ToggleButton_1"), Box::new(action_test));
     // serialize(f);
-    end_to_end(f, action);
+    end_to_end(f);
     // rmp_serde(f);
 }
 
-fn end_to_end(f: Frame, action: WidgetAction) {
-    let closed: ComSocketClosed = ComSocketServer::new("localhost:12345");
-
-    let mut open = closed.open();
-    open.on(1, "ToggleButton", Box::new(action_test));
-    open.serve();
+fn end_to_end(f: Frame) {
+    let mut server: ComSocketServer = CoddePiServer::use_socket("localhost:12345");
+    server.open();
+    server.on(1, f.data.name(), Action { value: action_test });
+    let mut sender: ComServerLegacy = server.serve().unwrap();
+    sender.close();
+    server.close();
 }
 
-fn serialize(f: Frame) {
+/* fn serialize(f: Frame) {
     let mut s = flexbuffers::FlexbufferSerializer::new();
     f.serialize(&mut s).unwrap();
     /* self.stream.write_all(s.view());
@@ -73,9 +66,9 @@ fn serialize(f: Frame) {
             .unwrap()
             .value
     )
-}
+} */
 
-fn rmp_serde(f: Frame) {
+/* fn rmp_serde(f: Frame) {
     let mut buf = Vec::new();
     f.serialize(&mut rmp_serde::encode::Serializer::new(&mut buf))
         .unwrap();
@@ -92,6 +85,6 @@ fn rmp_serde(f: Frame) {
             .unwrap()
             .value
     )
-}
+} */
 
 // fn main() {}

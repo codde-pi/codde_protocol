@@ -1,22 +1,26 @@
-use super::{frame::Frame, widget_action::WidgetAction};
+use std::{error::Error, fmt};
+
+use crate::protocols::client::ClientProtocol;
+
+use super::{frame::Frame, server::ServerStateError};
 
 // TODO: ideally, client and server sides should have different trait,
 // since these abstract methods correspond to client naming and not server.
 // For server side, replace [connect] by `start` or `open`, and [disconnect] by `stop`, `close` or `shutdown`
 pub trait ClientCom {
-    fn new(self) -> Box<dyn ClientNotConnected>;
-}
+    fn connect(&mut self) -> Result<(), ServerStateError>;
 
-pub trait ClientNotConnected {
-    fn connect(self) -> Box<dyn ClientConnected>;
-}
+    fn send(&mut self, data: Frame) -> Result<(), ServerStateError>;
 
-pub trait ClientConnected {
-    fn on(&mut self, action: WidgetAction);
+    fn receive(&mut self) -> Result<Frame, ServerStateError>;
 
-    fn send(&mut self, data: Frame);
+    // TODO: request ? <=> send + receive (with timeout)
+    fn request(&mut self, data: Frame) -> Result<Frame, ServerStateError> {
+        match self.send(data) {
+            Ok(_) => self.receive(),
+            Err(e) => Err(e),
+        }
+    }
 
-    fn receive(&mut self) -> Frame;
-
-    fn disconnect(self) -> Box<dyn ClientNotConnected>;
+    fn disconnect(self) -> Result<(), ServerStateError>;
 }

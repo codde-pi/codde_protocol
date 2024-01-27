@@ -11,11 +11,19 @@ pub fn widget_derive(input: TokenStream) -> TokenStream {
     let output = quote! {
         #[typetag::serde]
         impl Widget for #name {
-            fn try_match(&self, s: &str) -> bool {
-                s == self.typetag_name()
+            /* fn try_match(&self, s: &str) -> bool {
+                s == self.
             }
             fn as_any(&self) -> &dyn Any {
                 self
+            } */
+
+            /* fn get_identity(&self, id: u8) -> &str{
+                &format!("{}_{}", stringify!(#name), id)
+            } */
+
+            fn name(&self) -> &str {
+                stringify!(#name)
             }
         }
     };

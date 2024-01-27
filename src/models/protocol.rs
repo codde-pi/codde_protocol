@@ -1,10 +1,10 @@
-use pyo3::pyclass;
+use pyo3::{pyclass, FromPyObject};
 
 #[pyclass]
 #[derive(Clone, Copy)]
 pub enum Protocol {
-    socket,
-    bluetooth,
-    http,
-    usb,
+    Socket,
+    Bluetooth,
+    Http,
+    Usb,
 }

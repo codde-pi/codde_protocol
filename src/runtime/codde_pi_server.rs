@@ -1,64 +1,99 @@
+use std::borrow::BorrowMut;
+
 use crate::{
-    models::{
-        protocol::Protocol,
-        server::{ServerCom, ServerStateError},
-    },
+    models::protocol::Protocol,
+    models::{server::ServerCom, widget_registry::Action},
     protocols::server::{com_socket::ComSocketServer, ServerProtocol},
 };
+use pyo3::{exceptions::PyException, prelude::*};
 
-pub struct CoddePiServer {
-    protocol: ServerProtocol,
+/// A Python module implemented in Rust. The name of this function must match
+/// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
+/// import the module.
+#[pymodule]
+fn codde_py(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<CoddePiServer>()?;
+    m.add_class::<Protocol>()?;
+
+    Ok(())
+}
+// TODO: pyo3::create_exception!(codde_py, ServerStateError, PyException);
+
+// #[pyclass]
+/* pub struct CoddePiServer<T: ServerCom> {
+    protocol: ServerProtocol<T>,
 }
 
-impl CoddePiServer {
-    fn new(protocol: Protocol, address: &str) -> Self {
-        // CoddePiServer { protocol }
+impl<T> CoddePiServer<T>
+where
+    T: ServerCom,
+{
+    pub fn new(protocol: Protocol, address: &str) -> Self {
         match protocol {
-            Protocol::socket => CoddePiServer {
+            Protocol::Socket => CoddePiServer {
                 protocol: ServerProtocol::Socket(ComSocketServer::new(address)),
             }, // CoddePiServer::use_socket(address),,
-            Protocol::bluetooth => todo!(),
-            Protocol::http => todo!(),
-            Protocol::usb => todo!(),
+            Protocol::Bluetooth => todo!(),
+            Protocol::Http => todo!(),
+            Protocol::Usb => todo!(),
         }
     }
 
-    fn use_socket(address: &str) -> Self {
+    // #[staticmethod]
+    pub fn use_socket(address: &str) -> Self {
         CoddePiServer {
             protocol: ServerProtocol::Socket(ComSocketServer::new(address)),
         }
     }
 }
 
-impl ServerCom for CoddePiServer {
-    fn open(self) -> Result<ServerProtocol, ServerStateError> {
-        match self.protocol {
-            ServerProtocol::Socket(this) => this.open(),
-        }
+// #[pymethods]
+impl<T> ServerCom for CoddePiServer<T>
+where
+    T: ServerCom,
+{
+    // #[new]
+
+    fn open(&mut self) {
+        /* self.protocol = match &self.protocol {
+            ServerProtocol::Socket(this) => {
+                ComSocketServer::_open(this.address.clone(), this.actions.clone()).unwrap()
+            }
+        }; */
+        self.protocol.open().unwrap();
+    }
+    fn on(&mut self, id: u8, widget: &str, action: Action) {
+        self.protocol.on(id, widget, action);
     }
 
-    fn on(
+    fn serve(&mut self) {
+        self.protocol = self.protocol.serve().unwrap();
+    }
+
+    fn callback(
         &mut self,
-        id: u8,
-        widget: &str,
-        action: crate::models::widget_registry::Action,
-    ) -> Result<(), ServerStateError> {
+        data: crate::models::frame::Frame,
+    ) -> Result<(), crate::models::server::ServerStateError> {
         todo!()
     }
 
-    fn callback(&mut self, data: crate::models::frame::Frame) -> Result<(), ServerStateError> {
+    fn listen(
+        &mut self,
+    ) -> Result<crate::models::frame::Frame, crate::models::server::ServerStateError> {
         todo!()
     }
 
-    fn listen(&mut self) -> Result<crate::models::frame::Frame, ServerStateError> {
+    fn close(&mut self) -> Result<(), crate::models::server::ServerStateError> {
         todo!()
     }
+} */
+#[pyclass]
+pub struct CoddePiServer {}
 
-    fn serve(self) -> Result<ServerProtocol, ServerStateError> {
-        todo!()
-    }
-
-    fn close(self) -> Result<ServerProtocol, ServerStateError> {
-        todo!()
+#[pymethods]
+impl CoddePiServer {
+    #[staticmethod]
+    pub fn use_socket(address: &str) -> ComSocketServer {
+        ComSocketServer::new(address)
     }
 }

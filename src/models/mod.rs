@@ -1,4 +1,4 @@
-// pub mod client;
+pub mod client;
 pub mod frame;
 pub mod protocol;
 pub mod server;
