@@ -15,14 +15,16 @@ use rmp_serde::{decode::ReadReader, Deserializer};
 use serde::Deserialize;
 
 use crate::models::{
-    error::CoddeProtocolError,
     frame::Frame,
-    server::{ComServerLegacy, ServerCom, ServerStateError},
-    widget_registry::{action_identity, Action, ClickButton, WidgetAction, WidgetRegistry},
+    server::{execute_action, ComServerLegacy, ServerCom, ServerStateError},
+    widget_registry::{
+        action_identity, extract_identity, Action, ClickButton, TypeFn, Widget, WidgetAction,
+        WidgetRegistry,
+    },
 };
 
 use super::ServerProtocol;
-use pyo3::prelude::*;
+use pyo3::{prelude::*, types::*};
 
 // #[derive(Debug, PartialEq)]
 
@@ -33,6 +35,49 @@ pub struct ComSocketServer {
     pub actions: WidgetAction,
     trigger: Option<Sender<bool>>,
 }
+
+// TODO: pass ComSocketServer in argument
+/* pub fn exectime(py: Python, wraps: PyObject) -> PyResult<&PyCFunction> {
+    PyCFunction::new_closure(
+        py,
+        None,
+        None,
+        move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
+            Python::with_gil(|py| {
+                let now = Instant::now();
+                let ret = wraps.call(py, args, kwargs);
+                println!("elapsed (ms): {}", now.elapsed().as_millis());
+                ret
+            })
+        },
+    )
+} */
+/* #[pyfunction]
+pub fn average_exectime<'a>(
+    py: Python<'a>,
+    server: &mut ComSocketServer,
+) -> PyResult<&'a PyCFunction> {
+    let f = move |args: &PyTuple, _kwargs: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
+        Python::with_gil(|py| {
+            let wraps: PyObject = args.get_item(0)?.into();
+            let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
+                Python::with_gil(|py| {
+                    let f = |s: WidgetRegistry| {
+                        wraps.call(py, PyTuple::new(py, [s.get_value(py)]), kwargs)
+                    };
+                    let name = wraps.getattr(py, "__name__").unwrap();
+                    let (id, name) = extract_identity(name.to_string());
+                    server.register_action(id, name.as_str(), Action { value: f });
+                })
+            };
+            match PyCFunction::new_closure(py, None, None, g) {
+                Ok(r) => Ok(r.into()),
+                Err(e) => Err(e),
+            }
+        })
+    };
+    PyCFunction::new_closure(py, None, None, f)
+} */
 
 #[pymethods]
 impl ComSocketServer {
@@ -46,9 +91,31 @@ impl ComSocketServer {
         }
     }
 
-    pub fn on(&mut self, id: u8, widget: &str, action: Action) -> Result<(), ServerStateError> {
-        ServerCom::on(self, id, widget, action)
+    /* pub fn exectime(&mut self, py: Python, wraps: PyObject) -> PyResult<&PyCFunction> {
+        PyCFunction::new_closure(
+            py,
+            None,
+            None,
+            move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
+                Python::with_gil(|py| {
+                    let ret = wraps.call(py, args, kwargs);
+                    ret
+                })
+            },
+        )
+    } */
+    fn on(&mut self, id: u8, widget: &str, action: Py<PyAny>) -> Result<(), ServerStateError> {
+        // PyFn argument isntead of PyAny ?
+        ServerCom::register_action(self, id, widget, Action::PythonFn(action))
     }
+    /* fn register_action(
+        &mut self,
+        id: u8,
+        widget: &str,
+        action: Action,
+    ) -> Result<(), ServerStateError> {
+        ServerCom::register_action(self, id, widget, action)
+    } */
 
     pub fn open(&mut self) -> Result<(), ServerStateError> {
         ServerCom::open(self)
@@ -56,6 +123,10 @@ impl ComSocketServer {
 
     pub fn serve(&mut self) -> Result<ComServerLegacy> {
         ServerCom::serve(self)
+    }
+
+    pub fn close(&mut self) -> Result<(), ServerStateError> {
+        ServerCom::close(self)
     }
 }
 
@@ -135,7 +206,12 @@ impl ServerCom for ComSocketServer {
         };
         Ok(())
     }
-    fn on(&mut self, id: u8, widget: &str, action: Action) -> Result<(), ServerStateError> {
+    fn register_action(
+        &mut self,
+        id: u8,
+        widget: &str,
+        action: Action,
+    ) -> Result<(), ServerStateError> {
         // TODO: simplify ? always returning OK
         self.actions.insert(action_identity(id, widget), action);
 
@@ -201,22 +277,10 @@ impl ServerCom for ComSocketServer {
                         Some(frame) => {
                             // security
                             let acts = &actions;
-                            println!("Found frame ! {}", frame.id);
-                            if acts
-                                .contains_key(action_identity(frame.id, frame.data.name()).as_str())
-                            {
-                                match acts
-                                    .get(action_identity(frame.id, frame.data.name()).as_str())
-                                {
-                                    Some(a) => {
-                                        println!("running action");
-                                        (a.value)(frame.data);
-                                    }
-                                    None => panic!("Action not found !"),
-                                }
-                            } else {
-                                println!("No key {} found", frame.data.name())
-                            }
+                            match execute_action(acts, frame) {
+                                Ok(_) => {}
+                                Err(e) => panic!("Action failed {}", e),
+                            };
                             println!("done");
                         }
                         None => continue,

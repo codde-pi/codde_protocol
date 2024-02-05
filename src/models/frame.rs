@@ -1,10 +1,12 @@
-use std::{any::Any, collections::HashMap};
+use std::{any::Any, collections::HashMap, fmt::format};
 
 use super::widget_registry::{ServerStatus, Widget, WidgetRegistry};
+use pyo3::{pyclass, types::PyTuple, IntoPy, Py, Python};
 use serde::{Deserialize, Serialize};
 
 // TODO: PartialEq ?
 #[derive(Deserialize, Serialize)]
+#[pyclass]
 pub struct Frame {
     pub id: u8,
     pub data: WidgetRegistry,
@@ -51,10 +53,24 @@ impl Frame {
         s.view().to_owned()
     }
 
-    pub fn identity() -> String {
-        todo!()
+    pub fn identity(&self) -> String {
+        format!(
+            "{}_{}",
+            self.id,
+            match self.data.to_string().split_whitespace().next() {
+                Some(s) => s,
+                None => "",
+            }
+        )
     }
 }
+/* impl IntoPy<PyTuple> for Frame {
+    fn into_py(self, py: Python<'_>) -> PyTuple {
+        /* let tuple = PyTuple::new(py, [self.into_py(py)]);
+        tuple.to_owned() // need match case ? */
+        PyTuple::new(py, [self.into_py(py)]).to_owned()
+    }
+} */
 
 pub struct ResultFrame {
     pub status: ServerStatus,

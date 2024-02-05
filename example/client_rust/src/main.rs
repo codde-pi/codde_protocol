@@ -10,7 +10,7 @@ use std::{thread, time::Duration};
 fn main() {
     let f = Frame {
         id: 1,
-        data: WidgetRegistry::Toggle(ToggleButton { value: true }),
+        data: WidgetRegistry::ToggleButton { value: true },
     };
     let mut client: ComSocketClient = ComSocketClient::new("localhost:12345");
     client.connect();

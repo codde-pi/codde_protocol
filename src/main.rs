@@ -1,3 +1,4 @@
+use anyhow::Result;
 use std::sync::mpsc::Sender;
 use std::{collections::HashMap, thread, time::Duration};
 
@@ -13,20 +14,21 @@ use codde_pi_protocol::protocols::server::ServerProtocol;
 use codde_pi_protocol::runtime::codde_pi_server::CoddePiServer;
 use serde::{Deserialize, Serialize};
 
-fn action_test(data: WidgetRegistry) {
+fn action_test(data: WidgetRegistry) -> Result<()> {
     println!("hello func !");
     let widget = match data {
-        WidgetRegistry::Toggle(d) => d,
+        WidgetRegistry::ToggleButton { value } => value,
         _ => panic!("Data error"),
     };
-    println!("Value = {}", widget.value);
+    println!("Value = {}", widget);
+    Ok(())
 }
 
 fn main() {
     println!("Hello, world!");
     let f = Frame {
         id: 1,
-        data: WidgetRegistry::Toggle(ToggleButton { value: true }),
+        data: WidgetRegistry::ToggleButton { value: true },
     };
     // serialize(f);
     end_to_end(f);
@@ -36,7 +38,7 @@ fn main() {
 fn end_to_end(f: Frame) {
     let mut server: ComSocketServer = CoddePiServer::use_socket("localhost:12345");
     server.open();
-    server.on(1, f.data.name(), Action { value: action_test });
+    server.register_action(1, f.data.to_string().as_str(), Action::RustFn(action_test));
     let _: ComServerLegacy = server.serve().unwrap();
     thread::sleep(Duration::new(2, 0));
     // _.close();

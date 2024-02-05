@@ -9,7 +9,7 @@ edition = "2021"
 [dependencies]
 arr_macro = "0.2.1"
 dynamic = "0.2.1"
-pyo3 = {version ="0.20.1", features = ["anyhow"]}
+pyo3 = {version ="0.20.1", features = ["anyhow", "serde"]}
 quote = "1.0.35"
 serde = {version= "1.0.194",  features = ["derive"] }
 syn = "2.0.46"

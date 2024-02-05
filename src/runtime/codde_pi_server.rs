@@ -2,7 +2,10 @@ use std::borrow::BorrowMut;
 
 use crate::{
     models::protocol::Protocol,
-    models::{server::ServerCom, widget_registry::Action},
+    models::{
+        server::ServerCom,
+        widget_registry::{Action, ClickButton, ToggleButton, WidgetAction, WidgetRegistry},
+    },
     protocols::server::{com_socket::ComSocketServer, ServerProtocol},
 };
 use pyo3::{exceptions::PyException, prelude::*};
@@ -11,9 +14,13 @@ use pyo3::{exceptions::PyException, prelude::*};
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
 #[pymodule]
-fn codde_py(_py: Python, m: &PyModule) -> PyResult<()> {
+fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<CoddePiServer>()?;
+    m.add_class::<ComSocketServer>()?;
     m.add_class::<Protocol>()?;
+    // m.add_class::<Action>()?;
+    m.add_class::<ClickButton>()?;
+    m.add_class::<ToggleButton>()?;
 
     Ok(())
 }

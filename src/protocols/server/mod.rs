@@ -1,9 +1,6 @@
 use std::sync::mpsc::Sender;
 
-use crate::models::{
-    server::{ComServerLegacy, ServerCom, ServerStateError},
-    widget_registry::Action,
-};
+use crate::models::server::{ComServerLegacy, ServerCom, ServerStateError};
 
 use self::com_socket::ComSocketServer;
 

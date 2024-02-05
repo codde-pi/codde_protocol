@@ -22,9 +22,9 @@ pub fn widget_derive(input: TokenStream) -> TokenStream {
                 &format!("{}_{}", stringify!(#name), id)
             } */
 
-            fn name(&self) -> &str {
+            /* fn name(&self) -> &str {
                 stringify!(#name)
-            }
+            } */
         }
     };
 

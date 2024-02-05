@@ -71,6 +71,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "client_rust"
+version = "0.1.0"
+dependencies = [
+ "codde_pi_protocol",
+]
+
+[[package]]
 name = "codde_pi_protocol"
 version = "0.1.0"
 dependencies = [
@@ -118,13 +125,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "55d05712b2d8d88102bc9868020c9e5c7a1f5527c452b9b97450a1d006140ba7"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "example"
-version = "0.1.0"
-dependencies = [
- "codde_pi_protocol",
 ]
 
 [[package]]
@@ -316,6 +316,7 @@ dependencies = [
  "pyo3-build-config",
  "pyo3-ffi",
  "pyo3-macros",
+ "serde",
  "unindent",
 ]
 

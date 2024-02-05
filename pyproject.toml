@@ -3,7 +3,7 @@ requires = ["maturin>=1.4,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "coddepy"
+name = "codde_pi_protocol"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
