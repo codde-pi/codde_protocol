@@ -1,6 +1,6 @@
 use std::sync::mpsc::Sender;
 
-use crate::models::server::{ComServerLegacy, ServerCom, ServerStateError};
+use crate::models::server::{ServerCom, ServerStateError};
 
 use self::com_socket::ComSocketServer;
 

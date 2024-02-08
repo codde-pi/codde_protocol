@@ -1,12 +1,12 @@
 use codde_pi_protocol::{
     models::{
         client::ClientCom,
-        frame::Frame,
+        frame::{Frame, ResultFrame},
         widget_registry::{ToggleButton, Widget, WidgetAction, WidgetRegistry},
     },
     protocols::client::com_socket::ComSocketClient,
 };
-use std::{thread, time::Duration};
+use std::{any, thread, time::Duration};
 fn main() {
     let f = Frame {
         id: 1,
@@ -16,9 +16,14 @@ fn main() {
     client.connect();
     println!("connected");
     thread::sleep(Duration::from_millis(500));
-    // open.listen();
     println!("sending data");
     client.send(f);
+    thread::sleep(Duration::new(1, 0));
+    let res = client.receive();
+    match res {
+        Ok(r) => println!("client receiving : {}", r.unwrap()),
+        Err(e) => eprintln!("client ERROR : {}", e),
+    };
     client.disconnect();
     // client.close();
 }

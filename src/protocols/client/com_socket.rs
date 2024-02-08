@@ -1,3 +1,4 @@
+use anyhow::Result;
 use rmp_serde::{Deserializer, Serializer};
 use serde::Serialize;
 use std::{
@@ -5,7 +6,11 @@ use std::{
     net::{Shutdown, TcpStream},
 };
 
-use crate::models::{client::ClientCom, frame::Frame, server::ServerStateError};
+use crate::models::{
+    client::ClientCom,
+    frame::{Frame, ResultFrame},
+    server::ServerStateError,
+};
 
 pub struct ComSocketClient {
     pub address: String,
@@ -37,9 +42,7 @@ impl ClientCom for ComSocketClient {
     fn send(&mut self, data: Frame) -> Result<(), ServerStateError> {
         match self.stream.as_mut() {
             Some(stream) => {
-                let mut buf: Vec<u8> = Vec::new();
-                data.serialize(&mut Serializer::new(&mut buf)).unwrap();
-                match stream.write_all(&buf) {
+                match stream.write_all(&data.bufferize()) {
                     Ok(_) => Ok(()),
                     Err(e) => panic!("Failed to write bytes : {}", e),
                 }
@@ -51,15 +54,27 @@ impl ClientCom for ComSocketClient {
         }
     }
 
-    fn receive(&mut self) -> Result<Frame, ServerStateError> {
+    fn receive(&mut self) -> Result<Option<ResultFrame>> {
         let stream = self.stream.as_mut();
         match stream {
             Some(stream) => {
-                let mut buf: Vec<u8> = Vec::new();
-                stream.read(&mut buf);
-                Ok(Frame::parse(&buf))
+                let mut buffer = [0; 1024];
+                let data: Option<&[u8]> = match stream.read(&mut buffer) {
+                    Ok(size) => {
+                        println!("Received size : {}", size);
+                        match size {
+                            0 => None,
+                            _ => Some(&buffer[..size]),
+                        }
+                    }
+                    Err(e) => panic!("Failed to read frame : {}", e),
+                };
+                match data {
+                    Some(d) => ResultFrame::parse(d),
+                    None => Ok(None),
+                }
             }
-            None => Err(ServerStateError),
+            None => Err(ServerStateError.into()),
         }
     }
 

@@ -1,8 +1,12 @@
+use anyhow::Result;
 use std::{error::Error, fmt};
 
 use crate::protocols::client::ClientProtocol;
 
-use super::{frame::Frame, server::ServerStateError};
+use super::{
+    frame::{Frame, ResultFrame},
+    server::ServerStateError,
+};
 
 // TODO: ideally, client and server sides should have different trait,
 // since these abstract methods correspond to client naming and not server.
@@ -12,14 +16,12 @@ pub trait ClientCom {
 
     fn send(&mut self, data: Frame) -> Result<(), ServerStateError>;
 
-    fn receive(&mut self) -> Result<Frame, ServerStateError>;
+    fn receive(&mut self) -> Result<Option<ResultFrame>>;
 
     // TODO: request ? <=> send + receive (with timeout)
-    fn request(&mut self, data: Frame) -> Result<Frame, ServerStateError> {
-        match self.send(data) {
-            Ok(_) => self.receive(),
-            Err(e) => Err(e),
-        }
+    fn request(&mut self, data: Frame) -> Result<Option<ResultFrame>> {
+        self.send(data)?;
+        self.receive()
     }
 
     fn disconnect(self) -> Result<(), ServerStateError>;

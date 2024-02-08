@@ -1,9 +1,10 @@
 use anyhow::Result;
+use codde_pi_protocol::models::frame::ResultFrame;
 use std::sync::mpsc::Sender;
 use std::{collections::HashMap, thread, time::Duration};
 
 use codde_pi_protocol::models::protocol::Protocol;
-use codde_pi_protocol::models::server::{ComServerLegacy, ServerCom};
+use codde_pi_protocol::models::server::{self, ServerCom};
 use codde_pi_protocol::models::widget_registry::*;
 use codde_pi_protocol::models::{
     frame::Frame,
@@ -39,8 +40,12 @@ fn end_to_end(f: Frame) {
     let mut server: ComSocketServer = CoddePiServer::use_socket("localhost:12345");
     server.open();
     server.register_action(1, f.data.to_string().as_str(), Action::RustFn(action_test));
-    let _: ComServerLegacy = server.serve().unwrap();
     thread::sleep(Duration::new(2, 0));
+    /* server.callback(ResultFrame {
+        id: 1,
+        status: ServerStatus::Idle,
+        data: ResultRegistry::ConfirmResult { status: true },
+    }); */
     // _.close();
     server.close();
 }

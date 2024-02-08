@@ -3,8 +3,12 @@ use std::borrow::BorrowMut;
 use crate::{
     models::protocol::Protocol,
     models::{
+        frame::ResultFrame,
         server::ServerCom,
-        widget_registry::{Action, ClickButton, ToggleButton, WidgetAction, WidgetRegistry},
+        widget_registry::{
+            Action, ClickButton, ConfirmButton, ConfirmResult, ServerStatus, ToggleButton,
+            WidgetAction, WidgetRegistry,
+        },
     },
     protocols::server::{com_socket::ComSocketServer, ServerProtocol},
 };
@@ -21,6 +25,10 @@ fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
     // m.add_class::<Action>()?;
     m.add_class::<ClickButton>()?;
     m.add_class::<ToggleButton>()?;
+    m.add_class::<ConfirmButton>()?;
+    // m.add_class::<ResultFrame>()?;
+    m.add_class::<ServerStatus>()?;
+    m.add_class::<ConfirmResult>()?;
 
     Ok(())
 }

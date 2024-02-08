@@ -1,58 +1,34 @@
+use anyhow::Result;
+use core::fmt;
 use std::{any::Any, collections::HashMap, fmt::format};
 
-use super::widget_registry::{ServerStatus, Widget, WidgetRegistry};
-use pyo3::{pyclass, types::PyTuple, IntoPy, Py, Python};
+use super::widget_registry::{
+    ResultBinding, ResultRegistry, ResultWidget, ServerStatus, Widget, WidgetRegistry,
+};
+use pyo3::{pyclass, pymethods, types::PyTuple, IntoPy, Py, PyAny, Python};
+use rmp_serde::{decode::ReadReader, Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
 
-// TODO: PartialEq ?
-#[derive(Deserialize, Serialize)]
+trait Framing<'a, T = Self>: Serialize + Deserialize<'a>
+where
+    T: Serialize + Deserialize<'a>,
+{
+    fn bufferize(&self) -> Vec<u8> {
+        let mut buf: Vec<u8> = Vec::new();
+        self.serialize(&mut Serializer::new(&mut buf)).unwrap();
+        buf
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 #[pyclass]
 pub struct Frame {
     pub id: u8,
     pub data: WidgetRegistry,
 }
 
-impl Frame {
-    // const STARTER: &str = "#";
-
-    /* pub fn parse(data: Vec<u8>) -> Self {
-        match String::from_utf8(vec![data.remove(0)]) {
-            Ok(v) => assert!(v == Frame::STARTER, "No frame starter found !"),
-            Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-        };
-        let id: u8 = u8::from_ne_bytes([data.remove(0)]);
-        // assert!()
-        Frame::deserialize(id, data)
-    } */
-
-    /* fn serialize(&self) -> Result<Vec<u8>, rmp_serde::encode::Error> {
-        to_vec(self)
-    }
-
-    fn deserialize(data: Vec<u8>) -> Self {
-        from_read(data)
-    } */
-    pub fn parse(data: &[u8]) -> Frame {
-        // println!("parsing {}", data.get(0).unwrap());
-        println!("parsing");
-        let s = match flexbuffers::Reader::get_root(data) {
-            Ok(s) => s,
-            Err(e) => panic!("Unable to parse message buffer : {}", e),
-        };
-
-        println!("deserializing");
-        match Frame::deserialize(s) {
-            Ok(f) => f,
-            Err(e) => panic!("Deserialization error : {}", e),
-        }
-    }
-
-    pub fn bufferize(&self) -> Vec<u8> {
-        let mut s = flexbuffers::FlexbufferSerializer::new();
-        self.serialize(&mut s).unwrap();
-        s.view().to_owned()
-    }
-
+impl<'a> Framing<'a> for Frame {}
+impl<'a> Frame {
     pub fn identity(&self) -> String {
         format!(
             "{}_{}",
@@ -63,16 +39,53 @@ impl Frame {
             }
         )
     }
-}
-/* impl IntoPy<PyTuple> for Frame {
-    fn into_py(self, py: Python<'_>) -> PyTuple {
-        /* let tuple = PyTuple::new(py, [self.into_py(py)]);
-        tuple.to_owned() // need match case ? */
-        PyTuple::new(py, [self.into_py(py)]).to_owned()
+    pub fn bufferize(&self) -> Vec<u8> {
+        Framing::bufferize(self)
     }
-} */
+    pub fn parse(data: &[u8]) -> Result<Option<Frame>> {
+        let mut de: Deserializer<ReadReader<&[u8]>> = Deserializer::new(data);
+        match Frame::deserialize(&mut de) {
+            Ok(f) => Ok(Some(f)),
+            Err(e) => Err(e.into()),
+        }
+    }
+}
 
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 pub struct ResultFrame {
+    pub id: u8,
     pub status: ServerStatus,
-    pub data: Option<Box<dyn Any>>,
+    pub data: ResultRegistry,
+}
+impl<'a> Framing<'a> for ResultFrame {}
+impl ResultFrame {
+    pub fn bufferize(&self) -> Vec<u8> {
+        Framing::bufferize(self)
+    }
+    pub fn parse(data: &[u8]) -> Result<Option<ResultFrame>> {
+        let mut de: Deserializer<ReadReader<&[u8]>> = Deserializer::new(data);
+        match ResultFrame::deserialize(&mut de) {
+            Ok(f) => Ok(Some(f)),
+            Err(e) => Err(e.into()),
+        }
+    }
+}
+
+impl ResultFrame {
+    pub fn new(id: u8, status: ServerStatus, data: Py<PyAny>) -> ResultFrame {
+        Python::with_gil(|py| {
+            let d: ResultBinding = data.extract(py).unwrap();
+
+            ResultFrame {
+                id,
+                status,
+                data: ResultRegistry::from_binding(d),
+            }
+        })
+    }
+}
+impl fmt::Display for ResultFrame {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
 }

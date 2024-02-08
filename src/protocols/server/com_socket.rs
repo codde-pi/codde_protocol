@@ -1,8 +1,8 @@
-// TODO: refact based on [ServerCom]
 use anyhow::Result;
 use std::{
     borrow::BorrowMut,
     collections::HashMap,
+    error::Error,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
     ops::DerefMut,
@@ -15,11 +15,11 @@ use rmp_serde::{decode::ReadReader, Deserializer};
 use serde::Deserialize;
 
 use crate::models::{
-    frame::Frame,
-    server::{execute_action, ComServerLegacy, ServerCom, ServerStateError},
+    frame::{Frame, ResultFrame},
+    server::{execute_action, ServerCom, ServerStateError},
     widget_registry::{
-        action_identity, extract_identity, Action, ClickButton, TypeFn, Widget, WidgetAction,
-        WidgetRegistry,
+        action_identity, extract_identity, Action, ClickButton, ConfirmResult, ResultBinding,
+        ServerStatus, TypeFn, Widget, WidgetAction, WidgetRegistry,
     },
 };
 
@@ -36,49 +36,6 @@ pub struct ComSocketServer {
     trigger: Option<Sender<bool>>,
 }
 
-// TODO: pass ComSocketServer in argument
-/* pub fn exectime(py: Python, wraps: PyObject) -> PyResult<&PyCFunction> {
-    PyCFunction::new_closure(
-        py,
-        None,
-        None,
-        move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
-            Python::with_gil(|py| {
-                let now = Instant::now();
-                let ret = wraps.call(py, args, kwargs);
-                println!("elapsed (ms): {}", now.elapsed().as_millis());
-                ret
-            })
-        },
-    )
-} */
-/* #[pyfunction]
-pub fn average_exectime<'a>(
-    py: Python<'a>,
-    server: &mut ComSocketServer,
-) -> PyResult<&'a PyCFunction> {
-    let f = move |args: &PyTuple, _kwargs: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
-        Python::with_gil(|py| {
-            let wraps: PyObject = args.get_item(0)?.into();
-            let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
-                Python::with_gil(|py| {
-                    let f = |s: WidgetRegistry| {
-                        wraps.call(py, PyTuple::new(py, [s.get_value(py)]), kwargs)
-                    };
-                    let name = wraps.getattr(py, "__name__").unwrap();
-                    let (id, name) = extract_identity(name.to_string());
-                    server.register_action(id, name.as_str(), Action { value: f });
-                })
-            };
-            match PyCFunction::new_closure(py, None, None, g) {
-                Ok(r) => Ok(r.into()),
-                Err(e) => Err(e),
-            }
-        })
-    };
-    PyCFunction::new_closure(py, None, None, f)
-} */
-
 #[pymethods]
 impl ComSocketServer {
     #[new]
@@ -91,7 +48,7 @@ impl ComSocketServer {
         }
     }
 
-    /* pub fn exectime(&mut self, py: Python, wraps: PyObject) -> PyResult<&PyCFunction> {
+    /* pub fn exectime<'a>(&mut self, py: Python<'a>, wraps: PyObject) -> PyResult<&PyCFunction> {
         PyCFunction::new_closure(
             py,
             None,
@@ -104,37 +61,50 @@ impl ComSocketServer {
             },
         )
     } */
-    fn on(&mut self, id: u8, widget: &str, action: Py<PyAny>) -> Result<(), ServerStateError> {
+    /* pub fn event<'a>(&mut self, py: Python<'a>) -> PyResult<&'a PyCFunction> {
+        let f = move |args: &PyTuple, _kwargs: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
+            Python::with_gil(|py| {
+                let wraps: PyObject = args.get_item(0)?.into();
+                let name = wraps.getattr(py, "__name__").unwrap();
+                let (id, name) = extract_identity(name.to_string());
+                self.register_action(id, name.as_str(), Action::PythonFn(wraps));
+                let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
+                    Python::with_gil(|py| wraps.call(py, args, kwargs))
+                };
+                match PyCFunction::new_closure(py, None, None, g) {
+                    Ok(r) => Ok(r.into()),
+                    Err(e) => Err(e),
+                }
+            })
+        };
+        PyCFunction::new_closure(py, None, None, f)
+    } */
+    fn on(&mut self, id: u8, widget: &str, action: Py<PyAny>) -> Result<()> {
         // PyFn argument isntead of PyAny ?
         ServerCom::register_action(self, id, widget, Action::PythonFn(action))
     }
-    /* fn register_action(
-        &mut self,
-        id: u8,
-        widget: &str,
-        action: Action,
-    ) -> Result<(), ServerStateError> {
-        ServerCom::register_action(self, id, widget, action)
-    } */
 
     pub fn open(&mut self) -> Result<(), ServerStateError> {
         ServerCom::open(self)
     }
 
-    pub fn serve(&mut self) -> Result<ComServerLegacy> {
+    pub fn serve(&mut self) -> Result<()> {
         ServerCom::serve(self)
     }
 
-    pub fn close(&mut self) -> Result<(), ServerStateError> {
+    pub fn callback(&mut self, id: u8, status: ServerStatus, data: Py<PyAny>) -> Result<()> {
+        ServerCom::callback(self, ResultFrame::new(id, status, data))
+    }
+
+    pub fn close(&mut self) -> Result<()> {
         ServerCom::close(self)
     }
 }
 
 impl ComSocketServer {
-    fn _listen(stream: &mut Option<&TcpStream>) -> Result<Option<Frame>, ServerStateError> {
+    fn _listen(stream: &mut Option<&TcpStream>) -> Result<Option<Frame>> {
         match stream {
             Some(stream) => {
-                // let mut buf: Vec<u8> = Vec::new();
                 let mut buffer = [0; 1024];
                 let data: Option<&[u8]> = match stream.read(&mut buffer) {
                     Ok(size) => {
@@ -143,32 +113,15 @@ impl ComSocketServer {
                             0 => None,
                             _ => Some(&buffer[..size]),
                         }
-                        // Some(&buffer[..size])
                     }
                     Err(e) => panic!("Failed to read frame : {}", e),
                 };
                 match data {
-                    Some(d) => {
-                        let mut de: Deserializer<ReadReader<&[u8]>> = Deserializer::new(d);
-                        match Frame::deserialize(&mut de) {
-                            Ok(f) => {
-                                // println!("HELLO : {}", f.id);
-                                Ok(Some(f))
-                            }
-                            Err(e) => {
-                                // panic!("{}", e);
-                                Err(e.into())
-                                // eprintln!("Deserialization error : {}", e);
-                                // panic!("Argh !")
-                            }
-                        }
-                    }
+                    Some(d) => Frame::parse(d),
                     None => Ok(None),
                 }
-                // let frame = Deserialize::deserialize(&mut de).unwrap(); // TODO: catch serde error
-                // Ok(frame)
             }
-            None => Err(ServerStateError),
+            None => Err(ServerStateError.into()),
         }
     }
 
@@ -186,9 +139,9 @@ impl ComSocketServer {
         };
         // drop(listener);
         Ok(ServerProtocol::Socket(ComSocketServer {
-            address: address,
+            address,
             stream: Some(stream),
-            actions: actions,
+            actions,
             trigger: None,
         }))
     }
@@ -206,66 +159,51 @@ impl ServerCom for ComSocketServer {
         };
         Ok(())
     }
-    fn register_action(
-        &mut self,
-        id: u8,
-        widget: &str,
-        action: Action,
-    ) -> Result<(), ServerStateError> {
-        // TODO: simplify ? always returning OK
+    fn register_action(&mut self, id: u8, widget: &str, action: Action) -> Result<()> {
         self.actions.insert(action_identity(id, widget), action);
-
         Ok(())
     }
 
-    fn callback(&mut self, data: Frame) -> Result<(), ServerStateError> {
+    // TODO: change method name in order to be used in Rust
+    fn callback(&mut self, data: ResultFrame) -> Result<()> {
         // TODO: return Result
         let stream = &mut *self.stream.borrow_mut();
         match stream {
             Some(s) => {
-                s.write_all(&data.bufferize());
+                s.write_all(&data.bufferize())?;
                 Ok(())
             } // TODD,
-            None => Err(ServerStateError),
+            None => Err(ServerStateError.into()),
         }
     }
 
-    fn listen(&mut self) -> Result<Option<Frame>, ServerStateError> {
+    fn listen(&mut self) -> Result<Option<Frame>> {
         // TODO: return Result
-        println!("listening");
         let stream = &mut self.stream.as_ref();
         ComSocketServer::_listen(stream)
     }
 
-    fn serve(&mut self) -> Result<ComServerLegacy> {
-        // let stream = &mut *self.stream.borrow_mut();
+    fn serve(&mut self) -> Result<()> {
         let tmp_stream: Result<(), ServerStateError> = match &mut self.stream.borrow_mut() {
-            Some(stream) => Ok({}),
+            Some(_) => Ok({}),
             None => Err(ServerStateError),
         };
-
         tmp_stream?;
-        // let tmp_stream = self.stream.unwrap();
-        let mut new_stream = self.stream.as_ref().unwrap().try_clone()?;
 
-        let addr: String = self.address.clone(); // TODO: to much clone
+        let new_stream: TcpStream = self.stream.as_ref().unwrap().try_clone()?;
+
         let actions = self.actions.clone();
         let (tx, rx): (Sender<bool>, Receiver<bool>) = channel();
-        // let address = address.clone();
-        // let mut acts: WidgetAction = HashMap::new();
-        // acts.clone_from(&tuple.as_ref().unwrap().1);
         self.trigger = Some(tx.clone());
-        drop(self);
+        let _ = self;
 
         thread::spawn({
             move || loop {
                 thread::sleep(Duration::from_millis(500));
                 // catch errors, stop loop
                 match rx.try_recv() {
-                    // TODO: auto closing :/
                     Ok(_) => {
                         println!("Terminating.");
-                        // self.close();
                         new_stream.shutdown(std::net::Shutdown::Both);
                         break;
                     }
@@ -289,42 +227,26 @@ impl ServerCom for ComSocketServer {
                 };
             }
         });
-        // .join(); // TODO: remove `join`
-        /* Ok(ServerProtocol::Socket(ComSocketServer {
-            stream: None,
-            trigger: Some(tx),
-            address: addr.to_string(),
-            actions,
-        })) */
-        Ok(ComServerLegacy::new(tx.clone()))
+        Ok(())
     }
 
-    fn close(&mut self) -> Result<(), ServerStateError> {
+    fn close(&mut self) -> Result<()> {
         let trigger = &mut *self.trigger.borrow_mut();
         match trigger {
             Some(trigger) => {
-                println!("trigger found");
-                trigger.send(true);
+                trigger.send(true)?;
                 self.stream = None;
             }
-            None => {
-                panic!("No trigger")
-            }
+            None => {}
         };
         let stream = &mut *self.stream.borrow_mut();
         match stream {
             Some(stream) => {
-                stream.shutdown(std::net::Shutdown::Both);
-                /* Ok(ServerProtocol::Socket(ComSocketServer {
-                    address: self.address,
-                    stream: None,
-                    actions: self.actions,
-                    trigger: None,
-                })) */
+                stream.shutdown(std::net::Shutdown::Both)?;
                 self.stream = None;
-                Ok(())
             }
-            None => Err(ServerStateError),
-        }
+            None => {}
+        };
+        Ok(())
     }
 }

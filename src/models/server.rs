@@ -5,32 +5,27 @@ use std::{
     sync::mpsc::Sender,
 };
 
-use pyo3::{exceptions::PyOSError, pyclass, types::PyTuple, IntoPy, PyAny, PyErr, Python};
+use pyo3::{exceptions::PyOSError, pyclass, PyErr, Python};
 use serde::Deserialize;
 
-use crate::{models::widget_registry::Action, protocols::server::ServerProtocol};
+use crate::models::widget_registry::Action;
 
 use super::{
-    frame::Frame,
-    widget_registry::{action_identity, TypeFn, Widget, WidgetAction},
+    frame::{Frame, ResultFrame},
+    widget_registry::WidgetAction,
 };
 
 pub trait ServerCom {
     fn open(&mut self) -> Result<(), ServerStateError>;
-    fn register_action(
-        &mut self,
-        id: u8,
-        widget: &str,
-        action: Action,
-    ) -> Result<(), ServerStateError>;
+    fn register_action(&mut self, id: u8, widget: &str, action: Action) -> Result<()>;
 
-    fn callback(&mut self, data: Frame) -> Result<(), ServerStateError>;
+    fn callback(&mut self, data: ResultFrame) -> Result<()>;
 
-    fn listen(&mut self) -> Result<Option<Frame>, ServerStateError>;
+    fn listen(&mut self) -> Result<Option<Frame>>;
 
-    fn serve(&mut self) -> Result<ComServerLegacy>; // TODO
+    fn serve(&mut self) -> Result<()>; // TODO
 
-    fn close(&mut self) -> Result<(), ServerStateError>;
+    fn close(&mut self) -> Result<()>;
 }
 
 pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
@@ -44,11 +39,8 @@ pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
                 Action::RustFn(a) => a(frame.data),
                 Action::PythonFn(a) => Python::with_gil(|py| {
                     println!("running action");
-                    // let tuple = PyTuple::new(py, &[frame.data.into_py(py)]);
                     a.call1(py, (frame.data,))?;
                     println!("after function");
-                    // a.call1(py, tuple)?;
-                    // a.call0(py)?;
                     Ok(())
                 }),
             },
@@ -56,21 +48,6 @@ pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
         }
     } else {
         println!("No key {} found", frame.identity());
-        Ok(())
-    }
-}
-
-#[pyclass]
-pub struct ComServerLegacy {
-    trigger: Sender<bool>,
-}
-
-impl ComServerLegacy {
-    pub fn new(trigger: Sender<bool>) -> Self {
-        ComServerLegacy { trigger }
-    }
-    pub fn close(&self) -> Result<()> {
-        self.trigger.send(true);
         Ok(())
     }
 }
@@ -104,15 +81,3 @@ impl std::convert::From<ServerStateError> for PyErr {
         PyOSError::new_err(err.to_string())
     }
 }
-
-/* impl std::ops::FromResidual<Result<std::convert::Infallible, std::io::Error>> for ServerStateError {
-    fn from_residual(residual: Result<std::convert::Infallible, std::io::Error>) -> Self {
-        ServerStateError
-    }
-} */
-
-/* impl From<frame::_::_serde::Deserialize<'_>> for ServerStateError {
-    fn from(error: rmp_serde::decode::Error) -> Self {
-        ServerStateError
-    }
-} */

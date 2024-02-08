@@ -20,6 +20,7 @@ typetag = "0.2.15"
 flexbuffers = "2.0.0" # TODO: choose (flexbuffer VS rmp_serde)
 rmp-serde = "1.1.2"
 anyhow = "1.0.79"
+flutter_rust_bridge = "1"
 
 [lib]
 name = "codde_pi_protocol"

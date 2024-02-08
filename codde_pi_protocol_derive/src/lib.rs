@@ -32,3 +32,20 @@ pub fn widget_derive(input: TokenStream) -> TokenStream {
     // TokenStream::from(output)
     output.into()
 }
+
+#[proc_macro_derive(ResultWidget)]
+pub fn result_widget_derive(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as ItemStruct);
+
+    let name = &input.ident;
+
+    let output = quote! {
+        #[typetag::serde]
+        impl ResultWidget for #name {
+        }
+    };
+
+    // Return output TokenStream so your custom derive behavior will be attached.
+    // TokenStream::from(output)
+    output.into()
+}
