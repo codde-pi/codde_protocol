@@ -1,0 +1,17 @@
+---
+name: codde_protocol
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dev_dependencies:
+  build_runner: ^2.4.8
+  ffigen: ^9.0.1
+  freezed: ^2.4.7
+dependencies:
+  ffi: ^2.1.0
+  flutter_rust_bridge: 2.0.0-dev.24
+  freezed_annotation: ^2.4.1
+
+flutter_rust_bridge:
+  rust_input: codde_protocol/src/api/protocols/client/*.rs
+  dart_output: lib/src/codde_protocol
