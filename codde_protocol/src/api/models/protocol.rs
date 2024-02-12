@@ -1,4 +1,4 @@
-use pyo3::{pyclass, FromPyObject};
+use pyo3::pyclass;
 
 #[pyclass]
 #[derive(Clone, Copy)]

@@ -1,12 +1,9 @@
 use anyhow::Result;
 use core::fmt;
-use std::{
-    any::{Any, TypeId},
-    collections::HashMap,
-};
+use std::collections::HashMap;
 
 use codde_protocol_derive::{ResultWidget, Widget};
-use pyo3::{prelude::*, pyclass, types::PyTuple, Py, PyAny};
+use pyo3::{prelude::*, pyclass, Py, PyAny};
 use serde::{Deserialize, Serialize};
 
 #[typetag::serde(tag = "type")]

@@ -1,6 +1,4 @@
 use anyhow::Result;
-use rmp_serde::{Deserializer, Serializer};
-use serde::Serialize;
 use std::{
     io::{Read, Write},
     net::{Shutdown, TcpStream},
@@ -12,7 +10,6 @@ use crate::api::models::{
     server::ServerStateError,
 };
 
-#[frb(opaque)]
 pub struct ComSocketClient {
     pub address: String,
     stream: Option<TcpStream>,
@@ -46,7 +43,7 @@ impl ClientCom for ComSocketClient {
                 Ok(_) => Ok(()),
                 Err(e) => panic!("Failed to write bytes : {}", e),
             },
-            None => Err(ServerStateError),
+            None => Err(ServerStateError::no_stream()),
         }
     }
 
@@ -70,14 +67,14 @@ impl ClientCom for ComSocketClient {
                     None => Ok(None),
                 }
             }
-            None => Err(ServerStateError.into()),
+            None => Err(ServerStateError::no_stream().into()),
         }
     }
 
     fn disconnect(self) -> Result<(), ServerStateError> {
         match self.stream {
             Some(stream) => {
-                stream.shutdown(Shutdown::Both);
+                let _ = stream.shutdown(Shutdown::Both);
                 /* Ok(ClientProtocol::Socket(ComSocketClient {
                     address: self.address,
                     stream: None,
@@ -85,7 +82,7 @@ impl ClientCom for ComSocketClient {
                 // TODO: sleF.stream = None ?
                 Ok(())
             }
-            None => Err(ServerStateError),
+            None => Err(ServerStateError::no_stream()),
         }
     }
 }

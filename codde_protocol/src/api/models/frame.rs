@@ -1,11 +1,8 @@
 use anyhow::Result;
 use core::fmt;
-use std::{any::Any, collections::HashMap, fmt::format};
 
-use super::widget_registry::{
-    ResultBinding, ResultRegistry, ResultWidget, ServerStatus, Widget, WidgetRegistry,
-};
-use pyo3::{pyclass, pymethods, types::PyTuple, IntoPy, Py, PyAny, Python};
+use super::widget_registry::{ResultBinding, ResultRegistry, ServerStatus, WidgetRegistry};
+use pyo3::{pyclass, Py, PyAny, Python};
 use rmp_serde::{decode::ReadReader, Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
 
@@ -15,7 +12,10 @@ where
 {
     fn bufferize(&self) -> Vec<u8> {
         let mut buf: Vec<u8> = Vec::new();
-        self.serialize(&mut Serializer::new(&mut buf)).unwrap();
+        match self.serialize(&mut Serializer::new(&mut buf)) {
+            Ok(_) => {}
+            Err(e) => panic!("Serialization error : {}", e), // TODO: Handle error
+        };
         buf
     }
 }
@@ -74,7 +74,10 @@ impl ResultFrame {
 impl ResultFrame {
     pub fn new(id: u8, status: ServerStatus, data: Py<PyAny>) -> ResultFrame {
         Python::with_gil(|py| {
-            let d: ResultBinding = data.extract(py).unwrap();
+            let d: ResultBinding = match data.extract(py) {
+                Ok(d) => d,
+                Err(e) => panic!("Python data failed to be bound: {}", e),
+            };
 
             ResultFrame {
                 id,

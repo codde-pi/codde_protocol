@@ -1,32 +1,26 @@
 use anyhow::Result;
+use flutter_rust_bridge::frb;
 use std::{
     borrow::BorrowMut,
     collections::HashMap,
-    error::Error,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
-    ops::DerefMut,
     sync::mpsc::{channel, Receiver, Sender, TryRecvError},
     thread,
     time::Duration,
 };
 
-use rmp_serde::{decode::ReadReader, Deserializer};
-use serde::Deserialize;
-
 use crate::api::models::{
     frame::{Frame, ResultFrame},
     server::{execute_action, ServerCom, ServerStateError},
-    widget_registry::{
-        action_identity, extract_identity, Action, ClickButton, ConfirmResult, ResultBinding,
-        ServerStatus, TypeFn, Widget, WidgetAction, WidgetRegistry,
-    },
+    widget_registry::{action_identity, Action, ServerStatus, WidgetAction},
 };
 
 use super::ServerProtocol;
-use pyo3::{prelude::*, types::*};
+use pyo3::prelude::*;
 
 #[pyclass]
+#[frb(opaque)]
 pub struct ComSocketServer {
     pub address: String,
     stream: Option<TcpStream>,
@@ -35,6 +29,7 @@ pub struct ComSocketServer {
 }
 
 #[pymethods]
+#[frb(opaque)]
 impl ComSocketServer {
     #[new]
     pub fn new(address: &str) -> ComSocketServer {
@@ -99,6 +94,7 @@ impl ComSocketServer {
     }
 }
 
+#[frb(opaque)]
 impl ComSocketServer {
     fn _listen(stream: &mut Option<&TcpStream>) -> Result<Option<Frame>> {
         match stream {
@@ -119,7 +115,7 @@ impl ComSocketServer {
                     None => Ok(None),
                 }
             }
-            None => Err(ServerStateError.into()),
+            None => Err(ServerStateError::no_stream().into()),
         }
     }
 
@@ -145,6 +141,7 @@ impl ComSocketServer {
     }
 }
 
+#[frb(opaque)]
 impl ServerCom for ComSocketServer {
     fn open(&mut self) -> Result<(), ServerStateError> {
         let listener = match TcpListener::bind(self.address.as_str()) {
@@ -164,19 +161,17 @@ impl ServerCom for ComSocketServer {
 
     // TODO: change method name in order to be used in Rust
     fn callback(&mut self, data: ResultFrame) -> Result<()> {
-        // TODO: return Result
         let stream = &mut *self.stream.borrow_mut();
         match stream {
             Some(s) => {
                 s.write_all(&data.bufferize())?;
                 Ok(())
             } // TODD,
-            None => Err(ServerStateError.into()),
+            None => Err(ServerStateError::no_stream().into()),
         }
     }
 
     fn listen(&mut self) -> Result<Option<Frame>> {
-        // TODO: return Result
         let stream = &mut self.stream.as_ref();
         ComSocketServer::_listen(stream)
     }
@@ -184,11 +179,15 @@ impl ServerCom for ComSocketServer {
     fn serve(&mut self) -> Result<()> {
         let tmp_stream: Result<(), ServerStateError> = match &mut self.stream.borrow_mut() {
             Some(_) => Ok({}),
-            None => Err(ServerStateError),
+            None => Err(ServerStateError::no_stream()),
         };
         tmp_stream?;
 
-        let new_stream: TcpStream = self.stream.as_ref().unwrap().try_clone()?;
+        let new_stream: TcpStream = match self.stream.as_ref() {
+            Some(s) => s,
+            None => panic!("Stream instance failed to be bound"),
+        }
+        .try_clone()?;
 
         let actions = self.actions.clone();
         let (tx, rx): (Sender<bool>, Receiver<bool>) = channel();
@@ -202,7 +201,11 @@ impl ServerCom for ComSocketServer {
                 match rx.try_recv() {
                     Ok(_) => {
                         println!("Terminating.");
-                        new_stream.shutdown(std::net::Shutdown::Both);
+                        match new_stream.shutdown(std::net::Shutdown::Both) {
+                            Ok(_) => {}
+                            Err(e) => panic!("Failed to shutdown server: {}", e),
+                            // TODO: better error handling
+                        };
                         break;
                     }
                     Err(TryRecvError::Disconnected) => println!("Link broken"),

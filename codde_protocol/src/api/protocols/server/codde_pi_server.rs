@@ -1,23 +1,18 @@
-use std::borrow::BorrowMut;
-
 use crate::{
     api::models::protocol::Protocol,
-    api::models::{
-        frame::ResultFrame,
-        server::ServerCom,
-        widget_registry::{
-            Action, ClickButton, ConfirmButton, ConfirmResult, ServerStatus, ToggleButton,
-            WidgetAction, WidgetRegistry,
-        },
+    api::models::widget_registry::{
+        ClickButton, ConfirmButton, ConfirmResult, ServerStatus, ToggleButton,
     },
-    api::protocols::server::{com_socket::ComSocketServer, ServerProtocol},
+    api::protocols::server::com_socket::ComSocketServer,
 };
-use pyo3::{exceptions::PyException, prelude::*};
+use flutter_rust_bridge::frb;
+use pyo3::prelude::*;
 
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
 #[pymodule]
+#[frb(opaque)]
 fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<CoddePiServer>()?;
     m.add_class::<ComSocketServer>()?;
@@ -35,9 +30,11 @@ fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
 // TODO: pyo3::create_exception!(codde_py, ServerStateError, PyException);
 
 #[pyclass]
+#[frb(opaque)]
 pub struct CoddePiServer {}
 
 #[pymethods]
+#[frb(opaque)]
 impl CoddePiServer {
     #[staticmethod]
     pub fn use_socket(address: &str) -> ComSocketServer {

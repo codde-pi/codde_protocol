@@ -2,10 +2,9 @@ use anyhow::{Ok, Result};
 use std::{
     error::Error,
     fmt::{self},
-    sync::mpsc::Sender,
 };
 
-use pyo3::{exceptions::PyOSError, pyclass, PyErr, Python};
+use pyo3::{exceptions::PyOSError, PyErr, Python};
 use serde::Deserialize;
 
 use crate::api::models::widget_registry::Action;
@@ -29,8 +28,7 @@ pub trait ServerCom {
 }
 
 pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
-    // TODO: create custom error for
-    // actions
+    // TODO: create custom error for actions
 
     if acts.contains_key(frame.identity().as_str()) {
         println!("Found frame ! {}", frame.id);
@@ -53,8 +51,15 @@ pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
 }
 
 #[derive(Deserialize)]
-pub struct ServerStateError; // Implement std::fmt::Display for AppError
+pub struct ServerStateError(pub(crate) String); // Implement std::fmt::Display for AppError
 
+impl ServerStateError {
+    pub fn no_stream() -> Self {
+        ServerStateError(String::from(
+            "Stream has not been instanciated. Consider calling `server.open()`",
+        ))
+    }
+}
 impl Error for ServerStateError {}
 impl fmt::Display for ServerStateError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -73,7 +78,7 @@ impl From<rmp_serde::decode::Error> for ServerStateError {
     fn from(error: rmp_serde::decode::Error) -> Self {
         // TODO: cleaner please
         eprint!("{}", error);
-        ServerStateError
+        ServerStateError(format!("{}", error))
     }
 }
 impl std::convert::From<ServerStateError> for PyErr {

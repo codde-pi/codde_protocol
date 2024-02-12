@@ -4,45 +4,31 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../models/widget_registry.dart';
+import 'codde_pi_client.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>>
-@sealed
-class ComSocketClient extends RustOpaque {
-  ComSocketClient.dcoDecode(List<dynamic> wire)
-      : super.dcoDecode(wire, _kStaticData);
+class ComSocketClient {
+  final String address;
+  final TcpStream? stream;
 
-  ComSocketClient.sseDecode(int ptr, int externalSizeOnNative)
-      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_ComSocketClient,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ComSocketClient,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ComSocketClientPtr,
-  );
+  const ComSocketClient({
+    required this.address,
+    this.stream,
+  });
 
   static Future<ComSocketClient> newComSocketClient(
           {required Str address, dynamic hint}) =>
       RustLib.instance.api.comSocketClientNew(address: address, hint: hint);
-}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<str>>
-@sealed
-class Str extends RustOpaque {
-  Str.dcoDecode(List<dynamic> wire) : super.dcoDecode(wire, _kStaticData);
+  @override
+  int get hashCode => address.hashCode ^ stream.hashCode;
 
-  Str.sseDecode(int ptr, int externalSizeOnNative)
-      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Str,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Str,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_StrPtr,
-  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ComSocketClient &&
+          runtimeType == other.runtimeType &&
+          address == other.address &&
+          stream == other.stream;
 }
