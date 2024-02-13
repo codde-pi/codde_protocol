@@ -7,7 +7,7 @@ use super::*;
 use crate::api::models::frame::*;
 use crate::api::models::server::*;
 use crate::api::models::widget_registry::*;
-use crate::api::protocols::client::codde_pi_client::*;
+use crate::api::protocols::client::com_socket::*;
 use crate::api::protocols::server::com_socket::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
@@ -16,6 +16,20 @@ use flutter_rust_bridge::{Handler, IntoIntoDart};
 // Section: boilerplate
 
 flutter_rust_bridge::frb_generated_boilerplate_io!();
+
+#[no_mangle]
+pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+    ptr: *const std::ffi::c_void,
+) {
+    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>>::increment_strong_count(ptr as _);
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+    ptr: *const std::ffi::c_void,
+) {
+    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>>::decrement_strong_count(ptr as _);
+}
 
 #[no_mangle]
 pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
@@ -64,38 +78,6 @@ pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaq
 }
 
 #[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<T>>::increment_strong_count(
-        ptr as _,
-    );
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<T>>::decrement_strong_count(
-        ptr as _,
-    );
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<TcpStream>>::increment_strong_count(ptr as _);
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<TcpStream>>::decrement_strong_count(ptr as _);
-}
-
-#[no_mangle]
 pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
     ptr: *const std::ffi::c_void,
 ) {
@@ -107,24 +89,6 @@ pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaq
     ptr: *const std::ffi::c_void,
 ) {
     MoiArc::<flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>>::decrement_strong_count(ptr as _);
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<
-        flutter_rust_bridge::for_generated::rust_async::RwLock<fn(s: WidgetRegistry) -> Result<()>>,
-    >::increment_strong_count(ptr as _);
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_codde_protocol_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-    ptr: *const std::ffi::c_void,
-) {
-    MoiArc::<
-        flutter_rust_bridge::for_generated::rust_async::RwLock<fn(s: WidgetRegistry) -> Result<()>>,
-    >::decrement_strong_count(ptr as _);
 }
 
 #[no_mangle]

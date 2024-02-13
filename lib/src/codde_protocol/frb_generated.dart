@@ -8,7 +8,6 @@ import 'api/models/server.dart';
 import 'api/models/widget_registry.dart';
 import 'api/protocols/client/codde_pi_client.dart';
 import 'api/protocols/client/com_socket.dart';
-import 'api/protocols/server.dart';
 import 'api/protocols/server/codde_pi_server.dart';
 import 'api/protocols/server/com_socket.dart';
 import 'dart:async';
@@ -100,18 +99,25 @@ abstract class RustLibApi extends BaseApi {
   Future<(int, String)> extractIdentity({required String value, dynamic hint});
 
   Future<ComSocketClient> coddePiClientUseSocket(
-      {required Str address, dynamic hint});
+      {required String address, dynamic hint});
+
+  Future<void> comSocketClientConnect(
+      {required ComSocketClient that, dynamic hint});
+
+  Future<void> comSocketClientDisconnect(
+      {required ComSocketClient that, dynamic hint});
 
   Future<ComSocketClient> comSocketClientNew(
-      {required Str address, dynamic hint});
+      {required String address, dynamic hint});
+
+  Future<ResultFrame?> comSocketClientReceive(
+      {required ComSocketClient that, dynamic hint});
+
+  Future<void> comSocketClientSend(
+      {required ComSocketClient that, required Frame data, dynamic hint});
 
   Future<ComSocketServer> coddePiServerUseSocket(
       {required Str address, dynamic hint});
-
-  Future<ServerProtocol> comSocketServerOpen(
-      {required String address,
-      required Map<String, Action> actions,
-      dynamic hint});
 
   Future<void> comSocketServerCallback(
       {required ComSocketServer that,
@@ -131,6 +137,15 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> comSocketServerServe(
       {required ComSocketServer that, dynamic hint});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ComSocketClient;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ComSocketClient;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ComSocketClientPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ComSocketServer;
@@ -153,20 +168,6 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SelfPtr;
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_T;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_T;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_TPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_TcpStream;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_TcpStream;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_TcpStreamPtr;
-
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_WidgetAction;
 
@@ -174,15 +175,6 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_WidgetAction;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_WidgetActionPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_FnSWidgetRegistryResult;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_FnSWidgetRegistryResult;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_FnSWidgetRegistryResultPtr;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Str;
 
@@ -500,17 +492,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<ComSocketClient> coddePiClientUseSocket(
-      {required Str address, dynamic hint}) {
+      {required String address, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
-            address, serializer);
+        sse_encode_String(address, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 12, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_com_socket_client,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient,
         decodeErrorData: null,
       ),
       constMeta: kCoddePiClientUseSocketConstMeta,
@@ -526,18 +518,72 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<ComSocketClient> comSocketClientNew(
-      {required Str address, dynamic hint}) {
+  Future<void> comSocketClientConnect(
+      {required ComSocketClient that, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
-            address, serializer);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_server_state_error,
+      ),
+      constMeta: kComSocketClientConnectConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kComSocketClientConnectConstMeta => const TaskConstMeta(
+        debugName: "ComSocketClient_connect",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> comSocketClientDisconnect(
+      {required ComSocketClient that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_server_state_error,
+      ),
+      constMeta: kComSocketClientDisconnectConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kComSocketClientDisconnectConstMeta => const TaskConstMeta(
+        debugName: "ComSocketClient_disconnect",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ComSocketClient> comSocketClientNew(
+      {required String address, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 13, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_com_socket_client,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient,
         decodeErrorData: null,
       ),
       constMeta: kComSocketClientNewConstMeta,
@@ -553,6 +599,61 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<ResultFrame?> comSocketClientReceive(
+      {required ComSocketClient that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_result_frame,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kComSocketClientReceiveConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kComSocketClientReceiveConstMeta => const TaskConstMeta(
+        debugName: "ComSocketClient_receive",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> comSocketClientSend(
+      {required ComSocketClient that, required Frame data, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+            that, serializer);
+        sse_encode_box_autoadd_frame(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_server_state_error,
+      ),
+      constMeta: kComSocketClientSendConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kComSocketClientSendConstMeta => const TaskConstMeta(
+        debugName: "ComSocketClient_send",
+        argNames: ["that", "data"],
+      );
+
+  @override
   Future<ComSocketServer> coddePiServerUseSocket(
       {required Str address, dynamic hint}) {
     return handler.executeNormal(NormalTask(
@@ -561,7 +662,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
             address, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -581,35 +682,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<ServerProtocol> comSocketServerOpen(
-      {required String address,
-      required Map<String, Action> actions,
-      dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(address, serializer);
-        sse_encode_Map_String_action(actions, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_server_protocol,
-        decodeErrorData: sse_decode_server_state_error,
-      ),
-      constMeta: kComSocketServerOpenConstMeta,
-      argValues: [address, actions],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kComSocketServerOpenConstMeta => const TaskConstMeta(
-        debugName: "ComSocketServer__open",
-        argNames: ["address", "actions"],
-      );
-
-  @override
   Future<void> comSocketServerCallback(
       {required ComSocketServer that,
       required int id,
@@ -626,7 +698,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
             data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -653,7 +725,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -680,7 +752,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
             address, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -708,7 +780,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -735,7 +807,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -752,6 +824,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         debugName: "ComSocketServer_serve",
         argNames: ["that"],
       );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ComSocketClient => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ComSocketClient => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ComSocketServer => wire
@@ -775,20 +855,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Self =>
       wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf;
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_T => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_T => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_TcpStream => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_TcpStream => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream;
-
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_WidgetAction => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction;
@@ -796,14 +862,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_WidgetAction => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_FnSWidgetRegistryResult => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_FnSWidgetRegistryResult => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Str => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr;
@@ -821,6 +879,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
+  }
+
+  @protected
+  ComSocketClient
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ComSocketClient.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -848,26 +914,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  T dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return T.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  TcpStream
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
+  ComSocketClient
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpStream.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  FnSWidgetRegistryResult
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return FnSWidgetRegistryResult.dcoDecode(raw as List<dynamic>);
+    return ComSocketClient.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -901,10 +952,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Map<String, Action> dco_decode_Map_String_action(dynamic raw) {
+  ComSocketClient
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Map.fromEntries(dco_decode_list_record_string_action(raw)
-        .map((e) => MapEntry(e.$1, e.$2)));
+    return ComSocketClient.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -932,34 +984,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  T dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return T.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  TcpStream
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpStream.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   WidgetAction
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return WidgetAction.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  FnSWidgetRegistryResult
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return FnSWidgetRegistryResult.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -983,36 +1012,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Action dco_decode_action(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return Action_RustFn(
-          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-              raw[1]),
-        );
-      case 1:
-        return Action_PythonFn(
-          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-              raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
-  }
-
-  @protected
-  TcpStream
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as TcpStream;
   }
 
   @protected
@@ -1037,20 +1039,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ResultFrame dco_decode_box_autoadd_result_frame(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_result_frame(raw);
-  }
-
-  @protected
-  ComSocketClient dco_decode_com_socket_client(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return ComSocketClient(
-      address: dco_decode_String(arr[0]),
-      stream:
-          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-              arr[1]),
-    );
   }
 
   @protected
@@ -1089,23 +1077,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, Action)> dco_decode_list_record_string_action(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_record_string_action).toList();
-  }
-
-  @protected
-  TcpStream?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null
-        ? null
-        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-            raw);
-  }
-
-  @protected
   Frame? dco_decode_opt_box_autoadd_frame(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_frame(raw);
@@ -1115,19 +1086,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ResultFrame? dco_decode_opt_box_autoadd_result_frame(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_result_frame(raw);
-  }
-
-  @protected
-  (String, Action) dco_decode_record_string_action(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (
-      dco_decode_String(arr[0]),
-      dco_decode_action(arr[1]),
-    );
   }
 
   @protected
@@ -1176,20 +1134,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 0:
         return ResultRegistry_ConfirmResult(
           status: dco_decode_bool(raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
-  ServerProtocol dco_decode_server_protocol(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return ServerProtocol_Socket(
-          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-              raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -1256,6 +1200,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ComSocketClient
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ComSocketClient.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   ComSocketServer
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           SseDeserializer deserializer) {
@@ -1283,28 +1236,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  T sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return T.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  TcpStream
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
+  ComSocketClient
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpStream.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  FnSWidgetRegistryResult
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return FnSWidgetRegistryResult.sseDecode(
+    return ComSocketClient.sseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1343,11 +1279,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Map<String, Action> sse_decode_Map_String_action(
-      SseDeserializer deserializer) {
+  ComSocketClient
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_record_string_action(deserializer);
-    return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
+    return ComSocketClient.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
@@ -1378,37 +1315,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  T sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return T.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  TcpStream
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpStream.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   WidgetAction
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return WidgetAction.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  FnSWidgetRegistryResult
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return FnSWidgetRegistryResult.sseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1436,39 +1347,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Action sse_decode_action(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        var var_field0 =
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-                deserializer);
-        return Action_RustFn(var_field0);
-      case 1:
-        var var_field0 =
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-                deserializer);
-        return Action_PythonFn(var_field0);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
-  TcpStream
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-        deserializer));
   }
 
   @protected
@@ -1496,16 +1377,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_result_frame(deserializer));
-  }
-
-  @protected
-  ComSocketClient sse_decode_com_socket_client(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_address = sse_decode_String(deserializer);
-    var var_stream =
-        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-            deserializer);
-    return ComSocketClient(address: var_address, stream: var_stream);
   }
 
   @protected
@@ -1537,33 +1408,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, Action)> sse_decode_list_record_string_action(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <(String, Action)>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_record_string_action(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  TcpStream?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          deserializer));
-    } else {
-      return null;
-    }
-  }
-
-  @protected
   Frame? sse_decode_opt_box_autoadd_frame(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1584,15 +1428,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
-  }
-
-  @protected
-  (String, Action) sse_decode_record_string_action(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_String(deserializer);
-    var var_field1 = sse_decode_action(deserializer);
-    return (var_field0, var_field1);
   }
 
   @protected
@@ -1635,22 +1470,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 0:
         var var_status = sse_decode_bool(deserializer);
         return ResultRegistry_ConfirmResult(status: var_status);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
-  ServerProtocol sse_decode_server_protocol(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        var var_field0 =
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-                deserializer);
-        return ServerProtocol_Socket(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -1714,6 +1533,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(self.sseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           ComSocketServer self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1738,26 +1565,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          T self, SseSerializer serializer) {
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          FnSWidgetRegistryResult self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: true), serializer);
+    sse_encode_usize(self.sseEncode(move: false), serializer);
   }
 
   @protected
@@ -1793,11 +1604,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_Map_String_action(
-      Map<String, Action> self, SseSerializer serializer) {
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_record_string_action(
-        self.entries.map((e) => (e.key, e.value)).toList(), serializer);
+    sse_encode_usize(self.sseEncode(move: null), serializer);
   }
 
   @protected
@@ -1825,32 +1636,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      T self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: null), serializer);
-  }
-
-  @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           WidgetAction self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          FnSWidgetRegistryResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(self.sseEncode(move: null), serializer);
   }
@@ -1877,33 +1665,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_action(Action self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case Action_RustFn(field0: final field0):
-        sse_encode_i_32(0, serializer);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-            field0, serializer);
-      case Action_PythonFn(field0: final field0):
-        sse_encode_i_32(1, serializer);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-            field0, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
-  }
-
-  @protected
-  void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-        self, serializer);
   }
 
   @protected
@@ -1934,15 +1698,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_com_socket_client(
-      ComSocketClient self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.address, serializer);
-    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-        self.stream, serializer);
-  }
-
-  @protected
   void sse_encode_confirm_result(ConfirmResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.status, serializer);
@@ -1970,29 +1725,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_record_string_action(
-      List<(String, Action)> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_record_string_action(item, serializer);
-    }
-  }
-
-  @protected
-  void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          self, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_opt_box_autoadd_frame(Frame? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -2011,14 +1743,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_box_autoadd_result_frame(self, serializer);
     }
-  }
-
-  @protected
-  void sse_encode_record_string_action(
-      (String, Action) self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.$1, serializer);
-    sse_encode_action(self.$2, serializer);
   }
 
   @protected
@@ -2055,18 +1779,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case ResultRegistry_ConfirmResult(status: final status):
         sse_encode_i_32(0, serializer);
         sse_encode_bool(status, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_server_protocol(
-      ServerProtocol self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case ServerProtocol_Socket(field0: final field0):
-        sse_encode_i_32(0, serializer);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-            field0, serializer);
     }
   }
 

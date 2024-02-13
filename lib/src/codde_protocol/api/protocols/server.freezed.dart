@@ -77,10 +77,10 @@ class _$ServerProtocolCopyWithImpl<$Res, $Val extends ServerProtocol>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? field0 = freezed,
   }) {
     return _then(_value.copyWith(
-      field0: null == field0
+      field0: freezed == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as T,
@@ -111,10 +111,10 @@ class __$$ServerProtocol_SocketImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? field0 = freezed,
   }) {
     return _then(_$ServerProtocol_SocketImpl(
-      null == field0
+      freezed == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
               as T,
@@ -140,11 +140,12 @@ class _$ServerProtocol_SocketImpl implements ServerProtocol_Socket {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ServerProtocol_SocketImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            const DeepCollectionEquality().equals(other.field0, field0));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(field0));
 
   @JsonKey(ignore: true)
   @override

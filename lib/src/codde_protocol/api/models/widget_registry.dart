@@ -4,8 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../frb_generated.dart';
-import '../protocols/server/com_socket.dart';
-import 'frame.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'server.dart';
@@ -34,16 +32,6 @@ class Str extends RustOpaque {
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_StrPtr,
   );
-}
-
-@freezed
-sealed class Action with _$Action {
-  const factory Action.rustFn(
-    FnSWidgetRegistryResult field0,
-  ) = Action_RustFn;
-  const factory Action.pythonFn(
-    PyPyAny field0,
-  ) = Action_PythonFn;
 }
 
 class ConfirmResult {

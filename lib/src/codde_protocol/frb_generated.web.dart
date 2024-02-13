@@ -8,7 +8,6 @@ import 'api/models/server.dart';
 import 'api/models/widget_registry.dart';
 import 'api/protocols/client/codde_pi_client.dart';
 import 'api/protocols/client/com_socket.dart';
-import 'api/protocols/server.dart';
 import 'api/protocols/server/codde_pi_server.dart';
 import 'api/protocols/server/com_socket.dart';
 import 'dart:async';
@@ -25,6 +24,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ComSocketClientPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient;
+
+  CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_ComSocketServerPtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer;
 
@@ -34,19 +37,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SelfPtr => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_TPtr => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_TcpStreamPtr =>
-      wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream;
-
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_WidgetActionPtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_FnSWidgetRegistryResultPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_StrPtr => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr;
@@ -56,6 +49,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
+  ComSocketClient
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic raw);
 
   @protected
   ComSocketServer
@@ -73,17 +71,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  T dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      dynamic raw);
-
-  @protected
-  TcpStream
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw);
-
-  @protected
-  FnSWidgetRegistryResult
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
+  ComSocketClient
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           dynamic raw);
 
   @protected
@@ -105,7 +94,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  Map<String, Action> dco_decode_Map_String_action(dynamic raw);
+  ComSocketClient
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic raw);
 
   @protected
   ComSocketServer
@@ -123,22 +114,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  T dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      dynamic raw);
-
-  @protected
-  TcpStream
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw);
-
-  @protected
   WidgetAction
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          dynamic raw);
-
-  @protected
-  FnSWidgetRegistryResult
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
           dynamic raw);
 
   @protected
@@ -153,15 +130,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
-  Action dco_decode_action(dynamic raw);
-
-  @protected
   bool dco_decode_bool(dynamic raw);
-
-  @protected
-  TcpStream
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw);
 
   @protected
   ConfirmResult dco_decode_box_autoadd_confirm_result(dynamic raw);
@@ -176,9 +145,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame dco_decode_box_autoadd_result_frame(dynamic raw);
 
   @protected
-  ComSocketClient dco_decode_com_socket_client(dynamic raw);
-
-  @protected
   ConfirmResult dco_decode_confirm_result(dynamic raw);
 
   @protected
@@ -191,21 +157,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<(String, Action)> dco_decode_list_record_string_action(dynamic raw);
-
-  @protected
-  TcpStream?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic raw);
-
-  @protected
   Frame? dco_decode_opt_box_autoadd_frame(dynamic raw);
 
   @protected
   ResultFrame? dco_decode_opt_box_autoadd_result_frame(dynamic raw);
-
-  @protected
-  (String, Action) dco_decode_record_string_action(dynamic raw);
 
   @protected
   (int, String) dco_decode_record_u_8_string(dynamic raw);
@@ -218,9 +173,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ResultRegistry dco_decode_result_registry(dynamic raw);
-
-  @protected
-  ServerProtocol dco_decode_server_protocol(dynamic raw);
 
   @protected
   ServerStateError dco_decode_server_state_error(dynamic raw);
@@ -244,6 +196,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  ComSocketClient
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          SseDeserializer deserializer);
+
+  @protected
   ComSocketServer
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           SseDeserializer deserializer);
@@ -259,17 +216,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  T sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      SseDeserializer deserializer);
-
-  @protected
-  TcpStream
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer);
-
-  @protected
-  FnSWidgetRegistryResult
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
+  ComSocketClient
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           SseDeserializer deserializer);
 
   @protected
@@ -291,8 +239,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  Map<String, Action> sse_decode_Map_String_action(
-      SseDeserializer deserializer);
+  ComSocketClient
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          SseDeserializer deserializer);
 
   @protected
   ComSocketServer
@@ -310,22 +259,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  T sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      SseDeserializer deserializer);
-
-  @protected
-  TcpStream
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer);
-
-  @protected
   WidgetAction
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          SseDeserializer deserializer);
-
-  @protected
-  FnSWidgetRegistryResult
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
           SseDeserializer deserializer);
 
   @protected
@@ -340,15 +275,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  Action sse_decode_action(SseDeserializer deserializer);
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
-  TcpStream
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer);
 
   @protected
   ConfirmResult sse_decode_box_autoadd_confirm_result(
@@ -365,9 +292,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame sse_decode_box_autoadd_result_frame(SseDeserializer deserializer);
 
   @protected
-  ComSocketClient sse_decode_com_socket_client(SseDeserializer deserializer);
-
-  @protected
   ConfirmResult sse_decode_confirm_result(SseDeserializer deserializer);
 
   @protected
@@ -380,23 +304,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<(String, Action)> sse_decode_list_record_string_action(
-      SseDeserializer deserializer);
-
-  @protected
-  TcpStream?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          SseDeserializer deserializer);
-
-  @protected
   Frame? sse_decode_opt_box_autoadd_frame(SseDeserializer deserializer);
 
   @protected
   ResultFrame? sse_decode_opt_box_autoadd_result_frame(
-      SseDeserializer deserializer);
-
-  @protected
-  (String, Action) sse_decode_record_string_action(
       SseDeserializer deserializer);
 
   @protected
@@ -410,9 +321,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ResultRegistry sse_decode_result_registry(SseDeserializer deserializer);
-
-  @protected
-  ServerProtocol sse_decode_server_protocol(SseDeserializer deserializer);
 
   @protected
   ServerStateError sse_decode_server_state_error(SseDeserializer deserializer);
@@ -438,6 +346,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           ComSocketServer self, SseSerializer serializer);
 
@@ -453,18 +366,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          T self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          FnSWidgetRegistryResult self, SseSerializer serializer);
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer);
 
   @protected
   void
@@ -487,8 +390,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           U8 self, SseSerializer serializer);
 
   @protected
-  void sse_encode_Map_String_action(
-      Map<String, Action> self, SseSerializer serializer);
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          ComSocketClient self, SseSerializer serializer);
 
   @protected
   void
@@ -506,23 +410,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           Self self, SseSerializer serializer);
 
   @protected
-  void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-      T self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer);
-
-  @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           WidgetAction self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          FnSWidgetRegistryResult self, SseSerializer serializer);
 
   @protected
   void
@@ -537,15 +427,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_action(Action self, SseSerializer serializer);
-
-  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_confirm_result(
@@ -563,10 +445,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ResultFrame self, SseSerializer serializer);
 
   @protected
-  void sse_encode_com_socket_client(
-      ComSocketClient self, SseSerializer serializer);
-
-  @protected
   void sse_encode_confirm_result(ConfirmResult self, SseSerializer serializer);
 
   @protected
@@ -580,24 +458,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_action(
-      List<(String, Action)> self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          TcpStream? self, SseSerializer serializer);
-
-  @protected
   void sse_encode_opt_box_autoadd_frame(Frame? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_result_frame(
       ResultFrame? self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_record_string_action(
-      (String, Action) self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_u_8_string(
@@ -612,10 +477,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_result_registry(
       ResultRegistry self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_server_protocol(
-      ServerProtocol self, SseSerializer serializer);
 
   @protected
   void sse_encode_server_state_error(
@@ -642,6 +503,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
 class RustLibWire implements BaseWire {
   RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+              ptr);
 
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           dynamic ptr) =>
@@ -679,30 +552,6 @@ class RustLibWire implements BaseWire {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
               ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-              ptr);
-
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-              ptr);
-
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic ptr) =>
       wasmModule
@@ -713,18 +562,6 @@ class RustLibWire implements BaseWire {
           dynamic ptr) =>
       wasmModule
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-              ptr);
-
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
               ptr);
 
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
@@ -765,6 +602,14 @@ class RustLibWasmModule implements WasmModule {
   external RustLibWasmModule bind(dynamic thisArg, String moduleName);
 
   external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
+          dynamic ptr);
+
+  external void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
           dynamic ptr);
 
@@ -789,35 +634,11 @@ class RustLibWasmModule implements WasmModule {
           dynamic ptr);
 
   external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockT(
-          dynamic ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockTcpStream(
-          dynamic ptr);
-
-  external void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic ptr);
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          dynamic ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockfnsWidgetRegistryResult(
           dynamic ptr);
 
   external void

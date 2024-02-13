@@ -1,4 +1,5 @@
 use anyhow::Result;
+use flutter_rust_bridge::frb;
 use std::{
     io::{Read, Write},
     net::{Shutdown, TcpStream},
@@ -10,17 +11,39 @@ use crate::api::models::{
     server::ServerStateError,
 };
 
+#[frb(opaque)]
 pub struct ComSocketClient {
     pub address: String,
     stream: Option<TcpStream>,
 }
 
 impl ComSocketClient {
-    pub fn new(address: &str) -> ComSocketClient {
+    pub fn new(address: String) -> ComSocketClient {
+        // HACK: Dart doesn't support `&str`
         ComSocketClient {
-            address: String::from(address),
+            address,
             stream: None,
         }
+    }
+}
+
+/// Expose method twice for Dart port
+/// Rust Flutter Bridge only read direct struct implementations
+impl ComSocketClient {
+    pub fn connect(&mut self) -> Result<(), ServerStateError> {
+        ClientCom::connect(self)
+    }
+
+    pub fn send(&mut self, data: Frame) -> Result<(), ServerStateError> {
+        ClientCom::send(self, data)
+    }
+
+    pub fn receive(&mut self) -> Result<Option<ResultFrame>> {
+        ClientCom::receive(self)
+    }
+
+    pub fn disconnect(self) -> Result<(), ServerStateError> {
+        ClientCom::disconnect(self)
     }
 }
 

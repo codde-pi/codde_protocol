@@ -29,7 +29,6 @@ pub struct ComSocketServer {
 }
 
 #[pymethods]
-#[frb(opaque)]
 impl ComSocketServer {
     #[new]
     pub fn new(address: &str) -> ComSocketServer {
@@ -94,7 +93,6 @@ impl ComSocketServer {
     }
 }
 
-#[frb(opaque)]
 impl ComSocketServer {
     fn _listen(stream: &mut Option<&TcpStream>) -> Result<Option<Frame>> {
         match stream {
@@ -118,30 +116,8 @@ impl ComSocketServer {
             None => Err(ServerStateError::no_stream().into()),
         }
     }
-
-    pub fn _open(
-        address: String,
-        actions: WidgetAction,
-    ) -> Result<ServerProtocol<ComSocketServer>, ServerStateError> {
-        let listener = match TcpListener::bind(address.as_str()) {
-            Ok(listener) => listener,
-            Err(err) => panic!("Unable to intanstiate TCP Listener. {:?}", err),
-        };
-        let stream = match listener.accept() {
-            Ok(res) => res.0,
-            Err(e) => panic!("Unable to get new TCP connection. {:?}", e),
-        };
-        // drop(listener);
-        Ok(ServerProtocol::Socket(ComSocketServer {
-            address,
-            stream: Some(stream),
-            actions,
-            trigger: None,
-        }))
-    }
 }
 
-#[frb(opaque)]
 impl ServerCom for ComSocketServer {
     fn open(&mut self) -> Result<(), ServerStateError> {
         let listener = match TcpListener::bind(self.address.as_str()) {
