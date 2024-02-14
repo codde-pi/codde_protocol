@@ -1,5 +1,5 @@
 
-import codde_pi_protocol as cp
+import codde_protocol as cp
 import time
 server = cp.CoddePiServer.use_socket('localhost:12345')
 

@@ -12,24 +12,6 @@ Future<void> executeAction(
         {required WidgetAction acts, required Frame frame, dynamic hint}) =>
     RustLib.instance.api.executeAction(acts: acts, frame: frame, hint: hint);
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<Self>>
-@sealed
-class Self extends RustOpaque {
-  Self.dcoDecode(List<dynamic> wire) : super.dcoDecode(wire, _kStaticData);
-
-  Self.sseDecode(int ptr, int externalSizeOnNative)
-      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Self,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Self,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_SelfPtr,
-  );
-}
-
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>>
 @sealed
 class WidgetAction extends RustOpaque {
@@ -49,14 +31,14 @@ class WidgetAction extends RustOpaque {
   );
 }
 
-class ServerStateError implements FrbException {
+class ServerStateError {
   final String field0;
 
   const ServerStateError({
     required this.field0,
   });
 
-  static Future<Self> noStream({dynamic hint}) =>
+  static Future<ServerStateError> noStream({dynamic hint}) =>
       RustLib.instance.api.serverStateErrorNoStream(hint: hint);
 
   @override

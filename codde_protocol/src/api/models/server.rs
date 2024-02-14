@@ -54,7 +54,7 @@ pub fn execute_action(acts: &WidgetAction, frame: Frame) -> Result<()> {
 pub struct ServerStateError(pub(crate) String); // Implement std::fmt::Display for AppError
 
 impl ServerStateError {
-    pub fn no_stream() -> Self {
+    pub fn no_stream() -> ServerStateError {
         ServerStateError(String::from(
             "Stream has not been instanciated. Consider calling `server.open()`",
         ))
@@ -75,7 +75,7 @@ impl fmt::Debug for ServerStateError {
 }
 
 impl From<rmp_serde::decode::Error> for ServerStateError {
-    fn from(error: rmp_serde::decode::Error) -> Self {
+    fn from(error: rmp_serde::decode::Error) -> ServerStateError {
         // TODO: cleaner please
         eprint!("{}", error);
         ServerStateError(format!("{}", error))

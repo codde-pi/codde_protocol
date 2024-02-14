@@ -1,3 +1,4 @@
+workspace = { members = ["example/server_rust"] }
 [package]
 name = "codde_protocol"
 version = "0.1.0"

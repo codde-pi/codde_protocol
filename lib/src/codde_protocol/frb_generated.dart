@@ -85,12 +85,12 @@ abstract class RustLibApi extends BaseApi {
 
   Future<ResultFrame?> resultFrameParse({required U8 data, dynamic hint});
 
-  Future<Self> serverStateErrorNoStream({dynamic hint});
+  Future<ServerStateError> serverStateErrorNoStream({dynamic hint});
 
   Future<void> executeAction(
       {required WidgetAction acts, required Frame frame, dynamic hint});
 
-  Future<Self> resultRegistryFromBinding(
+  Future<ResultRegistry> resultRegistryFromBinding(
       {required ResultBinding binding, dynamic hint});
 
   Future<String> actionIdentity(
@@ -161,12 +161,6 @@ abstract class RustLibApi extends BaseApi {
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_PyPyAny;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PyPyAnyPtr;
-
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Self;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Self;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SelfPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_WidgetAction;
@@ -358,7 +352,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Self> serverStateErrorNoStream({dynamic hint}) {
+  Future<ServerStateError> serverStateErrorNoStream({dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -366,8 +360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 8, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf,
+        decodeSuccessData: sse_decode_server_state_error,
         decodeErrorData: null,
       ),
       constMeta: kServerStateErrorNoStreamConstMeta,
@@ -411,7 +404,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Self> resultRegistryFromBinding(
+  Future<ResultRegistry> resultRegistryFromBinding(
       {required ResultBinding binding, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -421,8 +414,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 11, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf,
+        decodeSuccessData: sse_decode_result_registry,
         decodeErrorData: null,
       ),
       constMeta: kResultRegistryFromBindingConstMeta,
@@ -849,12 +841,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get rust_arc_decrement_strong_count_PyPyAny => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny;
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Self =>
-      wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Self =>
-      wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf;
-
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_WidgetAction => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction;
@@ -903,14 +889,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return PyPyAny.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Self
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Self.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -973,14 +951,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return PyPyAny.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Self
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Self.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1227,15 +1197,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Self
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return Self.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   ComSocketClient
       sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           SseDeserializer deserializer) {
@@ -1302,15 +1263,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return PyPyAny.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  Self
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return Self.sseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1557,14 +1509,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          Self self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           ComSocketClient self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1623,14 +1567,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
           PyPyAny self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(
-          Self self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(self.sseEncode(move: null), serializer);
   }

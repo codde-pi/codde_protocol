@@ -34,7 +34,6 @@ fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
 pub struct CoddePiServer {}
 
 #[pymethods]
-#[frb(opaque)]
 impl CoddePiServer {
     #[staticmethod]
     pub fn use_socket(address: &str) -> ComSocketServer {

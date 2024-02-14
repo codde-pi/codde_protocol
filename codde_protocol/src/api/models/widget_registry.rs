@@ -83,7 +83,7 @@ impl IntoPy<PyObject> for ResultRegistry {
 }
 
 impl ResultRegistry {
-    pub fn from_binding(binding: ResultBinding) -> Self {
+    pub fn from_binding(binding: ResultBinding) -> ResultRegistry {
         match binding {
             ResultBinding::Confirm(res) => ResultRegistry::ConfirmResult { status: res.status },
         }
@@ -114,7 +114,7 @@ pub struct ClickButton;
 #[pymethods]
 impl ClickButton {
     #[new]
-    fn new() -> Self {
+    fn new() -> ClickButton {
         ClickButton {}
     }
 }
@@ -128,7 +128,7 @@ pub struct ToggleButton {
 #[pymethods]
 impl ToggleButton {
     #[new]
-    fn new(value: bool) -> Self {
+    fn new(value: bool) -> ToggleButton {
         ToggleButton { value }
     }
 }
@@ -139,7 +139,7 @@ pub struct ConfirmButton {}
 #[pymethods]
 impl ConfirmButton {
     #[new]
-    fn new() -> Self {
+    fn new() -> ConfirmButton {
         ConfirmButton {}
     }
 }
@@ -162,7 +162,7 @@ pub struct ConfirmResult {
 #[pymethods]
 impl ConfirmResult {
     #[new]
-    fn new(status: bool) -> Self {
+    fn new(status: bool) -> ConfirmResult {
         ConfirmResult { status }
     }
 }

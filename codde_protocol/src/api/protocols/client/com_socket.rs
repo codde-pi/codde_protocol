@@ -48,16 +48,11 @@ impl ComSocketClient {
 }
 
 impl ClientCom for ComSocketClient {
-    #[no_mangle]
-    extern "C" fn connect(&mut self) -> Result<(), ServerStateError> {
+    fn connect(&mut self) -> Result<(), ServerStateError> {
         self.stream = match TcpStream::connect(self.address.as_str()) {
             Ok(stream) => Some(stream),
             Err(e) => panic!("Failed to connect: {}", e),
         };
-        /* Ok(ClientProtocol::Socket(ComSocketClient {
-            address: self.address,
-            stream: Some(stream),
-        })) */
         Ok(())
     }
 

@@ -19,6 +19,8 @@
 
 // Section: imports
 
+use std::borrow::Borrow;
+
 use crate::api::models::frame::*;
 use crate::api::models::server::*;
 use crate::api::models::widget_registry::*;
@@ -27,6 +29,7 @@ use crate::api::protocols::server::com_socket::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
+use pyo3::prelude::*;
 
 // Section: boilerplate
 
@@ -130,7 +133,7 @@ fn wire_Frame_parse_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -236,7 +239,7 @@ fn wire_ResultFrame_parse_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -376,7 +379,7 @@ fn wire_action_identity_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_id = <u8>::sse_decode(&mut deserializer);
             let api_widget = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -665,7 +668,7 @@ fn wire_CoddePiServer_use_socket_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_address = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -783,7 +786,7 @@ fn wire_ComSocketServer_new_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_address = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -882,16 +885,13 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::rust_async::RwLock<Py<PyAny>>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<Self>
-);
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<str>
+    flutter_rust_bridge::for_generated::rust_async::RwLock<&'static str>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>
+    flutter_rust_bridge::for_generated::rust_async::RwLock<&'static [u8]>
 );
 
 // Section: dart2rust
@@ -909,7 +909,7 @@ impl SseDecode for ComSocketClient {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>,
         >>::sse_decode(deserializer);
-        return inner.rust_auto_opaque_decode_owned();
+        inner.rust_auto_opaque_decode_owned()
     }
 }
 
@@ -929,14 +929,6 @@ impl SseDecode for Py<PyAny> {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::rust_async::RwLock<Py<PyAny>>,
         >>::sse_decode(deserializer);
-        return inner.rust_auto_opaque_decode_owned();
-    }
-}
-
-impl SseDecode for Self {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<Self>>>::sse_decode(deserializer);
         return inner.rust_auto_opaque_decode_owned();
     }
 }
@@ -971,14 +963,6 @@ impl SseDecode
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<Self>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return decode_rust_opaque_moi(inner);
-    }
-}
-
 impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>>
 {
@@ -989,7 +973,7 @@ impl SseDecode
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<str>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -997,7 +981,7 @@ impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -1189,18 +1173,14 @@ impl SseDecode for crate::api::models::widget_registry::WidgetRegistry {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
-            0 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ClickButton;
-            }
+            0 => return crate::api::models::widget_registry::WidgetRegistry::ClickButton {},
             1 => {
                 let mut var_value = <bool>::sse_decode(deserializer);
                 return crate::api::models::widget_registry::WidgetRegistry::ToggleButton {
                     value: var_value,
                 };
             }
-            2 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton;
-            }
+            2 => return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {},
             _ => {
                 unimplemented!("");
             }
@@ -1343,31 +1323,6 @@ impl
         self,
     ) -> Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny {
         Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(self)
-    }
-}
-pub struct Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(Self);
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf
-{
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
-            .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf
-{
-}
-impl
-    flutter_rust_bridge::IntoIntoDart<
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf,
-    > for Self
-{
-    fn into_into_dart(
-        self,
-    ) -> Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf {
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockSelf(self)
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1514,13 +1469,13 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::widget_registry::Serv
 impl flutter_rust_bridge::IntoDart for crate::api::models::widget_registry::WidgetRegistry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
-            crate::api::models::widget_registry::WidgetRegistry::ClickButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ClickButton {} => {
                 [0.into_dart()].into_dart()
             }
             crate::api::models::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 [1.into_dart(), value.into_into_dart().into_dart()].into_dart()
             }
-            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 [2.into_dart()].into_dart()
             }
         }
@@ -1566,16 +1521,6 @@ impl SseEncode for Py<PyAny> {
     }
 }
 
-impl SseEncode for Self {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<Self>>>::sse_encode(
-            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
-            serializer,
-        );
-    }
-}
-
 impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>>
 {
@@ -1609,15 +1554,6 @@ impl SseEncode
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<Self>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        let (ptr, size) = self.sse_encode_raw();
-        <usize>::sse_encode(ptr, serializer);
-        <i32>::sse_encode(size, serializer);
-    }
-}
-
 impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>>
 {
@@ -1629,7 +1565,7 @@ impl SseEncode
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<str>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -1638,7 +1574,7 @@ impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -1806,14 +1742,14 @@ impl SseEncode for crate::api::models::widget_registry::WidgetRegistry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         match self {
-            crate::api::models::widget_registry::WidgetRegistry::ClickButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ClickButton {} => {
                 <i32>::sse_encode(0, serializer);
             }
             crate::api::models::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 <i32>::sse_encode(1, serializer);
                 <bool>::sse_encode(value, serializer);
             }
-            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 <i32>::sse_encode(2, serializer);
             }
         }

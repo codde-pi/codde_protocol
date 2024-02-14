@@ -6,7 +6,7 @@ use pyo3::{pyclass, Py, PyAny, Python};
 use rmp_serde::{decode::ReadReader, Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
 
-trait Framing<'a, T = Self>: Serialize + Deserialize<'a>
+/* trait Framing<'a, T = Self>: Serialize + Deserialize<'a>
 where
     T: Serialize + Deserialize<'a>,
 {
@@ -18,7 +18,7 @@ where
         };
         buf
     }
-}
+} */
 
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
 #[pyclass]
@@ -27,8 +27,8 @@ pub struct Frame {
     pub data: WidgetRegistry,
 }
 
-impl<'a> Framing<'a> for Frame {}
-impl<'a> Frame {
+// impl<'a> Framing<'a> for Frame {}
+impl Frame {
     pub fn identity(&self) -> String {
         format!(
             "{}_{}",
@@ -40,7 +40,12 @@ impl<'a> Frame {
         )
     }
     pub fn bufferize(&self) -> Vec<u8> {
-        Framing::bufferize(self)
+        let mut buf: Vec<u8> = Vec::new();
+        match self.serialize(&mut Serializer::new(&mut buf)) {
+            Ok(_) => {}
+            Err(e) => panic!("Serialization error : {}", e), // TODO: Handle error
+        };
+        buf
     }
     pub fn parse(data: &[u8]) -> Result<Option<Frame>> {
         let mut de: Deserializer<ReadReader<&[u8]>> = Deserializer::new(data);
@@ -57,10 +62,15 @@ pub struct ResultFrame {
     pub status: ServerStatus,
     pub data: ResultRegistry,
 }
-impl<'a> Framing<'a> for ResultFrame {}
+// impl<'a> Framing<'a> for ResultFrame {}
 impl ResultFrame {
     pub fn bufferize(&self) -> Vec<u8> {
-        Framing::bufferize(self)
+        let mut buf: Vec<u8> = Vec::new();
+        match self.serialize(&mut Serializer::new(&mut buf)) {
+            Ok(_) => {}
+            Err(e) => panic!("Serialization error : {}", e), // TODO: Handle error
+        };
+        buf
     }
     pub fn parse(data: &[u8]) -> Result<Option<ResultFrame>> {
         let mut de: Deserializer<ReadReader<&[u8]>> = Deserializer::new(data);
