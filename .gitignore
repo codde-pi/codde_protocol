@@ -65,8 +65,33 @@ docs/_build/
 # PyCharm
 .idea/
 
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
 # VSCode
 .vscode/
 
 # Pyenv
 .python-version
+
+# Flutter/Dart/Pub related
+pubspec.lock
+pubspec_overrides.yaml
+**/doc/api/
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Rust related
+/target/
+/Cargo.lock
+/platform-build
+EOF
+.dart_tool
