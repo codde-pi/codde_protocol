@@ -18,8 +18,7 @@
 )]
 
 // Section: imports
-
-use std::borrow::Borrow;
+use pyo3::prelude::*;
 
 use crate::api::models::frame::*;
 use crate::api::models::server::*;
@@ -29,7 +28,6 @@ use crate::api::protocols::server::com_socket::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
-use pyo3::prelude::*;
 
 // Section: boilerplate
 
@@ -909,7 +907,7 @@ impl SseDecode for ComSocketClient {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>,
         >>::sse_decode(deserializer);
-        inner.rust_auto_opaque_decode_owned()
+        return inner.rust_auto_opaque_decode_owned();
     }
 }
 
@@ -973,7 +971,7 @@ impl SseDecode
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&'static str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -981,7 +979,7 @@ impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&'static [u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -1173,14 +1171,18 @@ impl SseDecode for crate::api::models::widget_registry::WidgetRegistry {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
-            0 => return crate::api::models::widget_registry::WidgetRegistry::ClickButton {},
+            0 => {
+                return crate::api::models::widget_registry::WidgetRegistry::ClickButton {}
+            }
             1 => {
                 let mut var_value = <bool>::sse_decode(deserializer);
                 return crate::api::models::widget_registry::WidgetRegistry::ToggleButton {
                     value: var_value,
                 };
             }
-            2 => return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {},
+            2 => {
+                return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {}
+            }
             _ => {
                 unimplemented!("");
             }
@@ -1565,7 +1567,7 @@ impl SseEncode
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&'static str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -1574,7 +1576,7 @@ impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&'static [u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();

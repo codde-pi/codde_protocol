@@ -3,5 +3,8 @@
 /// More dartdocs go here.
 library;
 
-// TODO: Export any libraries intended for clients of this package.
-export 'src/ffi.dart';
+export 'src/frb_generated.dart';
+export 'src/api/models/frame.dart';
+export 'src/api/models/widget_registry.dart';
+export 'src/api/protocols/server/com_socket.dart';
+export 'src/api/protocols/client/com_socket.dart';

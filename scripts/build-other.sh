@@ -14,6 +14,7 @@ zig_build() {
 	local LIBNAME="$3"
 	rustup target add "$TARGET"
 	cargo zigbuild --target "$TARGET" -r
+	# TODO: raise error if LIB is not found
 	mkdir "$PLATFORM_NAME"
 	cp "../target/$TARGET/release/$LIBNAME" "$PLATFORM_NAME/"
 }

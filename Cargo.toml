@@ -1,2 +1,3 @@
 [workspace]
 members = ["packages/codde_protocol/native"]
+resolver = "2"

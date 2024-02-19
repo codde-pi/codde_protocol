@@ -16,7 +16,6 @@ use crate::api::models::{
     widget_registry::{action_identity, Action, ServerStatus, WidgetAction},
 };
 
-use super::ServerProtocol;
 use pyo3::prelude::*;
 
 #[pyclass]
