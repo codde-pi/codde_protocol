@@ -55,11 +55,10 @@ fn patch_generated_files() {
         /* if contents.contains("// Patched by `codde_protocol`") {
             return;
         } */
-        match contents.find("// Section: imports") {
-            Some(i) => contents.insert_str(i, "use pyo3::prelude::*; "),
-            None => {}
+        if let Some(i) = contents.find("// Section: imports") {
+            contents.insert_str(i, "use pyo3::prelude::*; ")
         };
-        let mut arr: Vec<String> = contents.split("\n").map(|x| x.to_string()).collect();
+        let mut arr: Vec<String> = contents.split('\n').map(|x| x.to_string()).collect();
         // arr.insert(0, String::from("// Patched by `codde_protocol`"));
         let mut must_be_static = false;
         for (index, line) in arr.clone().iter().enumerate() {
