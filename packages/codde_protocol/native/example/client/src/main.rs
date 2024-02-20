@@ -1,4 +1,4 @@
-use codde_pi_protocol::{
+use codde_protocol::api::{
     models::{
         client::ClientCom,
         frame::{Frame, ResultFrame},
@@ -12,7 +12,7 @@ fn main() {
         id: 1,
         data: WidgetRegistry::ToggleButton { value: true },
     };
-    let mut client: ComSocketClient = ComSocketClient::new("localhost:12345");
+    let mut client: ComSocketClient = ComSocketClient::new(String::from("localhost:12345"));
     client.connect();
     println!("connected");
     thread::sleep(Duration::from_millis(500));

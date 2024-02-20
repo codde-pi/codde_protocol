@@ -1,5 +1,6 @@
-import 'package:codde_protocol/codde_protocol.dart';
+// import 'package:codde_protocol/codde_protocol.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
 
 void main() {
   runApp(const MyApp());
@@ -81,11 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final client =
         await ComSocketClient.newComSocketClient(address: "localhost:12345");
     print('isntantiated');
-    client.connect();
+    await client.connect();
     print('connected');
-    /* client.send(
+    client.send(
         data:
-            const Frame(id: 1, data: WidgetRegistry_ToggleButton(value: true))); */
+            const Frame(id: 1, data: WidgetRegistry_ToggleButton(value: true)));
     value = await client
         .receive()
         .then((value) => value != null ? value.data.toString() : "null");

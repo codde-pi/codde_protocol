@@ -13,7 +13,7 @@ use pyo3::prelude::*;
 /// import the module.
 #[pymodule]
 #[frb(opaque)]
-fn codde_pi_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
+fn codde_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<CoddePiServer>()?;
     m.add_class::<ComSocketServer>()?;
     m.add_class::<Protocol>()?;

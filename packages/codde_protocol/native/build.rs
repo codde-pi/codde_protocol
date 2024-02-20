@@ -10,17 +10,10 @@ fn main() {
     // Tell Cargo that if the input Rust code changes, rerun this build script
     println!("cargo:rerun-if-changed={}", RUST_INPUT);
 
-    // Options for frb_codegen
-    /* let config = Config {
-        rust_input: RUST_INPUT.to_string(),
-        dart_output: DART_OUTPUT.to_string(),
-        c_output: Some(IOS_C_OUTPUT.to_string()),
-        duplicated_c_output: Some(vec![MACOS_C_OUTPUT_DIR.to_string()]),
-        ..Default::default()
-    }; */
     let config = Config::from_config_file("../../../flutter_rust_bridge.yaml");
     let res = match config {
         Ok(c) => match c {
+            // Generate Rust & Dart ffi bridges
             Some(conf) => generate(conf, MetaConfig { watch: false }),
             None => panic!("No config found in `./flutter_rust_bridge.yaml`"),
         },
@@ -31,13 +24,6 @@ fn main() {
         Ok(_) => {}
         Err(e) => eprintln!("Failed to generate bridge : {}", e),
     };
-
-    // Generate Rust & Dart ffi bridges
-    /* let configs = config_parse(raw_opts);
-    let all_symbols = get_symbols_if_no_duplicates(&configs).unwrap();
-    for config in configs.iter() {
-        frb_codegen(config, &all_symbols).unwrap();
-    } */
 
     // Format the generated Dart code
     _ = std::process::Command::new("flutter")
@@ -56,6 +42,7 @@ fn patch_generated_files() {
         format!("{}/frb_generated.web.rs", native_path),
     ];
 
+    println!("RUNNING PATCH");
     for filename in input_files {
         let mut file = File::open(&filename).unwrap();
         let mut contents = String::new();
@@ -63,17 +50,21 @@ fn patch_generated_files() {
         /* if contents.contains("// Patched by `codde_protocol`") {
             return;
         } */
+        match contents.find("// Section: imports") {
+            Some(i) => contents.insert_str(i, "use pyo3::prelude::*; "),
+            None => {}
+        };
         let mut arr: Vec<String> = contents.split("\n").map(|x| x.to_string()).collect();
         // arr.insert(0, String::from("// Patched by `codde_protocol`"));
-        arr.insert(20, String::from("use pyo3::prelude::*;"));
         let mut must_be_static = false;
         for (index, line) in arr.clone().iter().enumerate() {
             if line.contains("// Section: related_funcs") {
                 must_be_static = true;
+                continue;
             }
 
             if must_be_static {
-                if line.contains("// Section: .*") {
+                if line.contains("// Section:") {
                     must_be_static = false;
                     continue;
                 }
@@ -89,5 +80,10 @@ fn patch_generated_files() {
         contents = contents.replace("Button;", "Button {}");
         let mut f = File::create(filename).unwrap();
         f.write_all(contents.as_bytes()).unwrap();
+        let _ = must_be_static;
+        drop(file);
+        drop(f);
+        drop(contents);
+        drop(arr);
     }
 }

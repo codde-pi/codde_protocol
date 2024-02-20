@@ -12,6 +12,9 @@ zig_build() {
 	local TARGET="$1"
 	local PLATFORM_NAME="$2"
 	local LIBNAME="$3"
+	# export PYO3_CROSS=0
+	# export PYO3_CROSS_PYTHON_VERSION=3.11
+	# export PYO3_CROSS_LIB_DIR="../target/$TARGET/release/"
 	rustup target add "$TARGET"
 	cargo zigbuild --target "$TARGET" -r
 	# TODO: raise error if LIB is not found
