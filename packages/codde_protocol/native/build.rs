@@ -32,6 +32,11 @@ fn main() {
         .spawn();
 
     patch_generated_files();
+
+    // Format the generated Rust code
+    _ = std::process::Command::new("rustfmt")
+        .arg("src/lib.rs")
+        .spawn();
 }
 
 fn patch_generated_files() {

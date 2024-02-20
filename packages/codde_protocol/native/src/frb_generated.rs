@@ -1170,18 +1170,14 @@ impl SseDecode for crate::api::models::widget_registry::WidgetRegistry {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
-            0 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ClickButton {}
-            }
+            0 => return crate::api::models::widget_registry::WidgetRegistry::ClickButton {},
             1 => {
                 let mut var_value = <bool>::sse_decode(deserializer);
                 return crate::api::models::widget_registry::WidgetRegistry::ToggleButton {
                     value: var_value,
                 };
             }
-            2 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {}
-            }
+            2 => return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {},
             _ => {
                 unimplemented!("");
             }

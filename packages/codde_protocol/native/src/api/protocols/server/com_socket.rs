@@ -84,7 +84,7 @@ impl ComSocketServer {
     }
 
     pub fn callback(&mut self, id: u8, status: ServerStatus, data: Py<PyAny>) -> Result<()> {
-        ServerCom::callback(self, ResultFrame::new(id, status, data))
+        ServerCom::callback_result(self, ResultFrame::new(id, status, data))
     }
 
     pub fn close(&mut self) -> Result<()> {
@@ -135,7 +135,7 @@ impl ServerCom for ComSocketServer {
     }
 
     // TODO: change method name in order to be used in Rust
-    fn callback(&mut self, data: ResultFrame) -> Result<()> {
+    fn callback_result(&mut self, data: ResultFrame) -> Result<()> {
         let stream = &mut *self.stream.borrow_mut();
         match stream {
             Some(s) => {

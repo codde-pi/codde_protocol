@@ -18,7 +18,7 @@ pub trait ServerCom {
     fn open(&mut self) -> Result<(), ServerStateError>;
     fn register_action(&mut self, id: u8, widget: &str, action: Action) -> Result<()>;
 
-    fn callback(&mut self, data: ResultFrame) -> Result<()>;
+    fn callback_result(&mut self, data: ResultFrame) -> Result<()>;
 
     fn listen(&mut self) -> Result<Option<Frame>>;
 
