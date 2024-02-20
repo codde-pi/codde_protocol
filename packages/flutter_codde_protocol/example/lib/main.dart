@@ -57,19 +57,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   String value = "?";
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   void initState() {
@@ -81,9 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await RustLib.init();
     final client =
         await ComSocketClient.newComSocketClient(address: "localhost:12345");
-    print('isntantiated');
     await client.connect();
-    print('connected');
     client.send(
         data:
             const Frame(id: 1, data: WidgetRegistry_ToggleButton(value: true)));
@@ -142,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {}, // TOOD: send data
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
