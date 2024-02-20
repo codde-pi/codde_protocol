@@ -153,7 +153,7 @@ impl ServerCom for ComSocketServer {
 
     fn serve(&mut self) -> Result<()> {
         let tmp_stream: Result<(), ServerStateError> = match &mut self.stream.borrow_mut() {
-            Some(_) => Ok({}),
+            Some(_) => Ok(()),
             None => Err(ServerStateError::no_stream()),
         };
         tmp_stream?;

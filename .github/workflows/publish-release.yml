@@ -9,7 +9,7 @@ on:
 jobs:
   publish_github_release:
     # macOS because we can cross-compile to all other platforms from it
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3

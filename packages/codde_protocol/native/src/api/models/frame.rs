@@ -33,10 +33,11 @@ impl Frame {
         format!(
             "{}_{}",
             self.id,
-            match self.data.to_string().split_whitespace().next() {
-                Some(s) => s,
-                None => "",
-            }
+            self.data
+                .to_string()
+                .split_whitespace()
+                .next()
+                .unwrap_or("")
         )
     }
     pub fn bufferize(&self) -> Vec<u8> {
