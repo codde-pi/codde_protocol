@@ -1,0 +1,28 @@
+[package]
+name = "codde_protocol"
+version = "0.1.0"
+authors = ["Mathis Lecomte <vm.lecomte@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+arr_macro = "0.2.1"
+dynamic = "0.2.1"
+pyo3 = {version ="0.20.2", features = ["anyhow", "serde"]}
+quote = "1.0.35"
+serde = {version= "1.0.196",  features = ["derive"] }
+syn = "2.0.48"
+codde_protocol_derive = { path = "codde_protocol_derive"  }
+cbor = "0.4.1"
+typetag = "0.2.15"
+rmp-serde = "1.1.2"
+anyhow = "1.0.79"
+flutter_rust_bridge = "=2.0.0-dev.24"
+cbindgen = "0.26.0"
+regex = "1.10.3"
+
+[build-dependencies]
+flutter_rust_bridge_codegen = "2.0.0-dev.24"
+
+[lib]
+name = "codde_protocol"
+crate-type = ["staticlib", "cdylib", "rlib"]
