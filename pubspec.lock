@@ -367,7 +367,7 @@ packages:
     source: hosted
     version: "0.5.0"
   melos:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: melos
       sha256: "96e64bbade5712c3f010137e195bca9f1b351fac34ab1f322af492ae34032067"
@@ -644,5 +644,5 @@ packages:
     source: hosted
     version: "2.1.1"
 sdks:
-  dart: ">=3.1.0-185.0.dev <4.0.0"
+  dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
