@@ -3,6 +3,11 @@ name = "codde_protocol"
 version = "0.1.1"
 authors = ["Mathis Lecomte <vm.lecomte@gmail.com>"]
 edition = "2021"
+description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framework"
+readme = "../../../README.md"
+license-file = "../../../LICENSE"
+keywords = ["rust", "python", "codde_pi", "iot"]
+homepage = "https://github.com/codde-pi/codde_protocol"
 
 [dependencies]
 arr_macro = "0.2.1"

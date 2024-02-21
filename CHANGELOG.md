@@ -1,4 +1,4 @@
-## 0.1.0
+## 0.1.0+1
 
 - Generate Rust Flutter Bridge code
 - Fix generated code to validate compiling
@@ -7,6 +7,6 @@
 - Clean code
 - WIP CI/CD automations and build scripts
 
-## 0.1.1
+## 0.1.1+2
 
 - Success CI/CD
