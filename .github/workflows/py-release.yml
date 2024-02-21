@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: packages/codde_protocol/native/
+
 jobs:
   linux:
     runs-on: ubuntu-latest
