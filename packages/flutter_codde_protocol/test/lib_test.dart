@@ -4,7 +4,6 @@ import 'package:test/test.dart';
 
 void main() {
   setUp(() async {
-    // Additional setup goes here.
     await RustLib.init(
         externalLibrary:
             ExternalLibrary.open("../../target/debug/libcodde_protocol.so"));
