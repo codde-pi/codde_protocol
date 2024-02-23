@@ -352,6 +352,42 @@ fn wire_ResultRegistry_from_binding_impl(
         },
     )
 }
+fn wire_WidgetRegistry_name_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "WidgetRegistry_name",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::models::widget_registry::WidgetRegistry>::sse_decode(
+                &mut deserializer,
+            );
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::models::widget_registry::WidgetRegistry::name(
+                        &api_that,
+                    ))
+                })())
+            }
+        },
+    )
+}
 fn wire_action_identity_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1202,21 +1238,22 @@ fn pde_ffi_dispatcher_primary_impl(
         5 => wire_ResultFrame_parse_impl(port, ptr, rust_vec_len, data_len),
         8 => wire_ServerStateError_no_stream_impl(port, ptr, rust_vec_len, data_len),
         7 => wire_execute_action_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_ResultRegistry_from_binding_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_ResultRegistry_from_binding_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_WidgetRegistry_name_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_action_identity_impl(port, ptr, rust_vec_len, data_len),
         10 => wire_extract_identity_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_CoddePiClient_use_socket_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_ComSocketClient_connect_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_ComSocketClient_disconnect_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_ComSocketClient_new_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_ComSocketClient_receive_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_ComSocketClient_send_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_CoddePiServer_use_socket_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_ComSocketServer_callback_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_ComSocketServer_close_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_ComSocketServer_new_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_ComSocketServer_open_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_ComSocketServer_serve_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_CoddePiClient_use_socket_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_ComSocketClient_connect_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_ComSocketClient_disconnect_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_ComSocketClient_new_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_ComSocketClient_receive_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_ComSocketClient_send_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_CoddePiServer_use_socket_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_ComSocketServer_callback_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_ComSocketServer_close_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_ComSocketServer_new_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_ComSocketServer_open_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_ComSocketServer_serve_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

@@ -132,6 +132,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame dco_decode_box_autoadd_result_frame(dynamic raw);
 
   @protected
+  WidgetRegistry dco_decode_box_autoadd_widget_registry(dynamic raw);
+
+  @protected
   ConfirmResult dco_decode_confirm_result(dynamic raw);
 
   @protected
@@ -267,6 +270,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ResultFrame sse_decode_box_autoadd_result_frame(SseDeserializer deserializer);
+
+  @protected
+  WidgetRegistry sse_decode_box_autoadd_widget_registry(
+      SseDeserializer deserializer);
 
   @protected
   ConfirmResult sse_decode_confirm_result(SseDeserializer deserializer);
@@ -410,6 +417,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_result_frame(
       ResultFrame self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_widget_registry(
+      WidgetRegistry self, SseSerializer serializer);
 
   @protected
   void sse_encode_confirm_result(ConfirmResult self, SseSerializer serializer);
