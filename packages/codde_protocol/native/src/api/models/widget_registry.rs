@@ -62,6 +62,16 @@ impl fmt::Display for WidgetRegistry {
     }
 }
 
+impl WidgetRegistry {
+    pub fn name(&self) -> String {
+        WidgetRegistry::to_string(self)
+            .split_whitespace()
+            .next()
+            .unwrap_or("")
+            .to_string()
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ResultRegistry {
     ConfirmResult { status: bool },
@@ -132,7 +142,7 @@ pub struct ConfirmButton {}
 #[pymethods]
 impl ConfirmButton {
     #[new]
-    fn new() -> ConfirmButton {
+    pub fn new() -> ConfirmButton {
         ConfirmButton {}
     }
 }
