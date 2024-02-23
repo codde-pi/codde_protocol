@@ -142,7 +142,7 @@ pub struct ConfirmButton {}
 #[pymethods]
 impl ConfirmButton {
     #[new]
-    fn new() -> ConfirmButton {
+    pub fn new() -> ConfirmButton {
         ConfirmButton {}
     }
 }
