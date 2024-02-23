@@ -1,6 +1,4 @@
 ---
 rust_input: "packages/codde_protocol/native/src/api/**/*.rs"
 dart_output: "packages/codde_protocol/lib/src/"
-c_output: "packages/flutter_codde_protocol/ios/Classes/frb.h"
-# duplicated_c_output:
-# - "packages/flutter_codde_protocol/macos/Classes/"
+c_output: "packages/codde_protocol/native/frb_generated.h"

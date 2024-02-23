@@ -2,8 +2,8 @@
 
 [![actions status](https://img.shields.io/github/actions/workflow/status/PyO3/pyo3/ci.yml?branch=main&logo=github&style=)](https://github.com/codde-pi/codde_protocol/actions)
 [![crates.io](https://img.shields.io/crates/v/pyo3?logo=rust)](https://crates.io/crates/codde_protocol)
-[![minimum rustc 1.56](https://img.shields.io/badge/rustc-1.56+-blue?logo=rust)](https://rust-lang.github.io/rfcs/2495-min-rust-version.html)
-[![contributing notes](https://img.shields.io/badge/contribute-on%20github-Green?logo=github)](https://github.com/PyO3/pyo3/blob/main/Contributing.md)
+[![pub.dev](https://img.shields.io/pub/v/flutter_rust_bridge.svg?include_prereleases&color=blue)](https://pub.dev/packages/codde_protocol)
+[![pypi.org](https://img.shields.io/pypi/v/maturin.svg?logo=python&style=flat-square)](https://pypi.org/project/codde_protocol)
 
 Multi Communication protocol in heart of the C.O.D.D.E. Pi framework.
 
