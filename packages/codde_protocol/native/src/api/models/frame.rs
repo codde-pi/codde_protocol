@@ -30,15 +30,7 @@ pub struct Frame {
 // impl<'a> Framing<'a> for Frame {}
 impl Frame {
     pub fn identity(&self) -> String {
-        format!(
-            "{}_{}",
-            self.id,
-            self.data
-                .to_string()
-                .split_whitespace()
-                .next()
-                .unwrap_or("")
-        )
+        format!("{}_{}", self.id, self.data.name())
     }
     pub fn bufferize(&self) -> Vec<u8> {
         let mut buf: Vec<u8> = Vec::new();

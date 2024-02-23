@@ -1,5 +1,10 @@
 # CODDE Protocol
 
+[![actions status](https://img.shields.io/github/actions/workflow/status/PyO3/pyo3/ci.yml?branch=main&logo=github&style=)](https://github.com/codde-pi/codde_protocol/actions)
+[![crates.io](https://img.shields.io/crates/v/pyo3?logo=rust)](https://crates.io/crates/codde_protocol)
+[![pub.dev](https://img.shields.io/pub/v/flutter_rust_bridge.svg?include_prereleases&color=blue)](https://pub.dev/packages/codde_protocol)
+[![pypi.org](https://img.shields.io/pypi/v/maturin.svg?logo=python&style=flat-square)](https://pypi.org/project/codde_protocol)
+
 Multi Communication protocol in heart of the C.O.D.D.E. Pi framework.
 
 This Project is written in Rust, enabling fast serializing/deserializing and data processing.
