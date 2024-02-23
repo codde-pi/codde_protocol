@@ -8,9 +8,6 @@ on:
       - master
     tags:
       - "*"
-  pull_request:
-  workflow_dispatch:
-
 jobs:
   rust_publish:
     name: Rust Publish

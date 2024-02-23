@@ -1,4 +1,5 @@
 import 'package:flutter_codde_protocol/flutter_codde_protocol.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:flutter_test/flutter_test.dart';
 
