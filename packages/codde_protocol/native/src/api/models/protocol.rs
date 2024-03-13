@@ -1,7 +1,7 @@
 use pyo3::pyclass;
 
-#[pyclass]
 #[derive(Clone, Copy)]
+#[pyclass]
 pub enum Protocol {
     Socket,
     Bluetooth,

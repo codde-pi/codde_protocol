@@ -19,5 +19,7 @@ pub trait ClientCom {
         self.receive()
     }
 
-    fn disconnect(self) -> Result<(), ServerStateError>;
+    fn disconnect(&mut self) -> Result<(), ServerStateError>;
+
+    fn is_connected(&self) -> bool;
 }
