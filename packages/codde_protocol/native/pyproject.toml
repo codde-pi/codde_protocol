@@ -8,7 +8,7 @@ description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framew
 authors = [
   { name="Mathis Lecomte", email="vm.lecomte@gmail.com" },
 ]
-readme = {file = "../../../README.md"}
+readme = {file = "../../../README.md", content-type = "text/markdown"}
 license = {file = "../../../LICENSE"}
 requires-python = ">=3.8"
 classifiers = [

@@ -95,3 +95,6 @@ build/
 /platform-build
 EOF
 .dart_tool
+
+# FVM Version Cache
+.fvm/

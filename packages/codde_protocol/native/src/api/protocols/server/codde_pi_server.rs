@@ -1,9 +1,12 @@
-use crate::{
-    api::models::protocol::Protocol,
-    api::models::widget_registry::{
-        ClickButton, ConfirmButton, ConfirmResult, ServerStatus, ToggleButton,
+use crate::api::{
+    models::{
+        protocol::Protocol,
+        widget_registry::{
+            ClickButton, ConfirmButton, ConfirmResult, DirectionalButton, ErrorResult, Joystick,
+            PressButton, ServerStatus, ToggleButton,
+        },
     },
-    api::protocols::server::com_socket::ComSocketServer,
+    protocols::server::com_socket::ComSocketServer,
 };
 use flutter_rust_bridge::frb;
 use pyo3::prelude::*;
@@ -21,9 +24,13 @@ fn codde_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<ClickButton>()?;
     m.add_class::<ToggleButton>()?;
     m.add_class::<ConfirmButton>()?;
+    m.add_class::<DirectionalButton>()?;
+    m.add_class::<Joystick>()?;
+    m.add_class::<PressButton>()?;
     // m.add_class::<ResultFrame>()?;
     m.add_class::<ServerStatus>()?;
     m.add_class::<ConfirmResult>()?;
+    m.add_class::<ErrorResult>()?;
 
     Ok(())
 }
