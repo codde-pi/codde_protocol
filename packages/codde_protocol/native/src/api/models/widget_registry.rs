@@ -15,10 +15,20 @@ pub trait ResultWidget {}
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 #[pyclass]
 pub enum ServerStatus {
+    NotInit,
     Idle,
     Busy,
     Error,
 }
+
+// Create ClientStatus
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
+#[pyclass]
+pub enum ClientStatus {
+    Connected,
+    Disconnected,
+}
+
 pub fn action_identity(id: u8, widget: &str) -> String {
     format!("{}_{}", id, widget.split_whitespace().next().unwrap_or(""))
 }
@@ -39,10 +49,22 @@ pub enum Action {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[pyclass]
+pub struct Coord {
+    #[pyo3(get)]
+    pub x: f32,
+    #[pyo3(get)]
+    pub y: f32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum WidgetRegistry {
     ClickButton {},
     ToggleButton { value: bool },
     ConfirmButton {},
+    PressButton { pressed: bool },
+    DirectionalButton { direction: u8 },
+    Joystick { delta: Coord, intensity: f32 },
 }
 
 impl IntoPy<PyObject> for WidgetRegistry {
@@ -51,6 +73,14 @@ impl IntoPy<PyObject> for WidgetRegistry {
             WidgetRegistry::ClickButton {} => ClickButton::new().into_py(py),
             WidgetRegistry::ToggleButton { value } => ToggleButton::new(value).into_py(py),
             WidgetRegistry::ConfirmButton {} => ConfirmButton::new().into_py(py),
+            WidgetRegistry::DirectionalButton { direction } => {
+                DirectionalButton::new(direction).into_py(py)
+            }
+            WidgetRegistry::PressButton { pressed } => PressButton::new(pressed).into_py(py),
+            // bind joystick
+            WidgetRegistry::Joystick { delta, intensity } => {
+                Joystick::new(delta, intensity).into_py(py)
+            }
         }
     }
 }
@@ -75,12 +105,15 @@ impl WidgetRegistry {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ResultRegistry {
     ConfirmResult { status: bool },
+    ErrorResult { error: String },
 }
 
 impl IntoPy<PyObject> for ResultRegistry {
     fn into_py(self, py: Python<'_>) -> PyObject {
         match self {
             ResultRegistry::ConfirmResult { status } => ConfirmResult::new(status).into_py(py),
+            // match the error result
+            ResultRegistry::ErrorResult { error } => ErrorResult::new(error).into_py(py),
         }
     }
 }
@@ -89,6 +122,7 @@ impl ResultRegistry {
     pub fn from_binding(binding: ResultBinding) -> ResultRegistry {
         match binding {
             ResultBinding::Confirm(res) => ResultRegistry::ConfirmResult { status: res.status },
+            ResultBinding::Error(res) => ResultRegistry::ErrorResult { error: res.error },
         }
     }
 }
@@ -146,6 +180,50 @@ impl ConfirmButton {
         ConfirmButton {}
     }
 }
+#[derive(Deserialize, Serialize, Widget, Clone)]
+#[pyclass]
+pub struct DirectionalButton {
+    #[pyo3(get)]
+    pub direction: u8,
+}
+#[pymethods]
+impl DirectionalButton {
+    #[new]
+    fn new(direction: u8) -> DirectionalButton {
+        DirectionalButton { direction }
+    }
+}
+
+#[derive(Deserialize, Serialize, Widget, Clone)]
+#[pyclass]
+pub struct PressButton {
+    #[pyo3(get)]
+    pub pressed: bool,
+}
+#[pymethods]
+impl PressButton {
+    #[new]
+    fn new(pressed: bool) -> PressButton {
+        PressButton { pressed }
+    }
+}
+
+// Joytick python implementation
+#[derive(Deserialize, Serialize, Widget, Clone)]
+#[pyclass]
+pub struct Joystick {
+    #[pyo3(get)]
+    pub delta: Coord,
+    #[pyo3(get)]
+    pub intensity: f32,
+}
+#[pymethods]
+impl Joystick {
+    #[new]
+    fn new(delta: Coord, intensity: f32) -> Joystick {
+        Joystick { delta, intensity }
+    }
+}
 
 /*
 * RESULT REGISTRY
@@ -154,6 +232,7 @@ impl ConfirmButton {
 #[derive(FromPyObject)]
 pub enum ResultBinding {
     Confirm(ConfirmResult),
+    Error(ErrorResult),
 }
 
 #[derive(Deserialize, Serialize, ResultWidget, Clone)]
@@ -167,5 +246,20 @@ impl ConfirmResult {
     #[new]
     fn new(status: bool) -> ConfirmResult {
         ConfirmResult { status }
+    }
+}
+
+// Create an ErrorResult
+#[derive(Deserialize, Serialize, ResultWidget, Clone)]
+#[pyclass]
+pub struct ErrorResult {
+    #[pyo3(get)]
+    pub error: String,
+}
+#[pymethods]
+impl ErrorResult {
+    #[new]
+    fn new(error: String) -> ErrorResult {
+        ErrorResult { error }
     }
 }

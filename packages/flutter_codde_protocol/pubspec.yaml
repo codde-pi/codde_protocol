@@ -5,21 +5,21 @@ version: 0.1.1
 homepage: https://codde-pi.com
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  codde_protocol: ^0.1.0
-  uuid: ^4.2.2
-  flutter_rust_bridge: 2.0.0-dev.24
+  codde_protocol:
+    path: ../codde_protocol
+  flutter_rust_bridge: 2.0.0-dev.26
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
   ffi: ^2.0.1
-  ffigen: ^6.0.2
+  ffigen: ^11.0.0
   flutter_test:
     sdk: flutter
   # integration_test:
@@ -48,6 +48,7 @@ flutter:
   #
   # Please refer to README.md for a detailed explanation.
   plugin:
+    implements: codde_protocol
     platforms:
       android:
         ffiPlugin: true
