@@ -250,10 +250,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_rust_bridge
-      sha256: eac5dea1887fc1f1bcf4c3a1866bcf9c22b759e14d33f628b50ecae0229dbd72
+      sha256: c51fa002e57e64d13030269ed9cd43752173ee4c6f60ec1e9c41450d63c75bae
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0-dev.26"
+    version: "2.0.0-dev.28"
   freezed:
     dependency: "direct dev"
     description:
@@ -370,10 +370,10 @@ packages:
     dependency: "direct main"
     description:
       name: melos
-      sha256: "7266e9fc9fee5f4a0c075e5cec375c00736dfc944358f533b740b93b3d8d681e"
+      sha256: a2d3807c45ed7381a010c9feab8038f5eeb12163be900bba4a26f54d10e9da0b
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "5.0.0"
   meta:
     dependency: transitive
     description:
@@ -645,3 +645,4 @@ packages:
     version: "2.2.0"
 sdks:
   dart: ">=3.3.0 <4.0.0"
+  flutter: ">=3.0.0"

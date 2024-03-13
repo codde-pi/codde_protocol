@@ -5,7 +5,7 @@ version: 0.1.1
 homepage: https://codde-pi.com
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -14,7 +14,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   codde_protocol:
     path: ../codde_protocol
-  flutter_rust_bridge: 2.0.0-dev.26
+  flutter_rust_bridge: 2.0.0-dev.28
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
@@ -24,10 +24,10 @@ dev_dependencies:
     sdk: flutter
   # integration_test:
   # sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   build_runner: ^2.4.8
   freezed: ^2.4.7
-  lints: ^2.0.0
+  lints: ^3.0.0
   test: ^1.21.0
 
 # For information on the generic Dart part of this file, see the
