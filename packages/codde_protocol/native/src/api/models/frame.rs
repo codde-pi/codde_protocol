@@ -49,6 +49,7 @@ impl Frame {
     }
 }
 
+/// Since ResultFrame is instanciated by private methods, it doesn't implement `[pyclass]`
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 pub struct ResultFrame {
     pub id: u8,

@@ -9,20 +9,24 @@ use crate::api::models::{
     client::ClientCom,
     frame::{Frame, ResultFrame},
     server::ServerStateError,
+    widget_registry::ClientStatus,
 };
 
 #[frb(opaque)]
 pub struct ComSocketClient {
     pub address: String,
     stream: Option<TcpStream>,
+    pub status: ClientStatus,
 }
 
 impl ComSocketClient {
+    #[frb(sync)]
     pub fn new(address: String) -> ComSocketClient {
         // HACK: Dart doesn't support `&str`
         ComSocketClient {
             address,
             stream: None,
+            status: ClientStatus::Disconnected,
         }
     }
 }
@@ -42,8 +46,12 @@ impl ComSocketClient {
         ClientCom::receive(self)
     }
 
-    pub fn disconnect(self) -> Result<(), ServerStateError> {
+    pub fn disconnect(&mut self) -> Result<(), ServerStateError> {
         ClientCom::disconnect(self)
+    }
+
+    pub fn is_connected(&self) -> bool {
+        ClientCom::is_connected(self)
     }
 }
 
@@ -53,6 +61,7 @@ impl ClientCom for ComSocketClient {
             Ok(stream) => Some(stream),
             Err(e) => panic!("Failed to connect: {}", e),
         };
+        self.status = ClientStatus::Connected;
         Ok(())
     }
 
@@ -90,8 +99,8 @@ impl ClientCom for ComSocketClient {
         }
     }
 
-    fn disconnect(self) -> Result<(), ServerStateError> {
-        match self.stream {
+    fn disconnect(&mut self) -> Result<(), ServerStateError> {
+        match self.stream.as_mut() {
             Some(stream) => {
                 let _ = stream.shutdown(Shutdown::Both);
                 /* Ok(ClientProtocol::Socket(ComSocketClient {
@@ -99,9 +108,14 @@ impl ClientCom for ComSocketClient {
                     stream: None,
                 })) */
                 // TODO: sleF.stream = None ?
+                self.status = ClientStatus::Disconnected;
                 Ok(())
             }
             None => Err(ServerStateError::no_stream()),
         }
+    }
+
+    fn is_connected(&self) -> bool {
+        self.status == ClientStatus::Connected
     }
 }

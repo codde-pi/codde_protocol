@@ -22,22 +22,11 @@ fn main() {
 
     match res {
         Ok(_) => {}
-        Err(e) => eprintln!("Failed to generate bridge : {}", e),
+        Err(e) => panic!("Failed to generate bridge : {}", e),
     };
 
-    // PATCH: fvm not used in build_runner, so do it manually
-    /* let _ = std::process::Command::new("fvm")
-    .arg("dart")
-    .arg("run")
-    .arg("build_runner")
-    .arg("build")
-    .arg("--delete-conflicting-outputs")
-    .arg("--enable-experiment=class-modifiers")
-    .spawn(); */
-
     // Format the generated Dart code
-    _ = std::process::Command::new("fvm")
-        .arg("flutter")
+    _ = std::process::Command::new("flutter")
         .arg("format")
         .arg("..")
         .spawn();
