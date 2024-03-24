@@ -50,6 +50,12 @@ class ComSocketClient extends RustOpaque {
         that: this,
       );
 
+  Future<ResultFrame?> request({required Frame data, dynamic hint}) =>
+      RustLib.instance.api.comSocketClientRequest(
+        that: this,
+        data: data,
+      );
+
   Future<void> send({required Frame data, dynamic hint}) =>
       RustLib.instance.api.comSocketClientSend(
         that: this,

@@ -17,7 +17,7 @@
     clippy::match_single_binding
 )]
 
-// Section: imports
+use pyo3::prelude::*; // Section: imports
 
 use crate::api::models::frame::*;
 use crate::api::models::server::*;
@@ -130,7 +130,7 @@ fn wire_Frame_parse_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -236,7 +236,7 @@ fn wire_ResultFrame_parse_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -412,7 +412,7 @@ fn wire_action_identity_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_id = <u8>::sse_decode(&mut deserializer);
             let api_widget = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -678,6 +678,45 @@ fn wire_ComSocketClient_receive_impl(
         },
     )
 }
+fn wire_ComSocketClient_request_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ComSocketClient_request",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::rust_async::RwLock<ComSocketClient>,
+            >>::sse_decode(&mut deserializer);
+            let api_data = <crate::api::models::frame::Frame>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    let mut api_that = api_that.rust_auto_opaque_decode_ref_mut();
+                    crate::api::protocols::client::com_socket::ComSocketClient::request(
+                        &mut api_that,
+                        api_data,
+                    )
+                })())
+            }
+        },
+    )
+}
 fn wire_ComSocketClient_send_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -740,7 +779,7 @@ fn wire_CoddePiServer_use_socket_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_address = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -858,7 +897,7 @@ fn wire_ComSocketServer_new_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_address = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::rust_async::RwLock<str>,
+                flutter_rust_bridge::for_generated::rust_async::RwLock<&str>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -960,10 +999,10 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::rust_async::RwLock<WidgetAction>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<str>
+    flutter_rust_bridge::for_generated::rust_async::RwLock<&'static str>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>
+    flutter_rust_bridge::for_generated::rust_async::RwLock<&'static [u8]>
 );
 
 // Section: dart2rust
@@ -1045,7 +1084,7 @@ impl SseDecode
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<str>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -1053,7 +1092,7 @@ impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>> {
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -1281,18 +1320,14 @@ impl SseDecode for crate::api::models::widget_registry::WidgetRegistry {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
-            0 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ClickButton;
-            }
+            0 => return crate::api::models::widget_registry::WidgetRegistry::ClickButton {},
             1 => {
                 let mut var_value = <bool>::sse_decode(deserializer);
                 return crate::api::models::widget_registry::WidgetRegistry::ToggleButton {
                     value: var_value,
                 };
             }
-            2 => {
-                return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton;
-            }
+            2 => return crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {},
             3 => {
                 let mut var_pressed = <bool>::sse_decode(deserializer);
                 return crate::api::models::widget_registry::WidgetRegistry::PressButton {
@@ -1344,16 +1379,17 @@ fn pde_ffi_dispatcher_primary_impl(
         10 => wire_extract_identity_impl(port, ptr, rust_vec_len, data_len),
         13 => wire_CoddePiClient_use_socket_impl(port, ptr, rust_vec_len, data_len),
         15 => wire_ComSocketClient_connect_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_ComSocketClient_disconnect_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_ComSocketClient_is_connected_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_ComSocketClient_disconnect_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_ComSocketClient_is_connected_impl(port, ptr, rust_vec_len, data_len),
         17 => wire_ComSocketClient_receive_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_ComSocketClient_request_impl(port, ptr, rust_vec_len, data_len),
         16 => wire_ComSocketClient_send_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_CoddePiServer_use_socket_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_ComSocketServer_callback_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_ComSocketServer_close_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_ComSocketServer_new_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_ComSocketServer_open_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_ComSocketServer_serve_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_CoddePiServer_use_socket_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_ComSocketServer_callback_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_ComSocketServer_close_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_ComSocketServer_new_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_ComSocketServer_open_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_ComSocketServer_serve_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1649,13 +1685,13 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::widget_registry::Serv
 impl flutter_rust_bridge::IntoDart for crate::api::models::widget_registry::WidgetRegistry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
-            crate::api::models::widget_registry::WidgetRegistry::ClickButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ClickButton {} => {
                 [0.into_dart()].into_dart()
             }
             crate::api::models::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 [1.into_dart(), value.into_into_dart().into_dart()].into_dart()
             }
-            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 [2.into_dart()].into_dart()
             }
             crate::api::models::widget_registry::WidgetRegistry::PressButton { pressed } => {
@@ -1757,7 +1793,7 @@ impl SseEncode
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<str>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&str>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -1766,7 +1802,7 @@ impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async:
     }
 }
 
-impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<[u8]>> {
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<&[u8]>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -1965,14 +2001,14 @@ impl SseEncode for crate::api::models::widget_registry::WidgetRegistry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         match self {
-            crate::api::models::widget_registry::WidgetRegistry::ClickButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ClickButton {} => {
                 <i32>::sse_encode(0, serializer);
             }
             crate::api::models::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 <i32>::sse_encode(1, serializer);
                 <bool>::sse_encode(value, serializer);
             }
-            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::api::models::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 <i32>::sse_encode(2, serializer);
             }
             crate::api::models::widget_registry::WidgetRegistry::PressButton { pressed } => {

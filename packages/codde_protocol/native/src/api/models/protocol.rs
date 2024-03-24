@@ -3,7 +3,7 @@ use pyo3::pyclass;
 #[derive(Clone, Copy)]
 #[pyclass]
 pub enum Protocol {
-    Socket,
+    WebSocket,
     Bluetooth,
     Http,
     Usb,

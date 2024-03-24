@@ -26,7 +26,8 @@ fn main() {
     };
 
     // Format the generated Dart code
-    _ = std::process::Command::new("flutter")
+    _ = std::process::Command::new("fvm")
+        .arg("dart")
         .arg("format")
         .arg("..")
         .spawn();
