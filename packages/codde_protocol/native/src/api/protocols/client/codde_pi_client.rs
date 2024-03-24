@@ -1,7 +1,4 @@
-use crate::api::{
-    models::{client::ClientCom, protocol::Protocol},
-    protocols::client::ComSocketClient,
-};
+use crate::api::protocols::client::ComSocketClient;
 
 // use super::ClientProtocol;
 
@@ -18,11 +15,5 @@ impl CoddePiClient {
             Protocol::Http => todo!(),
             Protocol::Usb => todo!(),
         }
-    }
-
-    fn test() {
-        let client: ComSocketClient =
-            CoddePiClient::new(Protocol::Socket, "127.0.0.1:8080".to_string());
-        client.connect();
     } */
 }

@@ -46,6 +46,10 @@ impl ComSocketClient {
         ClientCom::receive(self)
     }
 
+    pub fn request(&mut self, data: Frame) -> Result<Option<ResultFrame>> {
+        ClientCom::request(self, data)
+    }
+
     pub fn disconnect(&mut self) -> Result<(), ServerStateError> {
         ClientCom::disconnect(self)
     }

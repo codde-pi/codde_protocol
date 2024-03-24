@@ -1,4 +1,4 @@
-set(LibraryVersion "codde_protocol-v0.1.0") # generated; do not edit
+set(LibraryVersion "codde_protocol-v0.1.1") # generated; do not edit
 set(PROJECT_NAME "project_name")
 
 # Unlike the Windows & Linux CMakeLists.txt, this Android equivalent is just here
