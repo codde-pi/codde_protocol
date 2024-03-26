@@ -3,13 +3,12 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/models/frame.dart';
-import 'api/models/server.dart';
-import 'api/models/widget_registry.dart';
-import 'api/protocols/client/codde_pi_client.dart';
-import 'api/protocols/client/com_socket.dart';
-import 'api/protocols/server/codde_pi_server.dart';
-import 'api/protocols/server/com_socket.dart';
+import 'api/base/error.dart';
+import 'api/base/frame.dart';
+import 'api/base/protocol.dart';
+import 'api/base/widget_registry.dart';
+import 'api/codde_pi_client.dart';
+import 'api/com_socket.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -27,17 +26,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       get rust_arc_decrement_strong_count_ComSocketClientPtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient;
 
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_ComSocketServerPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PyPyAnyPtr => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_WidgetActionPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction;
-
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_StrPtr => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr;
 
@@ -53,33 +41,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  ComSocketServer
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic raw);
-
-  @protected
-  PyPyAny
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic raw);
-
-  @protected
   ComSocketClient
       dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           dynamic raw);
 
   @protected
-  ComSocketServer
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic raw);
-
-  @protected
   ComSocketClient
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
-          dynamic raw);
-
-  @protected
-  WidgetAction
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic raw);
 
   @protected
@@ -93,21 +61,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ComSocketClient
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
-          dynamic raw);
-
-  @protected
-  ComSocketServer
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic raw);
-
-  @protected
-  PyPyAny
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic raw);
-
-  @protected
-  WidgetAction
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic raw);
 
   @protected
@@ -125,19 +78,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
-  ConfirmResult dco_decode_box_autoadd_confirm_result(dynamic raw);
-
-  @protected
   Coord dco_decode_box_autoadd_coord(dynamic raw);
 
   @protected
-  ErrorResult dco_decode_box_autoadd_error_result(dynamic raw);
-
-  @protected
   Frame dco_decode_box_autoadd_frame(dynamic raw);
-
-  @protected
-  ResultBinding dco_decode_box_autoadd_result_binding(dynamic raw);
 
   @protected
   ResultFrame dco_decode_box_autoadd_result_frame(dynamic raw);
@@ -146,13 +90,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   WidgetRegistry dco_decode_box_autoadd_widget_registry(dynamic raw);
 
   @protected
-  ConfirmResult dco_decode_confirm_result(dynamic raw);
-
-  @protected
   Coord dco_decode_coord(dynamic raw);
-
-  @protected
-  ErrorResult dco_decode_error_result(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -173,10 +111,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame? dco_decode_opt_box_autoadd_result_frame(dynamic raw);
 
   @protected
-  (int, String) dco_decode_record_u_8_string(dynamic raw);
+  Protocol dco_decode_protocol(dynamic raw);
 
   @protected
-  ResultBinding dco_decode_result_binding(dynamic raw);
+  (int, String) dco_decode_record_u_8_string(dynamic raw);
 
   @protected
   ResultFrame dco_decode_result_frame(dynamic raw);
@@ -211,33 +149,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  ComSocketServer
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          SseDeserializer deserializer);
-
-  @protected
-  PyPyAny
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          SseDeserializer deserializer);
-
-  @protected
   ComSocketClient
       sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           SseDeserializer deserializer);
 
   @protected
-  ComSocketServer
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          SseDeserializer deserializer);
-
-  @protected
   ComSocketClient
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
-          SseDeserializer deserializer);
-
-  @protected
-  WidgetAction
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           SseDeserializer deserializer);
 
   @protected
@@ -251,21 +169,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ComSocketClient
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
-          SseDeserializer deserializer);
-
-  @protected
-  ComSocketServer
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          SseDeserializer deserializer);
-
-  @protected
-  PyPyAny
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          SseDeserializer deserializer);
-
-  @protected
-  WidgetAction
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           SseDeserializer deserializer);
 
   @protected
@@ -283,21 +186,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  ConfirmResult sse_decode_box_autoadd_confirm_result(
-      SseDeserializer deserializer);
-
-  @protected
   Coord sse_decode_box_autoadd_coord(SseDeserializer deserializer);
 
   @protected
-  ErrorResult sse_decode_box_autoadd_error_result(SseDeserializer deserializer);
-
-  @protected
   Frame sse_decode_box_autoadd_frame(SseDeserializer deserializer);
-
-  @protected
-  ResultBinding sse_decode_box_autoadd_result_binding(
-      SseDeserializer deserializer);
 
   @protected
   ResultFrame sse_decode_box_autoadd_result_frame(SseDeserializer deserializer);
@@ -307,13 +199,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  ConfirmResult sse_decode_confirm_result(SseDeserializer deserializer);
-
-  @protected
   Coord sse_decode_coord(SseDeserializer deserializer);
-
-  @protected
-  ErrorResult sse_decode_error_result(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -335,10 +221,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  (int, String) sse_decode_record_u_8_string(SseDeserializer deserializer);
+  Protocol sse_decode_protocol(SseDeserializer deserializer);
 
   @protected
-  ResultBinding sse_decode_result_binding(SseDeserializer deserializer);
+  (int, String) sse_decode_record_u_8_string(SseDeserializer deserializer);
 
   @protected
   ResultFrame sse_decode_result_frame(SseDeserializer deserializer);
@@ -375,33 +261,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          ComSocketServer self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          PyPyAny self, SseSerializer serializer);
-
-  @protected
-  void
       sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           ComSocketClient self, SseSerializer serializer);
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          ComSocketServer self, SseSerializer serializer);
-
-  @protected
-  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
           ComSocketClient self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          WidgetAction self, SseSerializer serializer);
 
   @protected
   void
@@ -420,21 +286,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          ComSocketServer self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          PyPyAny self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          WidgetAction self, SseSerializer serializer);
-
-  @protected
-  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
           Str self, SseSerializer serializer);
 
@@ -449,22 +300,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_confirm_result(
-      ConfirmResult self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_coord(Coord self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_error_result(
-      ErrorResult self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_frame(Frame self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_result_binding(
-      ResultBinding self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_result_frame(
@@ -475,13 +314,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       WidgetRegistry self, SseSerializer serializer);
 
   @protected
-  void sse_encode_confirm_result(ConfirmResult self, SseSerializer serializer);
-
-  @protected
   void sse_encode_coord(Coord self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_error_result(ErrorResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
@@ -504,11 +337,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ResultFrame? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_u_8_string(
-      (int, String) self, SseSerializer serializer);
+  void sse_encode_protocol(Protocol self, SseSerializer serializer);
 
   @protected
-  void sse_encode_result_binding(ResultBinding self, SseSerializer serializer);
+  void sse_encode_record_u_8_string(
+      (int, String) self, SseSerializer serializer);
 
   @protected
   void sse_encode_result_frame(ResultFrame self, SseSerializer serializer);
@@ -555,42 +388,6 @@ class RustLibWire implements BaseWire {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
               ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-              ptr);
-
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-              ptr);
-
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          dynamic ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-              ptr);
-
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockstr(
           dynamic ptr) =>
       wasmModule
@@ -634,30 +431,6 @@ class RustLibWasmModule implements WasmModule {
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketClient(
-          dynamic ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockComSocketServer(
-          dynamic ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockPyPyAny(
-          dynamic ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
-          dynamic ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockWidgetAction(
           dynamic ptr);
 
   external void

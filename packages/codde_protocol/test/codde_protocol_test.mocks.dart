@@ -5,8 +5,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:codde_protocol/src/api/models/frame.dart' as _i4;
-import 'package:codde_protocol/src/api/protocols/client/com_socket.dart' as _i2;
+import 'package:codde_protocol/src/api/base/frame.dart' as _i4;
+import 'package:codde_protocol/src/api/com_socket.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

@@ -1,3 +1,4 @@
+workspace = { members = ["client", "codde_protocol_derive"] }
 [package]
 name = "codde_protocol"
 version = "0.1.1"
@@ -21,16 +22,12 @@ cbor = "0.4.1"
 typetag = "0.2.15"
 rmp-serde = "1.1.2"
 anyhow = "1.0.79"
-flutter_rust_bridge = "=2.0.0-dev.28"
 cbindgen = "0.26.0"
 regex = "1.10.3"
-
-[build-dependencies]
-flutter_rust_bridge_codegen = "2.0.0-dev.28"
 
 [lib]
 name = "codde_protocol"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
-[features]
-default = ["pyo3/extension-module"]
+# [features]
+# default = ["pyo3/extension-module"]
