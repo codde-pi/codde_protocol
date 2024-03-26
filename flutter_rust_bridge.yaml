@@ -1,4 +1,0 @@
----
-rust_input: "packages/codde_protocol/native/src/api/**/*.rs"
-dart_output: "packages/codde_protocol/lib/src/"
-c_output: "packages/codde_protocol/native/frb_generated.h"

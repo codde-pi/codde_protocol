@@ -1,0 +1,5 @@
+---
+rust_input: "src/api/**/*.rs"
+dart_output: "../../lib/src/"
+c_output: "frb_generated.h"
+build_runner: true
