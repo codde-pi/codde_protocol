@@ -1,7 +1,7 @@
 workspace = { members = ["client", "codde_protocol_derive"] }
 [package]
 name = "codde_protocol"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Mathis Lecomte <vm.lecomte@gmail.com>"]
 edition = "2021"
 description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framework"

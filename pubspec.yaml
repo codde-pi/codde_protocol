@@ -1,7 +1,7 @@
 ---
-name: codde_protocol
+name: codde_protocol_workspace
 description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
-version: 0.1.1+2
+version: 0.1.2
 homepage: https://codde-pi.com
 
 environment:
@@ -13,12 +13,4 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  build_runner: ^2.4.8
-  ffigen: ^11.0.0
-  freezed: ^2.4.7
-  flutter_rust_bridge: ^2.0.0-dev.28
   melos: ^5.0.0
-
-flutter_rust_bridge:
-  rust-input: packages/codde_protocol/native/src/api/**/*.rs
-  dart-output: packages/codde_protocol/lib/src/rust

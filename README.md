@@ -20,15 +20,15 @@ With one code structure and a dozen of lines, you can receive data from socket, 
 
 ```python
 
-import codde_pi_protocol as cp
+import codde_protocol
 import time
 
-server = cp.CoddePiServer.use_socket('localhost:12345')
+server = CoddePiServer.use_socket('localhost:12345')
 
 def action(*args):
-    widget: cp.ToggleButton = args[0]
+    widget: ToggleButton = args[0]
     print("value received : ", widget.value)
-    server.callback(1, cp.ServerStatus.Idle, cp.ConfirmResult(True))
+    server.callback(1, ServerStatus.Idle, ConfirmResult(True))
 
 if __name__ == "__main__":
     print('open server...')
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 Protocols:
 
-- [x] Socket
+- [x] WebSocket
 - [ ] Bluetooth
 - [ ] UART
 - [ ] HTTP

@@ -1,8 +1,9 @@
 ---
 name: codde_protocol
-description: A starting point for Dart libraries or applications.
-version: 0.1.1
-# repository: https://github.com/my_org/my_repo
+description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
+version: 0.1.2
+homepage: https://codde-pi.com
+repository: https://github.com/codde_pi/codde_protocol
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
