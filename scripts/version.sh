@@ -15,4 +15,8 @@ for CMAKE_PLATFORM in android linux windows; do
 	rm packages/flutter_codde_protocol/$CMAKE_PLATFORM/*.bak
 done
 
-git add packages/flutter_codde_protocol/
+# git add packages/flutter_codde_protocol/
+
+cd ..
+cp LICENSE README.md CHANGELOG.md packages/codde_protocol -f
+cp LICENSE README.md CHANGELOG.md packages/flutter_codde_protocol -f

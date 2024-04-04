@@ -9,8 +9,7 @@ void main() {
             ExternalLibrary.open("../../target/debug/libcodde_protocol.so"));
   });
   test('Client init', () async {
-    final client =
-        await ComSocketClient.newComSocketClient(address: 'localhost:12345');
+    final client = ComSocketClient(address: 'localhost:12345');
     expect(client.runtimeType, ComSocketClient);
   });
 }

@@ -27,3 +27,12 @@ fn main() {
     client.disconnect();
     // client.close();
 }
+
+fn test() {
+    let mut client: ComSocketClient =
+        CoddePiClient::new(Protocol::Socket, "127.0.0.1:8080".to_string()).into();
+    client.trying(); // is_connected();
+                     //
+    let mut client2: ComSocketClient = CoddePiClient::use_socket("127.0.0.1:8080".to_string());
+    client2.trying();
+}
