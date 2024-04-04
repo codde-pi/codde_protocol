@@ -10,3 +10,8 @@
 ## 0.1.1+2
 
 - Success CI/CD
+
+## 0.1.2
+
+- Add Widgets to registry
+- Fix publishing issues

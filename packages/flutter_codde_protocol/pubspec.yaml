@@ -1,6 +1,6 @@
 ---
 name: flutter_codde_protocol
-description: A new Flutter FFI plugin project.
+description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
 version: 0.1.2
 homepage: https://codde-pi.com
 
@@ -14,7 +14,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   codde_protocol: ^0.1.2
     # path: ../codde_protocol
-  flutter_rust_bridge: 2.0.0-dev.28
+  flutter_rust_bridge: ^2.0.0-dev.28
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
