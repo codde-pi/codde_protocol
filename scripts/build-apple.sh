@@ -4,14 +4,15 @@
 ROOT="$(pwd)"
 BUILD_DIR="$ROOT/platform-build"
 mkdir $BUILD_DIR
-cd $BUILD_DIR
 
+# Build the android libraries in the jniLibs directory
+cd "$ROOT/packages/codde_protocol/native/client" || exit
 # Build static libs
 for TARGET in \
 	aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim \
 	x86_64-apple-darwin aarch64-apple-darwin; do
 	rustup target add $TARGET
-	cargo build -r --target=$TARGET
+	cargo build -r --target=$TARGET --target-dir=$BUILD_DIR
 done
 
 # Create XCFramework zip

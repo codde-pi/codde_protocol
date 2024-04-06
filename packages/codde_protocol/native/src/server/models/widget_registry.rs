@@ -1,5 +1,4 @@
 use anyhow::Result;
-use core::fmt;
 use std::collections::HashMap;
 
 use pyo3::{prelude::*, pyclass, Py, PyAny};

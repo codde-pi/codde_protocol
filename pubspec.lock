@@ -159,7 +159,7 @@ packages:
     source: hosted
     version: "0.8.0"
   melos:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: melos
       sha256: a2d3807c45ed7381a010c9feab8038f5eeb12163be900bba4a26f54d10e9da0b

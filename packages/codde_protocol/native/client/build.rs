@@ -119,7 +119,7 @@ fn patch_generated_files() {
         /* if contents.contains("// Patched by `codde_protocol`") {
             return;
         } */
-        if let Some(i) = contents.find("// Section: imports") {
+        if let Some(_) = contents.find("// Section: imports") {
             // contents.insert_str(i, "use pyo3::prelude::*; ")
         };
         let mut arr: Vec<String> = contents.split('\n').map(|x| x.to_string()).collect();

@@ -1,4 +1,4 @@
-release_tag_name = 'codde_protocol-v0.1.1' # generated; do not edit
+release_tag_name = 'codde_protocol-v0.1.3' # generated; do not edit
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
 # Run `pod lib lint flutter_codde_protocol.podspec` to validate before publishing.
 #

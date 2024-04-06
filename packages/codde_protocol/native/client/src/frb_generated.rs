@@ -368,15 +368,15 @@ fn wire_CoddePiClient_new_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_protocol =
+            let api__protocol =
                 <crate::api::base::protocol::Protocol>::sse_decode(&mut deserializer);
-            let api_addr = <String>::sse_decode(&mut deserializer);
+            let api__addr = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(crate::api::codde_pi_client::CoddePiClient::new(
-                        api_protocol,
-                        api_addr,
+                        api__protocol,
+                        api__addr,
                     ))
                 })())
             }

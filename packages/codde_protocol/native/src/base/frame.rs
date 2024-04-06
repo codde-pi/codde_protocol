@@ -2,7 +2,7 @@ use anyhow::Result;
 use core::fmt;
 
 use super::widget_registry::{ResultRegistry, ServerStatus, WidgetRegistry};
-use pyo3::{pyclass, Py, PyAny, Python};
+use pyo3::pyclass;
 use rmp_serde::{decode::ReadReader, Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
 
