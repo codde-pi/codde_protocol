@@ -29,10 +29,13 @@ jobs:
         working-directory: ./packages/codde_protocol/native/src
         run: rustfmt --check lib.rs
       - name: Rust code analysis
+        working-directory: ./packages/codde_protocol/native
         run: cargo clippy -- -D warnings
       - name: Run Rust tests
+        working-directory: ./packages/codde_protocol/native
         run: cargo test
       - name: Build Rust code for Dart tests
+        working-directory: ./packages/codde_protocol/native
         run: cargo build -r
 
       # Dart/Flutter
@@ -54,12 +57,14 @@ jobs:
         with:
           python-version: "3.x"
       - name: Install pypa/build
+        working-directory: ./packages/codde_protocol/native
         run: >-
           python3 -m
           pip install
           build
           --user
       - name: Build a binary wheel and a source tarball
+        working-directory: ./packages/codde_protocol/native
         run: python3 -m build
       - name: Store the distribution packages
         uses: actions/upload-artifact@v3
@@ -87,7 +92,7 @@ jobs:
           echo Copied file!
 
       - name: Run Flutter integration tests
-        working-directory: packages/flutter_codde_protocol/example
+        working-directory: packages/flutter_codde_protocol
         run: flutter test -d macos integration_test
 
   windows_integration_test:
@@ -115,7 +120,7 @@ jobs:
           echo Copied file!
 
       - name: Run Flutter integration tests
-        working-directory: packages/flutter_codde_protocol/example
+        working-directory: packages/flutter_codde_protocol
         run: flutter test -d windows integration_test
 
   linux_integration_test:
@@ -145,7 +150,7 @@ jobs:
           echo Copied file!
 
       - name: Run Flutter integration tests
-        working-directory: packages/flutter_codde_protocol/example
+        working-directory: packages/flutter_codde_protocol
         run: flutter test -d linux integration_test
 
   ios_integration_test:
@@ -174,7 +179,7 @@ jobs:
           echo Copied file!
 
       - name: Run Flutter integration tests
-        working-directory: packages/flutter_codde_protocol/example
+        working-directory: packages/flutter_codde_protocol
         run: flutter test -d ${{ env.DEVICE_ID }} integration_test
 
   android_integration_test:
