@@ -32,7 +32,7 @@ xcodebuild -create-xcframework \
 	-library $MAC_LIPO \
 	-library target/aarch64-apple-ios/release/$LIBNAME \
 	-output $FRAMEWORK
-zip -r $FRAMEWORK.zip $FRAMEWORK
+zip -r "$BUILD_DIR/$FRAMEWORK.zip" $FRAMEWORK
 
 # Cleanup
 rm -rf ios-sim-lipo mac-lipo $FRAMEWORK
