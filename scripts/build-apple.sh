@@ -12,7 +12,7 @@ for TARGET in \
 	aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim \
 	x86_64-apple-darwin aarch64-apple-darwin; do
 	rustup target add $TARGET
-	cargo build -r --target=$TARGET --target-dir=$BUILD_DIR
+	cargo build -r --target=$TARGET
 done
 
 # Create XCFramework zip
