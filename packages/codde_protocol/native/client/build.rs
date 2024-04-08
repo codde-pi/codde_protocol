@@ -15,7 +15,7 @@ fn main() {
     println!("cargo:rerun-if-changed={}", BASE_INPUT);
     println!("cargo:rerun-if-changed={}", RUST_INPUT);
 
-    let _ = duplicate_base().unwrap();
+    duplicate_base().unwrap();
 
     let config = Config::from_config_file("flutter_rust_bridge.yaml");
     let res = match config {
@@ -119,13 +119,17 @@ fn patch_generated_files() {
         /* if contents.contains("// Patched by `codde_protocol`") {
             return;
         } */
-        if let Some(_) = contents.find("// Section: imports") {
+        if contents.contains("// Section: imports") {
             // contents.insert_str(i, "use pyo3::prelude::*; ")
         };
+
         let mut arr: Vec<String> = contents.split('\n').map(|x| x.to_string()).collect();
         // arr.insert(0, String::from("// Patched by `codde_protocol`"));
         let mut must_be_static = false;
         for (index, line) in arr.clone().iter().enumerate() {
+            if line.contains("// Section: boilerplate") {
+                arr[index].insert_str(line.len() - 1, "#[allow(clippy::not_unsafe_ptr_arg_deref)]");
+            }
             if line.contains("// Section: related_funcs") {
                 must_be_static = true;
                 continue;

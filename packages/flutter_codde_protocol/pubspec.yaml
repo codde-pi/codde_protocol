@@ -14,7 +14,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   codde_protocol: ^0.1.2
     # path: ../codde_protocol
-  flutter_rust_bridge: ^2.0.0-dev.28
+  flutter_rust_bridge: ^2.0.0-dev.30
   freezed_annotation: ^2.4.1
 
 dev_dependencies:

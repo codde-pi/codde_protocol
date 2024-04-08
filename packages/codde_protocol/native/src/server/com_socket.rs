@@ -15,7 +15,7 @@ use crate::{
         frame::{Frame, ResultFrame},
         widget_registry::{action_identity, ServerStatus},
     },
-    server::server::execute_action,
+    server::server_com::execute_action,
 };
 
 use crate::server::ServerCom;
