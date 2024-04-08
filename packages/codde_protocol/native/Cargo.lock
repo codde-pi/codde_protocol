@@ -436,7 +436,6 @@ dependencies = [
  "codde_protocol_derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "flutter_rust_bridge",
  "flutter_rust_bridge_codegen",
- "pyo3",
  "quote",
  "rmp-serde",
  "serde",
