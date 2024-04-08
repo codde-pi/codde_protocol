@@ -1,20 +1,17 @@
 use anyhow::Result;
-use codde_protocol::api;
-use codde_protocol::api::models::frame::{Frame, ResultFrame};
-use codde_protocol::api::models::widget_registry::{
-    ConfirmButton, ConfirmResult, ResultRegistry, ServerStatus,
+use codde_protocol::{
+    base::{
+        frame::{Frame, ResultFrame},
+        widget_registry::{ResultRegistry, ServerStatus, WidgetRegistry},
+    },
+    server::{
+        codde_pi_server::CoddePiServer,
+        com_socket::ComSocketServer,
+        models::widget_registry::{Action, ConfirmResult},
+        server_com::ServerCom,
+    },
 };
-use codde_protocol::api::{
-    models::server::ServerCom, protocols::server::com_socket::ComSocketServer,
-};
-use codde_protocol::api::{
-    models::widget_registry::{Action, WidgetRegistry},
-    protocols::server::codde_pi_server::CoddePiServer,
-};
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyModule};
-use pyo3::{IntoPy, PyResult, Python};
-use serde::Serialize;
+use pyo3::{IntoPy, Python};
 
 fn action_test(data: WidgetRegistry) -> Result<()> {
     /* server.callback_result(ResultFrame {

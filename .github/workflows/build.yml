@@ -61,11 +61,11 @@ jobs:
         run: >-
           python3 -m
           pip install
-          build
+          build maturin
           --user
       - name: Build a binary wheel and a source tarball
         working-directory: ./packages/codde_protocol/native
-        run: python3 -m build
+        run: maturin build --release
       - name: Store the distribution packages
         uses: actions/upload-artifact@v3
         with:
