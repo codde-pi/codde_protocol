@@ -28,6 +28,9 @@ jobs:
       - name: Check Rust format
         working-directory: ./packages/codde_protocol/native/src
         run: rustfmt --check lib.rs
+      - name: Check Rust format
+        working-directory: ./packages/codde_protocol/native/client/src
+        run: rustfmt --check lib.rs
       - name: Rust code analysis
         working-directory: ./packages/codde_protocol/native
         run: cargo clippy -- -D warnings
@@ -35,7 +38,7 @@ jobs:
         working-directory: ./packages/codde_protocol/native
         run: cargo test
       - name: Build Rust code for Dart tests
-        working-directory: ./packages/codde_protocol/native
+        working-directory: ./packages/codde_protocol/native/client
         run: cargo build -r
 
       # Dart/Flutter

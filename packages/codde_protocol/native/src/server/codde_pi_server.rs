@@ -14,7 +14,7 @@ use pyo3::prelude::*;
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
 #[pymodule]
-fn codde_protocol(_py: Python, m: &PyModule) -> PyResult<()> {
+fn codde_protocol(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     m.add_class::<CoddePiServer>()?;
     m.add_class::<ComSocketServer>()?;
     m.add_class::<Protocol>()?;
