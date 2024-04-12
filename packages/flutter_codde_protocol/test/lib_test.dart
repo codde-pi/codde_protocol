@@ -5,8 +5,8 @@ import 'package:test/test.dart';
 void main() {
   setUp(() async {
     await RustLib.init(
-        externalLibrary:
-            ExternalLibrary.open("../../target/debug/libcodde_protocol.so"));
+        externalLibrary: ExternalLibrary.open(
+            "../codde_protocol/native/client/target/release/libcodde_protocol.so"));
   });
   test('Client init', () async {
     final client = ComSocketClient(address: 'localhost:12345');
