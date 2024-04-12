@@ -409,7 +409,7 @@ checksum = "98cc8fbded0c607b7ba9dd60cd98df59af97e84d24e49c8557331cfc26d301ce"
 
 [[package]]
 name = "codde_protocol"
-version = "0.1.3"
+version = "0.1.4-dev.1"
 dependencies = [
  "anyhow",
  "arr_macro",
@@ -428,7 +428,7 @@ dependencies = [
 
 [[package]]
 name = "codde_protocol_client"
-version = "0.1.3"
+version = "0.1.4-dev.1"
 dependencies = [
  "anyhow",
  "cbindgen 0.26.0",

@@ -1,6 +1,12 @@
 #!/bin/bash
 
-CURR_VERSION=codde_protocol-v$(awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml)
+if [ -z "$1" ]; then
+	CURR_VERSION=codde_protocol-v$(awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml)
+else
+	CURR_VERSION=$1
+fi
+
+ROOT="$(pwd)"
 
 # iOS & macOS
 APPLE_HEADER="release_tag_name = '$CURR_VERSION' # generated; do not edit"
@@ -15,8 +21,20 @@ for CMAKE_PLATFORM in android linux windows; do
 	rm packages/flutter_codde_protocol/$CMAKE_PLATFORM/*.bak
 done
 
+# Workspace
+if [[ -n "$1" ]]; then sed -i "s/version: .*/version: \"$CURR_VERSION\"/" pubspec.yaml; fi
+# Rust
+sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/native/Cargo.toml
+# Rust client
+sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/native/client/Cargo.toml
+# Python
+sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/native/pyproject.toml
+# Dart
+sed -i "s/version: .*/version: \"$CURR_VERSION\"/" packages/codde_protocol/pubspec.yaml
+# Flutter
+sed -i "s/version: .*/version: \"$CURR_VERSION\"/" packages/flutter_codde_protocol/pubspec.yaml
+
 # git add packages/flutter_codde_protocol/
-ROOT="$(pwd)"
 
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/codde_protocol" -f
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/flutter_codde_protocol" -f

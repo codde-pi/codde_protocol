@@ -2,22 +2,19 @@
 name: Create Release(s)
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      version_parameters:
-        description: 'Parameters to pass to "melos version"'
+      version:
         required: true
-        default: " "
-        type: choice
-        options:
-          - "--"
-          - "--prerelease"
-          - "--graduate"
+        type: string
 
 jobs:
   publish_dry_run:
     name: Publish Dry Run
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/codde_protocol/native/
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v2
@@ -48,7 +45,7 @@ jobs:
       - uses: bluefireteam/melos-action@v2
 
       - name: Create the new version(s)
-        run: melos version --yes ${{ inputs.version_parameters }}
+        run: scripts/version.sh {{ inputs.version }}
 
       - name: Push created version commit
         run: git push
