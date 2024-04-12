@@ -110,9 +110,8 @@ class __$$ResultRegistry_ConfirmResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ResultRegistry_ConfirmResultImpl
-    implements ResultRegistry_ConfirmResult {
-  const _$ResultRegistry_ConfirmResultImpl({required this.status});
+class _$ResultRegistry_ConfirmResultImpl extends ResultRegistry_ConfirmResult {
+  const _$ResultRegistry_ConfirmResultImpl({required this.status}) : super._();
 
   @override
   final bool status;
@@ -204,9 +203,10 @@ class _$ResultRegistry_ConfirmResultImpl
   }
 }
 
-abstract class ResultRegistry_ConfirmResult implements ResultRegistry {
+abstract class ResultRegistry_ConfirmResult extends ResultRegistry {
   const factory ResultRegistry_ConfirmResult({required final bool status}) =
       _$ResultRegistry_ConfirmResultImpl;
+  const ResultRegistry_ConfirmResult._() : super._();
 
   bool get status;
   @JsonKey(ignore: true)
@@ -250,8 +250,8 @@ class __$$ResultRegistry_ErrorResultImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ResultRegistry_ErrorResultImpl implements ResultRegistry_ErrorResult {
-  const _$ResultRegistry_ErrorResultImpl({required this.error});
+class _$ResultRegistry_ErrorResultImpl extends ResultRegistry_ErrorResult {
+  const _$ResultRegistry_ErrorResultImpl({required this.error}) : super._();
 
   @override
   final String error;
@@ -342,9 +342,10 @@ class _$ResultRegistry_ErrorResultImpl implements ResultRegistry_ErrorResult {
   }
 }
 
-abstract class ResultRegistry_ErrorResult implements ResultRegistry {
+abstract class ResultRegistry_ErrorResult extends ResultRegistry {
   const factory ResultRegistry_ErrorResult({required final String error}) =
       _$ResultRegistry_ErrorResultImpl;
+  const ResultRegistry_ErrorResult._() : super._();
 
   String get error;
   @JsonKey(ignore: true)
@@ -458,8 +459,8 @@ class __$$WidgetRegistry_ClickButtonImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$WidgetRegistry_ClickButtonImpl implements WidgetRegistry_ClickButton {
-  const _$WidgetRegistry_ClickButtonImpl();
+class _$WidgetRegistry_ClickButtonImpl extends WidgetRegistry_ClickButton {
+  const _$WidgetRegistry_ClickButtonImpl() : super._();
 
   @override
   String toString() {
@@ -565,8 +566,9 @@ class _$WidgetRegistry_ClickButtonImpl implements WidgetRegistry_ClickButton {
   }
 }
 
-abstract class WidgetRegistry_ClickButton implements WidgetRegistry {
+abstract class WidgetRegistry_ClickButton extends WidgetRegistry {
   const factory WidgetRegistry_ClickButton() = _$WidgetRegistry_ClickButtonImpl;
+  const WidgetRegistry_ClickButton._() : super._();
 }
 
 /// @nodoc
@@ -605,8 +607,8 @@ class __$$WidgetRegistry_ToggleButtonImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$WidgetRegistry_ToggleButtonImpl implements WidgetRegistry_ToggleButton {
-  const _$WidgetRegistry_ToggleButtonImpl({required this.value});
+class _$WidgetRegistry_ToggleButtonImpl extends WidgetRegistry_ToggleButton {
+  const _$WidgetRegistry_ToggleButtonImpl({required this.value}) : super._();
 
   @override
   final bool value;
@@ -723,9 +725,10 @@ class _$WidgetRegistry_ToggleButtonImpl implements WidgetRegistry_ToggleButton {
   }
 }
 
-abstract class WidgetRegistry_ToggleButton implements WidgetRegistry {
+abstract class WidgetRegistry_ToggleButton extends WidgetRegistry {
   const factory WidgetRegistry_ToggleButton({required final bool value}) =
       _$WidgetRegistry_ToggleButtonImpl;
+  const WidgetRegistry_ToggleButton._() : super._();
 
   bool get value;
   @JsonKey(ignore: true)
@@ -754,9 +757,8 @@ class __$$WidgetRegistry_ConfirmButtonImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$WidgetRegistry_ConfirmButtonImpl
-    implements WidgetRegistry_ConfirmButton {
-  const _$WidgetRegistry_ConfirmButtonImpl();
+class _$WidgetRegistry_ConfirmButtonImpl extends WidgetRegistry_ConfirmButton {
+  const _$WidgetRegistry_ConfirmButtonImpl() : super._();
 
   @override
   String toString() {
@@ -862,9 +864,10 @@ class _$WidgetRegistry_ConfirmButtonImpl
   }
 }
 
-abstract class WidgetRegistry_ConfirmButton implements WidgetRegistry {
+abstract class WidgetRegistry_ConfirmButton extends WidgetRegistry {
   const factory WidgetRegistry_ConfirmButton() =
       _$WidgetRegistry_ConfirmButtonImpl;
+  const WidgetRegistry_ConfirmButton._() : super._();
 }
 
 /// @nodoc
@@ -902,8 +905,8 @@ class __$$WidgetRegistry_PressButtonImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$WidgetRegistry_PressButtonImpl implements WidgetRegistry_PressButton {
-  const _$WidgetRegistry_PressButtonImpl({required this.pressed});
+class _$WidgetRegistry_PressButtonImpl extends WidgetRegistry_PressButton {
+  const _$WidgetRegistry_PressButtonImpl({required this.pressed}) : super._();
 
   @override
   final bool pressed;
@@ -1020,9 +1023,10 @@ class _$WidgetRegistry_PressButtonImpl implements WidgetRegistry_PressButton {
   }
 }
 
-abstract class WidgetRegistry_PressButton implements WidgetRegistry {
+abstract class WidgetRegistry_PressButton extends WidgetRegistry {
   const factory WidgetRegistry_PressButton({required final bool pressed}) =
       _$WidgetRegistry_PressButtonImpl;
+  const WidgetRegistry_PressButton._() : super._();
 
   bool get pressed;
   @JsonKey(ignore: true)
@@ -1067,8 +1071,9 @@ class __$$WidgetRegistry_DirectionalButtonImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$WidgetRegistry_DirectionalButtonImpl
-    implements WidgetRegistry_DirectionalButton {
-  const _$WidgetRegistry_DirectionalButtonImpl({required this.direction});
+    extends WidgetRegistry_DirectionalButton {
+  const _$WidgetRegistry_DirectionalButtonImpl({required this.direction})
+      : super._();
 
   @override
   final int direction;
@@ -1187,9 +1192,10 @@ class _$WidgetRegistry_DirectionalButtonImpl
   }
 }
 
-abstract class WidgetRegistry_DirectionalButton implements WidgetRegistry {
+abstract class WidgetRegistry_DirectionalButton extends WidgetRegistry {
   const factory WidgetRegistry_DirectionalButton(
       {required final int direction}) = _$WidgetRegistry_DirectionalButtonImpl;
+  const WidgetRegistry_DirectionalButton._() : super._();
 
   int get direction;
   @JsonKey(ignore: true)
@@ -1238,9 +1244,10 @@ class __$$WidgetRegistry_JoystickImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$WidgetRegistry_JoystickImpl implements WidgetRegistry_Joystick {
+class _$WidgetRegistry_JoystickImpl extends WidgetRegistry_Joystick {
   const _$WidgetRegistry_JoystickImpl(
-      {required this.delta, required this.intensity});
+      {required this.delta, required this.intensity})
+      : super._();
 
   @override
   final Coord delta;
@@ -1361,10 +1368,11 @@ class _$WidgetRegistry_JoystickImpl implements WidgetRegistry_Joystick {
   }
 }
 
-abstract class WidgetRegistry_Joystick implements WidgetRegistry {
+abstract class WidgetRegistry_Joystick extends WidgetRegistry {
   const factory WidgetRegistry_Joystick(
       {required final Coord delta,
       required final double intensity}) = _$WidgetRegistry_JoystickImpl;
+  const WidgetRegistry_Joystick._() : super._();
 
   Coord get delta;
   double get intensity;
