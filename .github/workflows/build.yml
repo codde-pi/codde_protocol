@@ -40,10 +40,8 @@ jobs:
       - name: Build Rust code for Dart tests
         working-directory: ./packages/codde_protocol/native/client
         run: |
-          cargo install cargo-zigbuild
-          export PAtH=$HOME/.cargo/bin:$PATH
           rustup target add x86_64-unknown-linux-gnu
-          cargo zigbuild --target x86_64-unknown-linux-gnu -r --target-dir target
+          cargo build --target x86_64-unknown-linux-gnu -r --target-dir target
           cp target/x86_64-unknown-linux-gnu/release/libcodde_protocol.so target/release
 
       # Dart/Flutter
