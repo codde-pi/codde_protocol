@@ -15,3 +15,8 @@
 
 - Add Widgets to registry
 - Fix publishing issues
+
+## 0.1.4
+
+- Fix CI/CD
+- Clean up code

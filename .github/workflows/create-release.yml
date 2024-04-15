@@ -2,13 +2,10 @@
 name: Create Release(s)
 
 on:
-  push:
-    branches:
-      - main
-  workflow_run:
-    workflows:
-      - "Build & Test"
-    types: [completed]
+  # workflow_run:
+  #   workflows:
+  #     - "Build & Test"
+  #   types: [completed]
   workflow_dispatch:
     inputs:
       version:
@@ -59,3 +56,29 @@ jobs:
         run: git push
       - name: Push modified tags
         run: git push --tags
+  publish_github_release:
+    name: Binary release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v2
+      - uses: goto-bus-stop/setup-zig@v2
+      - uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "15"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r25b
+
+      - name: Build all library binaries
+        run: melos run build
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: platform-build/*

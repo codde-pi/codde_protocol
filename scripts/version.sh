@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-	CURR_VERSION=codde_protocol-v$(awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml)
+	CURR_VERSION=$(awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml | sed 's/\"//g')
 else
 	CURR_VERSION=$1
 fi
@@ -33,6 +33,7 @@ sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/nat
 sed -i "s/version: .*/version: \"$CURR_VERSION\"/" packages/codde_protocol/pubspec.yaml
 # Flutter
 sed -i "s/version: .*/version: \"$CURR_VERSION\"/" packages/flutter_codde_protocol/pubspec.yaml
+sed -i "s/codde_protocol: .*/codde_protocol: \^$CURR_VERSION/" packages/flutter_codde_protocol/pubspec.yaml
 
 # git add packages/flutter_codde_protocol/
 
