@@ -1,15 +1,10 @@
-use anyhow::Result;
-use core::fmt;
-
 use crate::base::{
     frame::ResultFrame,
     widget_registry::{ResultRegistry, ServerStatus},
 };
 
 use super::widget_registry::ResultBinding;
-use pyo3::{pyclass, Py, PyAny, Python};
-use rmp_serde::{decode::ReadReader, Deserializer, Serializer};
-use serde::{Deserialize, Serialize};
+use pyo3::{Py, PyAny, Python};
 
 impl ResultFrame {
     pub fn new(id: u8, status: ServerStatus, data: Py<PyAny>) -> ResultFrame {

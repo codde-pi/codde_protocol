@@ -6,7 +6,7 @@ use std::{
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub struct ServerStateError(pub(crate) String); // Implement std::fmt::Display for AppError
+pub struct ServerStateError(pub String); // Implement std::fmt::Display for AppError
 
 impl ServerStateError {
     pub fn no_stream() -> ServerStateError {

@@ -18,7 +18,5 @@ impl CoddePiClient {
             Protocol::Usb => todo!(),
         }
     } */
-    pub fn new(protocol: Protocol, addr: String) -> ComSocketClient {
-        todo!()
-    }
+    pub fn dummy(_protocol: Protocol, _addr: String) {}
 }

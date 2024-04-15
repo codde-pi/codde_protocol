@@ -1,7 +1,7 @@
 ---
 name: codde_protocol
 description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
-version: 0.1.2
+version: "0.1.4"
 homepage: https://codde-pi.com
 repository: https://github.com/codde_pi/codde_protocol
 
@@ -11,7 +11,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   ffi: ^2.1.0
-  flutter_rust_bridge: ^2.0.0-dev.28
+  flutter_rust_bridge: 2.0.0-dev.30
   freezed_annotation: ^2.4.1
 
 dev_dependencies:

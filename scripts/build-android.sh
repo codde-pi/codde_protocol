@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Setup
-ROOT=/home/matt/Projects/codde_pi/codde_protocol
+ROOT="$(pwd)"
 BUILD_DIR="$ROOT/platform-build"
 mkdir $BUILD_DIR
-cd $BUILD_DIR || exit
 
 # Create the jniLibs build directory
 JNI_DIR="$ROOT/jniLibs"

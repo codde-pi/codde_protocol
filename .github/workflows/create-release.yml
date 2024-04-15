@@ -2,22 +2,27 @@
 name: Create Release(s)
 
 on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows:
+      - "Build & Test"
+    types: [completed]
   workflow_dispatch:
     inputs:
-      version_parameters:
-        description: 'Parameters to pass to "melos version"'
+      version:
         required: true
-        default: " "
-        type: choice
-        options:
-          - "--"
-          - "--prerelease"
-          - "--graduate"
+        type: string
+        description: The version to release
 
 jobs:
   publish_dry_run:
     name: Publish Dry Run
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/codde_protocol/native/
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v2
@@ -31,13 +36,14 @@ jobs:
         run: rustup default nightly
       - name: Build | Publish Dry Run
         run: cargo publish --dry-run
+          # TODO: Add python and dart dry run too
   create_release:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.BOT_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Setup git
         run: |
@@ -47,7 +53,7 @@ jobs:
       - uses: bluefireteam/melos-action@v2
 
       - name: Create the new version(s)
-        run: melos version --yes ${{ inputs.version_parameters }}
+        run: scripts/version.sh {{ inputs.version }}
 
       - name: Push created version commit
         run: git push

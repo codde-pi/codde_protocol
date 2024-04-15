@@ -7,18 +7,14 @@ updates:
     schedule:
       interval: weekly
   - package-ecosystem: pub
-    directory: "/packages/codde_protocol/example"
-    schedule:
-      interval: weekly
-  - package-ecosystem: pub
     directory: "/packages/flutter_codde_protocol"
-    schedule:
-      interval: weekly
-  - package-ecosystem: pub
-    directory: "/packages/flutter_codde_protocol/example"
     schedule:
       interval: weekly
   - package-ecosystem: cargo
     directory: "/packages/codde_protocol/native"
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: "/packages/codde_protocol/native/client"
     schedule:
       interval: weekly

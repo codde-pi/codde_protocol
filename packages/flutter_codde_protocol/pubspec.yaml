@@ -1,7 +1,7 @@
 ---
 name: flutter_codde_protocol
 description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
-version: 0.1.2
+version: "0.1.4"
 homepage: https://codde-pi.com
 
 environment:
@@ -14,7 +14,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   codde_protocol: ^0.1.2
     # path: ../codde_protocol
-  flutter_rust_bridge: ^2.0.0-dev.28
+  flutter_rust_bridge: ^2.0.0-dev.30
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
@@ -22,8 +22,8 @@ dev_dependencies:
   ffigen: ^11.0.0
   flutter_test:
     sdk: flutter
-  # integration_test:
-  # sdk: flutter
+  integration_test:
+    sdk: flutter
   flutter_lints: ^3.0.1
   build_runner: ^2.4.8
   freezed: ^2.4.7

@@ -1,4 +1,4 @@
-set(LibraryVersion "codde_protocol-v0.1.1") # generated; do not edit
+set(LibraryVersion "0.1.4") # generated; do not edit
 
 # TODO Remove this workaround once Flutter supports Windows ARM.
 # https://github.com/flutter/flutter/issues/116196

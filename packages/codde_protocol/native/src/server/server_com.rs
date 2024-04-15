@@ -1,11 +1,6 @@
 use anyhow::{Ok, Result};
-use std::{
-    error::Error,
-    fmt::{self},
-};
 
-use pyo3::{exceptions::PyOSError, PyErr, Python};
-use serde::Deserialize;
+use pyo3::Python;
 
 use crate::{base::error::ServerStateError, server::models::widget_registry::Action};
 

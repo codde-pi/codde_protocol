@@ -1,7 +1,7 @@
 ---
 name: codde_protocol_workspace
 description: Multi Communication protocol in heart of the C.O.D.D.E. Pi framework
-version: 0.1.2
+version: "0.1.4"
 homepage: https://codde-pi.com
 
 environment:
@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_lints: ^3.0.2
 
 dev_dependencies:
   melos: ^5.0.0

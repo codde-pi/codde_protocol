@@ -12,8 +12,8 @@ void main() {
   group('Dart client', () {
     setUp(() async {
       await RustLib.init(
-          externalLibrary:
-              ExternalLibrary.open("../../target/debug/libcodde_protocol.so"));
+          externalLibrary: ExternalLibrary.open(
+              "native/client/target/release/libcodde_protocol.so"));
     });
 
     test('Registry test', () async {

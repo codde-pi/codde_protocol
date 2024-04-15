@@ -67,8 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void connect() async {
     await RustLib.init();
-    final client =
-        await ComSocketClient.newComSocketClient(address: "localhost:12345");
+    final client = ComSocketClient(address: "localhost:12345");
     await client.connect();
     client.send(
         data:
