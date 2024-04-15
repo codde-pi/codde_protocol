@@ -1,6 +1,9 @@
 ---
 name: Publish Release(s)
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
