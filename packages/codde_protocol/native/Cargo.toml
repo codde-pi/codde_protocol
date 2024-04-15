@@ -21,7 +21,7 @@ codde_protocol_derive = "0.1.0"
 cbor = "0.4.1"
 typetag = "0.2.15"
 rmp-serde = "1.1.2"
-anyhow = "1.0.79"
+anyhow = "1.0.82"
 cbindgen = "0.26.0"
 regex = "1.10.3"
 
