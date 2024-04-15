@@ -728,9 +728,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_codegen"
-version = "2.0.0-dev.30"
+version = "2.0.0-dev.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75d5e6a93ef4ef69d2e409dfe9983c7b8f87179ed4b85c8256926d8dc5b1af7a"
+checksum = "fb089f0e86a6873eb9538ee5dea459e9bb029feeb6777ecf1f996c805451a507"
 dependencies = [
  "anyhow",
  "atty",
@@ -745,6 +745,7 @@ dependencies = [
  "enum_dispatch",
  "fern",
  "glob",
+ "hex",
  "include_dir",
  "indicatif",
  "indicatif-log-bridge",
@@ -924,6 +925,12 @@ name = "hermit-abi"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
+
+[[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "iana-time-zone"
