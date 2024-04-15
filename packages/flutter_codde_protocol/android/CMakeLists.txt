@@ -1,4 +1,4 @@
-set(LibraryVersion "0.1.4-dev.1") # generated; do not edit
+set(LibraryVersion "0.1.4-dev.2") # generated; do not edit
 set(PROJECT_NAME "flutter_codde_protocol")
 
 # Unlike the Windows & Linux CMakeLists.txt, this Android equivalent is just here

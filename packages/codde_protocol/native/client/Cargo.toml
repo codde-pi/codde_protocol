@@ -1,6 +1,6 @@
 [package]
 name = "codde_protocol_client"
-version = "0.1.4-dev.1"
+version = "0.1.4-dev.2"
 edition = "2021"
 authors = ["Mathis Lecomte <vm.lecomte@gmail.com>"]
 description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framework"

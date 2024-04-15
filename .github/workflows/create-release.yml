@@ -2,11 +2,19 @@
 name: Create Release(s)
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows:
+      - "Build & Test"
+    types: [completed]
+  workflow_dispatch:
     inputs:
       version:
         required: true
         type: string
+        description: The version to release
 
 jobs:
   publish_dry_run:
