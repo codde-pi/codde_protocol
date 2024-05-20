@@ -701,9 +701,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.0.0-dev.30"
+version = "2.0.0-dev.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cc32be8039ca8f9a305b06134f121d62a633a7acc44ef1e990f890a9c83bbad"
+checksum = "9b581435c54bcb7d6d4094e8dff83bc837977ca8f89fd55c8aef86a8d3315000"
 dependencies = [
  "allo-isolate",
  "android_logger",
@@ -772,9 +772,14 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.0.0-dev.30"
+version = "2.0.0-dev.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccd41c403967dcc593ab21cb728ca781247b4aa8ebfc3871ff6832f9e85824f2"
+checksum = "0a11f5b9e6453db2c6c8aaadb10592b5aa05eafd5fb1f409d6ec5c9dad9dbe1e"
+dependencies = [
+ "hex",
+ "quote",
+ "syn 2.0.53",
+]
 
 [[package]]
 name = "fsevent-sys"
@@ -924,6 +929,12 @@ name = "hermit-abi"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
+
+[[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "iana-time-zone"
