@@ -1,4 +1,4 @@
-set(LibraryVersion "0.1.4") # generated; do not edit
+set(LibraryVersion "v0.1.4") # generated; do not edit
 set(PROJECT_NAME "flutter_codde_protocol")
 
 # Unlike the Windows & Linux CMakeLists.txt, this Android equivalent is just here
@@ -18,9 +18,10 @@ set(LibRoot "${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs")
 set(ArchivePath "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}.tar.gz")
 if(NOT EXISTS ${ArchivePath})
   file(DOWNLOAD
-    "https://github.com/mat-his/codde-protocol/releases/download/${LibraryVersion}/android.tar.gz"
+    "https://github.com/codde-pi/codde-protocol/releases/download/${LibraryVersion}/android.tar.gz"
     ${ArchivePath}
     TLS_VERIFY ON
+
   )
 endif()
 

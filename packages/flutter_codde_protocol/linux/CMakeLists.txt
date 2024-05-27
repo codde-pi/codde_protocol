@@ -14,7 +14,7 @@ set(LibRoot "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}")
 set(ArchivePath "${LibRoot}.tar.gz")
 if(NOT EXISTS ${ArchivePath})
   file(DOWNLOAD
-    "https://github.com/mat-his/codde_protocol/releases/download/${LibraryVersion}/other.tar.gz"
+    "https://github.com/codde-pi/codde_protocol/releases/download/v${LibraryVersion}/other.tar.gz"
     ${ArchivePath}
     TLS_VERIFY ON
   )

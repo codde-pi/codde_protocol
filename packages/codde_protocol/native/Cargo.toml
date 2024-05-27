@@ -5,8 +5,8 @@ version = "0.1.4"
 authors = ["Mathis Lecomte <vm.lecomte@gmail.com>"]
 edition = "2021"
 description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framework"
-readme = "../../../README.md"
-license-file = "../../../LICENSE"
+readme = "README.md"
+license-file = "LICENSE"
 keywords = ["rust", "python", "codde_pi", "iot"]
 homepage = "https://github.com/codde-pi/codde_protocol"
 

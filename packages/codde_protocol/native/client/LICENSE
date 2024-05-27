@@ -1,0 +1,18 @@
+CODDE Protocol, communication protocol of the C.O.D.D.E. Pi® App (Control-Oriented, Design and Development Environnement for python robotic projects)
+
+Copyright (C) 2024 Mathis Lecomte
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://github.com/codde-pi/codde_protocol/blob/main/LICENSE
+
+Mathis Lecomte <vm.lecomte@gmail.com>
