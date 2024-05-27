@@ -1,7 +1,7 @@
 use crate::{
     base::{protocol::Protocol, widget_registry::ServerStatus},
     server::{
-        com_socket::ComSocketServer,
+        com_socket::{event, ComSocketServer, FunctionDecorator},
         models::widget_registry::{
             ClickButton, ConfirmButton, ConfirmResult, DirectionalButton, ErrorResult, Joystick,
             PressButton, ToggleButton,
@@ -29,6 +29,8 @@ fn codde_protocol(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     m.add_class::<ServerStatus>()?;
     m.add_class::<ConfirmResult>()?;
     m.add_class::<ErrorResult>()?;
+    m.add_function(wrap_pyfunction!(event, m)?)?;
+    m.add_class::<FunctionDecorator>()?;
 
     Ok(())
 }

@@ -27,7 +27,7 @@ pub enum ClientStatus {
 }
 
 pub fn action_identity(id: u8, widget: &str) -> String {
-    format!("{}_{}", id, widget.split_whitespace().next().unwrap_or(""))
+    format!("{}_{}", widget.split_whitespace().next().unwrap_or(""), id)
 }
 
 pub fn extract_identity(value: String) -> (u8, String) {

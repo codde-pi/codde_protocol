@@ -13,14 +13,18 @@ use crate::{
     base::{
         error::ServerStateError,
         frame::{Frame, ResultFrame},
-        widget_registry::{action_identity, ServerStatus},
+        widget_registry::{action_identity, extract_identity, ServerStatus},
     },
     server::server_com::execute_action,
 };
 
 use crate::server::ServerCom;
 
-use pyo3::prelude::*;
+use pyo3::{
+    prelude::*,
+    types::{PyDict, PyTuple},
+    PyObject,
+};
 
 use super::models::widget_registry::{Action, WidgetAction};
 
@@ -30,6 +34,65 @@ pub struct ComSocketServer {
     stream: Option<TcpStream>,
     pub actions: WidgetAction,
     trigger: Option<Sender<bool>>,
+}
+
+// Define the decorator function
+/* #[pyfunction]
+pub fn event(py: Python, func: Py<PyAny>, tracker: &PyCell<ComSocketServer>) -> PyResult<PyObject> {
+    let name = func.getattr(py, "__name__")?.extract::<String>(py)?;
+    let (uid, _name) = extract_identity(name.clone());
+    tracker
+        .borrow_mut()
+        .register_action(uid, _name.as_str(), Action::PythonFn(func));
+    let wrapped_func = move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
+        func.call(py, args, kwargs)
+    };
+
+    Ok(wrap_pyfunction!(wrapped_func, py)?.into_py(py))
+} */
+
+#[pyclass]
+pub struct FunctionDecorator {
+    func: Py<PyAny>,
+    tracker: Py<PyCell<ComSocketServer>>,
+}
+
+#[pymethods]
+impl FunctionDecorator {
+    #[new]
+    fn new(func: Py<PyAny>, tracker: Py<PyCell<ComSocketServer>>) -> Self {
+        Python::with_gil(|py| {
+            let name = func
+                .getattr(py, "__name__")
+                .unwrap()
+                .extract::<String>(py)
+                .unwrap();
+            let (uid, _name) = extract_identity(name.clone());
+            tracker
+                .call_method1(py, "on", (uid, name, func.clone()))
+                .unwrap();
+            /* tracker
+            .borrow_mut()
+            .register_action(uid, _name.as_str(), Action::PythonFn(func)); */
+        });
+
+        FunctionDecorator { func, tracker }
+    }
+
+    fn __call__(&self, args: &PyTuple, kwargs: Option<&PyDict>) -> PyResult<PyObject> {
+        Python::with_gil(|py| self.func.call(py, args, kwargs))
+    }
+}
+
+// Define the decorator function
+#[pyfunction]
+pub fn event(
+    py: Python,
+    func: Py<PyAny>,
+    tracker: Py<PyCell<ComSocketServer>>,
+) -> PyResult<PyObject> {
+    let decorator = Py::new(py, FunctionDecorator::new(func, tracker))?;
+    Ok(decorator.to_object(py))
 }
 
 #[pymethods]
