@@ -1,4 +1,4 @@
-set(LibraryVersion "0.1.4") # generated; do not edit
+set(LibraryVersion "v0.1.5") # generated; do not edit
 
 # The Flutter tooling requires that developers have CMake 3.10 or later
 # installed. You should not increase this version, as doing so will cause
@@ -14,7 +14,7 @@ set(LibRoot "${CMAKE_CURRENT_SOURCE_DIR}/${LibraryVersion}")
 set(ArchivePath "${LibRoot}.tar.gz")
 if(NOT EXISTS ${ArchivePath})
   file(DOWNLOAD
-    "https://github.com/codde-pi/codde_protocol/releases/download/v${LibraryVersion}/other.tar.gz"
+    "https://github.com/codde-pi/codde_protocol/releases/download/${LibraryVersion}/other.tar.gz"
     ${ArchivePath}
     TLS_VERIFY ON
   )
