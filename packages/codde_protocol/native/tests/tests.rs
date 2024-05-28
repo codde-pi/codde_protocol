@@ -7,7 +7,7 @@ use codde_protocol::{
     server::{
         codde_pi_server::CoddePiServer,
         com_socket::ComSocketServer,
-        models::widget_registry::{Action, ConfirmResult},
+        models::widget_registry::{Action, ConfirmResult, ToggleButton},
         server_com::ServerCom,
     },
 };
@@ -100,17 +100,29 @@ fn test_com_socket() {}
 fn test_decorator() {
     pyo3::prepare_freethreaded_python();
     Python::with_gil(|py| {
+        // Import and get sys.module// Create new module
+        let m = PyModule::new(py, "codde_protocol").unwrap();
+        m.add_class::<ComSocketServer>().unwrap();
+        m.add_class::<CoddePiServer>().unwrap();
+        m.add_class::<ToggleButton>().unwrap();
+        m.add_function(wrap_pyfunction!(codde_protocol::server::com_socket::on, m).unwrap())
+            .unwrap();
+        let sys = PyModule::import(py, "sys").unwrap();
+        let py_modules: &pyo3::types::PyDict = sys.getattr("modules").unwrap().downcast().unwrap();
+
+        // Insert codde_protocol into sys.modules
+        py_modules.set_item("codde_protocol", m).unwrap();
+
+        // Run test
         let test_decorator = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/tests/test_decorator.py"
         ));
-        let from_python = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
-            let app: Py<PyAny> = PyModule::from_code_bound(py, test_decorator, "", "")?
-                .getattr("main")?
-                .into();
-            app.call0(py)
-        });
-        assert_eq!(from_python.unwrap().extract::<bool>(py).unwrap(), true)
+        let deco = PyModule::from_code(py, test_decorator, "", "").unwrap();
+        // let py_modules: &pyo3::types::PyDict = deco.getattr("modules").unwrap().downcast().unwrap();
+        // py_modules.set_item("codde_protocol", m).unwrap();
+        let app: Py<PyAny> = deco.getattr("main").unwrap().into();
+        assert_eq!(app.call0(py).unwrap().extract::<bool>(py).unwrap(), true)
     })
 }
 

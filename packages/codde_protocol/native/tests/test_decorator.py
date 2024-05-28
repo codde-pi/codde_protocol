@@ -1,12 +1,11 @@
+import codde_protocol as cp
 
-from codde_protocol import *
+server = cp.CoddePiServer.use_socket('localhost:12345')
 
-server = CoddePiServer.use_socket('localhost:12345')
-
-@on(server)
+@cp.on(server)
 def action_1(*args) -> bool:
-    widget: ToggleButton = args[0]
+    widget: cp.ToggleButton = args[0]
     return widget.value
 
 def main() -> str:
-    return server._get_action('action_1')(ToggleButton(value=True))
+    return server._get_action('action_1')(cp.ToggleButton(value=True))
