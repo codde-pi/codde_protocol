@@ -15,6 +15,15 @@ pub enum Action {
     RustFn(TypeFn),
     PythonFn(Py<PyAny>),
 }
+/* impl IntoPy<PyObject> for Action {
+    fn into_py(self, py: Python<'_>) -> PyObject {
+        match self {
+            Action::RustFn(f) => todo!(),
+            Action::PythonFn(f) => f.into_py(py),
+        }
+    }
+} */
+
 impl IntoPy<PyObject> for ResultRegistry {
     fn into_py(self, py: Python<'_>) -> PyObject {
         match self {
@@ -41,6 +50,7 @@ impl IntoPy<PyObject> for WidgetRegistry {
         }
     }
 }
+
 impl ResultRegistry {
     pub fn from_binding(binding: ResultBinding) -> ResultRegistry {
         match binding {

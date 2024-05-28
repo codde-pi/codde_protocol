@@ -8,15 +8,15 @@ description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framew
 authors = [
   { name="Mathis Lecomte", email="vm.lecomte@gmail.com" },
 ]
-readme = {file = "../../../README.md", content-type = "text/markdown"}
-license = {file = "../../../LICENSE"}
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-version = "0.1.4"
+version = "0.1.5"
 keywords = ["rust", "python", "codde_pi", "iot"]
 
 [project.urls]

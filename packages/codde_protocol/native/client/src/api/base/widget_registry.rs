@@ -26,12 +26,12 @@ pub enum ClientStatus {
 }
 
 pub fn action_identity(id: u8, widget: &str) -> String {
-    format!("{}_{}", id, widget.split_whitespace().next().unwrap_or(""))
+    format!("{}_{}", widget.split_whitespace().next().unwrap_or(""), id)
 }
 
 pub fn extract_identity(value: String) -> (u8, String) {
     let arr: Vec<&str> = value.split('_').collect();
-    (arr[1].as_bytes()[0], String::from(arr[0]))
+    (arr[1].parse::<u8>().unwrap(), String::from(arr[0]))
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

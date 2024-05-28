@@ -1,4 +1,4 @@
-release_tag_name = '0.1.4' # generated; do not edit
+release_tag_name = '0.1.5' # generated; do not edit
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
 # Run `pod lib lint flutter_codde_protocol.podspec` to validate before publishing.
 #

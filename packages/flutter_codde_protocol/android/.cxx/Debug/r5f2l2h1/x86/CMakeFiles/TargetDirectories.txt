@@ -1,0 +1,2 @@
+/home/matt/Projects/codde_pi/codde_pi/packages/codde_protocol/packages/flutter_codde_protocol/android/.cxx/Debug/r5f2l2h1/x86/CMakeFiles/rebuild_cache.dir
+/home/matt/Projects/codde_pi/codde_pi/packages/codde_protocol/packages/flutter_codde_protocol/android/.cxx/Debug/r5f2l2h1/x86/CMakeFiles/edit_cache.dir
