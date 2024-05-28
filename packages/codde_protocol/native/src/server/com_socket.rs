@@ -22,77 +22,48 @@ use crate::server::ServerCom;
 
 use pyo3::{
     prelude::*,
-    types::{PyDict, PyTuple},
+    types::{PyCFunction, PyDict, PyTuple},
     PyObject,
 };
+
+use log::debug;
 
 use super::models::widget_registry::{Action, WidgetAction};
 
 #[pyclass]
 pub struct ComSocketServer {
+    #[pyo3(get)]
     pub address: String,
     stream: Option<TcpStream>,
     pub actions: WidgetAction,
     trigger: Option<Sender<bool>>,
 }
 
-// Define the decorator function
-/* #[pyfunction]
-pub fn event(py: Python, func: Py<PyAny>, tracker: &PyCell<ComSocketServer>) -> PyResult<PyObject> {
-    let name = func.getattr(py, "__name__")?.extract::<String>(py)?;
-    let (uid, _name) = extract_identity(name.clone());
-    tracker
-        .borrow_mut()
-        .register_action(uid, _name.as_str(), Action::PythonFn(func));
-    let wrapped_func = move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
-        func.call(py, args, kwargs)
-    };
-
-    Ok(wrap_pyfunction!(wrapped_func, py)?.into_py(py))
-} */
-
-#[pyclass]
-pub struct FunctionDecorator {
-    func: Py<PyAny>,
-    tracker: Py<PyCell<ComSocketServer>>,
-}
-
-#[pymethods]
-impl FunctionDecorator {
-    #[new]
-    fn new(func: Py<PyAny>, tracker: Py<PyCell<ComSocketServer>>) -> Self {
+#[pyfunction]
+pub fn on(py: Python, server: Py<PyCell<ComSocketServer>>) -> PyResult<&PyCFunction> {
+    let f = move |args: &PyTuple, _: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
         Python::with_gil(|py| {
-            let name = func
+            let func: PyObject = args.get_item(0)?.into();
+            let f_name = func
                 .getattr(py, "__name__")
                 .unwrap()
                 .extract::<String>(py)
                 .unwrap();
-            let (uid, _name) = extract_identity(name.clone());
-            tracker
+            let (uid, name) = extract_identity(f_name);
+            server
                 .call_method1(py, "on", (uid, name, func.clone()))
                 .unwrap();
-            /* tracker
-            .borrow_mut()
-            .register_action(uid, _name.as_str(), Action::PythonFn(func)); */
-        });
-
-        FunctionDecorator { func, tracker }
-    }
-
-    fn __call__(&self, args: &PyTuple, kwargs: Option<&PyDict>) -> PyResult<PyObject> {
-        Python::with_gil(|py| self.func.call(py, args, kwargs))
-    }
-}
-
-// Define the decorator function
-#[pyfunction]
-pub fn event(
-    py: Python,
-    func: Py<PyAny>,
-    tracker: Py<PyCell<ComSocketServer>>,
-) -> PyResult<PyObject> {
-    let decorator = Py::new(py, FunctionDecorator::new(func, tracker))?;
-    Ok(decorator.to_object(py))
+            let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
+                debug!("decorated call");
+                Python::with_gil(|py| func.call(py, args, kwargs))
+            };
+            match PyCFunction::new_closure(py, None, None, g) {
+                Ok(r) => Ok(r.into()),
+                Err(e) => Err(e),
+            }
+        })
+    };
+    PyCFunction::new_closure(py, None, None, f)
 }
 
 #[pymethods]
@@ -107,40 +78,21 @@ impl ComSocketServer {
         }
     }
 
-    /* pub fn exectime<'a>(&mut self, py: Python<'a>, wraps: PyObject) -> PyResult<&PyCFunction> {
-        PyCFunction::new_closure(
-            py,
-            None,
-            None,
-            move |args: &PyTuple, kwargs: Option<&PyDict>| -> PyResult<PyObject> {
-                Python::with_gil(|py| {
-                    let ret = wraps.call(py, args, kwargs);
-                    ret
-                })
-            },
-        )
-    } */
-    /* pub fn event<'a>(&mut self, py: Python<'a>) -> PyResult<&'a PyCFunction> {
-        let f = move |args: &PyTuple, _kwargs: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
-            Python::with_gil(|py| {
-                let wraps: PyObject = args.get_item(0)?.into();
-                let name = wraps.getattr(py, "__name__").unwrap();
-                let (id, name) = extract_identity(name.to_string());
-                self.register_action(id, name.as_str(), Action::PythonFn(wraps));
-                let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
-                    Python::with_gil(|py| wraps.call(py, args, kwargs))
-                };
-                match PyCFunction::new_closure(py, None, None, g) {
-                    Ok(r) => Ok(r.into()),
-                    Err(e) => Err(e),
-                }
-            })
-        };
-        PyCFunction::new_closure(py, None, None, f)
-    } */
     fn on(&mut self, id: u8, widget: &str, action: Py<PyAny>) -> Result<()> {
-        // PyFn argument isntead of PyAny ?
+        // PyFn argument instead of PyAny ?
+        debug!("register action: {}", widget);
         ServerCom::register_action(self, id, widget, Action::PythonFn(action))
+    }
+
+    pub fn _get_action(&mut self, key: &str) -> Result<Option<Py<PyAny>>> {
+        match self.actions.get(key) {
+            Some(action) => match action {
+                Action::PythonFn(value) => Ok(Some(value.clone())),
+                _ => Err(ServerStateError(String::from("RustFn is not compatible yet")).into()),
+            },
+
+            None => Ok(None),
+        }
     }
 
     pub fn open(&mut self) -> Result<(), ServerStateError> {

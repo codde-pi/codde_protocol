@@ -11,7 +11,7 @@ use codde_protocol::{
         server_com::ServerCom,
     },
 };
-use pyo3::{IntoPy, Python};
+use pyo3::prelude::*;
 
 fn action_test(data: WidgetRegistry) -> Result<()> {
     /* server.callback_result(ResultFrame {
@@ -95,6 +95,24 @@ fn test_action() {}
 // TODO: threaded server, expect data send / receive is OK
 #[test]
 fn test_com_socket() {}
+
+#[test]
+fn test_decorator() {
+    pyo3::prepare_freethreaded_python();
+    Python::with_gil(|py| {
+        let test_decorator = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/test_decorator.py"
+        ));
+        let from_python = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
+            let app: Py<PyAny> = PyModule::from_code_bound(py, test_decorator, "", "")?
+                .getattr("main")?
+                .into();
+            app.call0(py)
+        });
+        assert_eq!(from_python.unwrap().extract::<bool>(py).unwrap(), true)
+    })
+}
 
 // #[test]
 fn test_end_to_end(f: WidgetRegistry) {

@@ -32,7 +32,7 @@ pub fn action_identity(id: u8, widget: &str) -> String {
 
 pub fn extract_identity(value: String) -> (u8, String) {
     let arr: Vec<&str> = value.split('_').collect();
-    (arr[1].as_bytes()[0], String::from(arr[0]))
+    (arr[1].parse::<u8>().unwrap(), String::from(arr[0]))
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

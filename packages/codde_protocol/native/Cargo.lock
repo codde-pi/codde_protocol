@@ -417,6 +417,7 @@ dependencies = [
  "cbor",
  "codde_protocol_derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dynamic",
+ "log",
  "pyo3",
  "quote",
  "regex",
