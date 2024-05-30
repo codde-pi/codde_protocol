@@ -20,3 +20,8 @@
 
 - Fix CI/CD
 - Clean up code
+
+## 0.1.5
+
+- Enable Actions registering with Python Decorators
+- Update LICENSE
