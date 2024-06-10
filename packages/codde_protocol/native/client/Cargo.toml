@@ -12,7 +12,7 @@ homepage = "https://github.com/codde-pi/codde_protocol"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-flutter_rust_bridge = "=2.0.0-dev.30"
+flutter_rust_bridge = "=2.0.0-dev.38"
 quote = "1.0.35"
 serde = {version= "1.0.196",  features = ["derive"] }
 syn = "2.0.48"
