@@ -11,10 +11,6 @@ updates:
     schedule:
       interval: weekly
   - package-ecosystem: cargo
-    directory: "/packages/codde_protocol/native"
-    schedule:
-      interval: weekly
-  - package-ecosystem: cargo
-    directory: "/packages/codde_protocol/native/client"
+    directory: "/packages/codde_protocol/rust"
     schedule:
       interval: weekly

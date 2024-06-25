@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
+        working-directory: packages/codde_protocol/rust/
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v2
@@ -33,7 +33,10 @@ jobs:
         run: rustup default nightly
       - name: Build | Publish Dry Run
         run: cargo publish --dry-run
-          # TODO: Add python and dart dry run too
+      - name: Python Dry Run
+        run: source venv/bin/activate && maturin build
+      - name: Dart Dry Run
+        run: cd ../../.. && melos publish -y --dry-run
   create_release:
     runs-on: ubuntu-latest
 
@@ -54,31 +57,6 @@ jobs:
 
       - name: Push created version commit
         run: git push
+          # TODO: invoke tag_version.sh 
       - name: Push modified tags
-        run: git push --tags
-  publish_github_release:
-    name: Binary release
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-      - uses: bluefireteam/melos-action@v2
-      - uses: goto-bus-stop/setup-zig@v2
-      - uses: KyleMayes/install-llvm-action@v1
-        with:
-          version: "15"
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-      - uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r25b
-
-      - name: Build all library binaries
-        run: melos run build
-
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: platform-build/*
+        run: git push origin tag {{ inputs.version }}

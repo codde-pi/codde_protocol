@@ -25,3 +25,8 @@
 
 - Enable Actions registering with Python Decorators
 - Update LICENSE
+
+## 0.1.5
+
+- Update `flutter_rust_bridge` to 2.0.0
+- Remove `client` sub-module architecture
