@@ -10,7 +10,7 @@ pub trait Widget {}
 pub trait ResultWidget {}
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
-#[pyclass]
+#[pyclass(eq, eq_int)]
 pub enum ServerStatus {
     NotInit,
     Idle,
@@ -20,7 +20,7 @@ pub enum ServerStatus {
 
 // Create ClientStatus
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
-#[pyclass]
+#[pyclass(eq, eq_int)]
 pub enum ClientStatus {
     Connected,
     Disconnected,
@@ -45,6 +45,7 @@ pub struct Coord {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[pyclass(get_all)]
 pub enum WidgetRegistry {
     ClickButton {},
     ToggleButton { value: bool },

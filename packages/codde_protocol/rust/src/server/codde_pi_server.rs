@@ -1,11 +1,11 @@
 use crate::{
-    base::{protocol::Protocol, widget_registry::ServerStatus},
+    base::{
+        protocol::Protocol,
+        widget_registry::{ServerStatus, WidgetRegistry},
+    },
     server::{
         com_socket::{on, ComSocketServer},
-        models::widget_registry::{
-            ClickButton, ConfirmButton, ConfirmResult, DirectionalButton, ErrorResult, Joystick,
-            PressButton, ToggleButton,
-        },
+        models::widget_registry::{ConfirmResult, ErrorResult},
     },
 };
 use pyo3::prelude::*;
@@ -19,16 +19,11 @@ fn codde_protocol(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     m.add_class::<ComSocketServer>()?;
     m.add_class::<Protocol>()?;
     // m.add_class::<Action>()?;
-    m.add_class::<ClickButton>()?;
-    m.add_class::<ToggleButton>()?;
-    m.add_class::<ConfirmButton>()?;
-    m.add_class::<DirectionalButton>()?;
-    m.add_class::<Joystick>()?;
-    m.add_class::<PressButton>()?;
     // m.add_class::<ResultFrame>()?;
     m.add_class::<ServerStatus>()?;
     m.add_class::<ConfirmResult>()?;
     m.add_class::<ErrorResult>()?;
+    m.add_class::<WidgetRegistry>()?;
     m.add_function(wrap_pyfunction!(on, m)?)?;
 
     Ok(())

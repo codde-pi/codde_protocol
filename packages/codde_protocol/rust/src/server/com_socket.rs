@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::{
-    borrow::BorrowMut,
+    borrow::{Borrow, BorrowMut},
     collections::HashMap,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
@@ -15,7 +15,7 @@ use crate::{
         frame::{Frame, ResultFrame},
         widget_registry::{action_identity, extract_identity, ServerStatus},
     },
-    server::server_com::execute_action,
+    server::{models::widget_registry::clone_action, server_com::execute_action},
 };
 
 use crate::server::ServerCom;
@@ -28,7 +28,7 @@ use pyo3::{
 
 use log::debug;
 
-use super::models::widget_registry::{Action, WidgetAction};
+use super::models::widget_registry::{clone_action_registry, Action, WidgetAction};
 
 #[pyclass]
 pub struct ComSocketServer {
@@ -51,13 +51,14 @@ pub fn on(py: Python, server: Py<PyCell<ComSocketServer>>) -> PyResult<&PyCFunct
                 .unwrap();
             let (uid, name) = extract_identity(f_name);
             server
-                .call_method1(py, "on", (uid, name, func.clone()))
+                .call_method1(py, "on", (uid, name, func.clone_ref(py)))
                 .unwrap();
-            let g = move |args: &PyTuple, kwargs: Option<&PyDict>| {
+            let g = move |args: &pyo3::Bound<pyo3::types::PyTuple>,
+                          kwargs: Option<&pyo3::Bound<'_, PyDict>>| {
                 debug!("decorated call");
-                Python::with_gil(|py| func.call(py, args, kwargs))
+                Python::with_gil(|py| func.call_bound(py, args, kwargs))
             };
-            match PyCFunction::new_closure(py, None, None, g) {
+            match PyCFunction::new_closure_bound(py, None, None, g) {
                 Ok(r) => Ok(r.into()),
                 Err(e) => Err(e),
             }
@@ -84,7 +85,7 @@ impl ComSocketServer {
         ServerCom::register_action(self, id, widget, Action::PythonFn(action))
     }
 
-    pub fn _get_action(&mut self, key: &str) -> Result<Option<Py<PyAny>>> {
+    /* pub fn _get_action(&mut self, key: &str) -> Result<Option<&Py<PyAny>>> {
         match self.actions.get(key) {
             Some(action) => match action {
                 Action::PythonFn(value) => Ok(Some(value.clone())),
@@ -93,7 +94,7 @@ impl ComSocketServer {
 
             None => Ok(None),
         }
-    }
+    } */
 
     pub fn open(&mut self) -> Result<(), ServerStateError> {
         ServerCom::open(self)
@@ -184,7 +185,7 @@ impl ServerCom for ComSocketServer {
         }
         .try_clone()?;
 
-        let actions = self.actions.clone();
+        let actions = clone_action_registry(&self.actions);
         let (tx, rx): (Sender<bool>, Receiver<bool>) = channel();
         self.trigger = Some(tx.clone());
         let _ = self;
