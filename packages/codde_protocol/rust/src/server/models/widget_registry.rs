@@ -1,7 +1,6 @@
 use anyhow::Result;
 use std::collections::HashMap;
 
-use flutter_rust_bridge::frb;
 use pyo3::{prelude::*, pyclass, Py, PyAny};
 use serde::{Deserialize, Serialize};
 
@@ -11,11 +10,12 @@ pub type WidgetAction = HashMap<String, Action>;
 
 pub type TypeFn = fn(s: WidgetRegistry) -> Result<()>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Action {
     RustFn(TypeFn),
     PythonFn(Py<PyAny>),
 }
+
 /* impl IntoPy<PyObject> for Action {
     fn into_py(self, py: Python<'_>) -> PyObject {
         match self {
@@ -25,29 +25,27 @@ pub enum Action {
     }
 } */
 
+pub fn clone_action(action: &Action) -> Action {
+    match action {
+        Action::RustFn(f) => Action::RustFn(f.clone()),
+        Action::PythonFn(f) => Python::with_gil(|py| Action::PythonFn(f.clone_ref(py))),
+    }
+}
+
+pub fn clone_action_registry(action: &WidgetAction) -> WidgetAction {
+    let mut new_action = WidgetAction::new();
+    for (k, v) in action {
+        new_action.insert(k.clone(), clone_action(v));
+    }
+    new_action
+}
+
 impl IntoPy<PyObject> for ResultRegistry {
     fn into_py(self, py: Python<'_>) -> PyObject {
         match self {
             ResultRegistry::ConfirmResult { status } => ConfirmResult::new(status).into_py(py),
             // match the error result
             ResultRegistry::ErrorResult { error } => ErrorResult::new(error).into_py(py),
-        }
-    }
-}
-impl IntoPy<PyObject> for WidgetRegistry {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        match self {
-            WidgetRegistry::ClickButton {} => ClickButton::new().into_py(py),
-            WidgetRegistry::ToggleButton { value } => ToggleButton::new(value).into_py(py),
-            WidgetRegistry::ConfirmButton {} => ConfirmButton::new().into_py(py),
-            WidgetRegistry::DirectionalButton { direction } => {
-                DirectionalButton::new(direction).into_py(py)
-            }
-            WidgetRegistry::PressButton { pressed } => PressButton::new(pressed).into_py(py),
-            // bind joystick
-            WidgetRegistry::Joystick { delta, intensity } => {
-                Joystick::new(delta, intensity).into_py(py)
-            }
         }
     }
 }
@@ -66,91 +64,6 @@ impl ResultRegistry {
 ///
 /// La [Frame] possèderait l'enum WidgetRegsitry, la conversion se ferait uniquement au niveau des
 /// méthodes du `Server`
-
-/*
-* WIDGET REGISTRY
-*/
-
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[frb(opaque)]
-#[pyclass]
-pub struct ClickButton;
-#[pymethods]
-impl ClickButton {
-    #[new]
-    fn new() -> ClickButton {
-        ClickButton {}
-    }
-}
-
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[pyclass]
-pub struct ToggleButton {
-    #[pyo3(get)]
-    pub value: bool,
-}
-#[pymethods]
-impl ToggleButton {
-    #[new]
-    fn new(value: bool) -> ToggleButton {
-        ToggleButton { value }
-    }
-}
-
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[pyclass]
-pub struct ConfirmButton {}
-#[pymethods]
-impl ConfirmButton {
-    #[new]
-    fn new() -> ConfirmButton {
-        ConfirmButton {}
-    }
-}
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[pyclass]
-pub struct DirectionalButton {
-    #[pyo3(get)]
-    pub direction: u8,
-}
-#[pymethods]
-impl DirectionalButton {
-    #[new]
-    fn new(direction: u8) -> DirectionalButton {
-        DirectionalButton { direction }
-    }
-}
-
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[pyclass]
-pub struct PressButton {
-    #[pyo3(get)]
-    pub pressed: bool,
-}
-#[pymethods]
-impl PressButton {
-    #[new]
-    fn new(pressed: bool) -> PressButton {
-        PressButton { pressed }
-    }
-}
-
-// Joytick python implementation
-#[derive(Deserialize, Serialize, Widget, Clone)]
-#[pyclass]
-pub struct Joystick {
-    #[pyo3(get)]
-    pub delta: Coord,
-    #[pyo3(get)]
-    pub intensity: f32,
-}
-#[pymethods]
-impl Joystick {
-    #[new]
-    fn new(delta: Coord, intensity: f32) -> Joystick {
-        Joystick { delta, intensity }
-    }
-}
 
 /*
 * RESULT REGISTRY

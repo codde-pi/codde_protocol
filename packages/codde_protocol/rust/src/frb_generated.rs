@@ -892,7 +892,7 @@ impl SseDecode for crate::base::widget_registry::WidgetRegistry {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
             0 => {
-                return crate::base::widget_registry::WidgetRegistry::ClickButton;
+                return crate::base::widget_registry::WidgetRegistry::ClickButton {}
             }
             1 => {
                 let mut var_value = <bool>::sse_decode(deserializer);
@@ -901,7 +901,7 @@ impl SseDecode for crate::base::widget_registry::WidgetRegistry {
                 };
             }
             2 => {
-                return crate::base::widget_registry::WidgetRegistry::ConfirmButton;
+                return crate::base::widget_registry::WidgetRegistry::ConfirmButton {}
             }
             3 => {
                 let mut var_pressed = <bool>::sse_decode(deserializer);
@@ -1234,13 +1234,13 @@ impl flutter_rust_bridge::IntoIntoDart<crate::base::widget_registry::ServerStatu
 impl flutter_rust_bridge::IntoDart for crate::base::widget_registry::WidgetRegistry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
-            crate::base::widget_registry::WidgetRegistry::ClickButton => {
+            crate::base::widget_registry::WidgetRegistry::ClickButton {} => {
                 [0.into_dart()].into_dart()
             }
             crate::base::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 [1.into_dart(), value.into_into_dart().into_dart()].into_dart()
             }
-            crate::base::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::base::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 [2.into_dart()].into_dart()
             }
             crate::base::widget_registry::WidgetRegistry::PressButton { pressed } => {
@@ -1480,14 +1480,14 @@ impl SseEncode for crate::base::widget_registry::WidgetRegistry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         match self {
-            crate::base::widget_registry::WidgetRegistry::ClickButton => {
+            crate::base::widget_registry::WidgetRegistry::ClickButton {} => {
                 <i32>::sse_encode(0, serializer);
             }
             crate::base::widget_registry::WidgetRegistry::ToggleButton { value } => {
                 <i32>::sse_encode(1, serializer);
                 <bool>::sse_encode(value, serializer);
             }
-            crate::base::widget_registry::WidgetRegistry::ConfirmButton => {
+            crate::base::widget_registry::WidgetRegistry::ConfirmButton {} => {
                 <i32>::sse_encode(2, serializer);
             }
             crate::base::widget_registry::WidgetRegistry::PressButton { pressed } => {
