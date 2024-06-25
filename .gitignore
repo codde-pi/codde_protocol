@@ -28,6 +28,7 @@ venv/
 *.egg-info/
 .installed.cfg
 *.egg
+**/android/.cxx/
 
 # Installer logs
 pip-log.txt

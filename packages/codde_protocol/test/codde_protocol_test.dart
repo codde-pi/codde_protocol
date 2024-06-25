@@ -13,7 +13,7 @@ void main() {
     setUp(() async {
       await RustLib.init(
           externalLibrary: ExternalLibrary.open(
-              "native/client/target/release/libcodde_protocol.so"));
+              "rust/client/target/release/libcodde_protocol.so"));
     });
 
     test('Registry test', () async {

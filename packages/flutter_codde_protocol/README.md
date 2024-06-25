@@ -1,9 +1,9 @@
 # CODDE Protocol
 
-[![actions status](https://img.shields.io/github/actions/workflow/status/PyO3/pyo3/ci.yml?branch=main&logo=github&style=)](https://github.com/codde-pi/codde_protocol/actions)
-[![crates.io](https://img.shields.io/crates/v/pyo3?logo=rust)](https://crates.io/crates/codde_protocol)
-[![pub.dev](https://img.shields.io/pub/v/flutter_rust_bridge.svg?include_prereleases&color=blue)](https://pub.dev/packages/codde_protocol)
-[![pypi.org](https://img.shields.io/pypi/v/maturin.svg?logo=python&style=flat-square)](https://pypi.org/project/codde_protocol)
+[![actions status](https://img.shields.io/github/actions/workflow/status/codde-pi/codde_protocol/ci.yml?branch=main&logo=github&style=)](https://github.com/codde-pi/codde_protocol/actions)
+[![crates.io](https://img.shields.io/crates/v/codde_protocol?logo=rust)](https://crates.io/crates/codde_protocol)
+[![pub.dev](https://img.shields.io/pub/v/codde_protocol.svg?include_prereleases&color=blue)](https://pub.dev/packages/codde_protocol)
+[![pypi.org](https://img.shields.io/pypi/v/codde_protocol.svg?logo=python&style=flat-square)](https://pypi.org/project/codde_protocol)
 
 Multi Communication protocol in heart of the C.O.D.D.E. Pi framework.
 
@@ -43,9 +43,16 @@ if __name__ == "__main__":
 
 ## Roadmap
 
-Protocols:
+### Libraries
+|Protocols|Flutter|Python|
+|---|---|---|
+|WebSocket (client)| X | |
+|WebSocket (server)|  | X |
+|Bluetooth| | |
+|USB| |
 
-- [x] WebSocket
-- [ ] Bluetooth
-- [ ] UART
-- [ ] HTTP
+### Hardware compatibility
+
+|Device Name|WebSocket|Bluetooth|BLE|USB|Working?|
+|SBC | {{G|[[#WiFi/Bluetooth|Yes]]}}| No | No | No | Yes |
+|RP2040| {{G|[[#WiFi/Bluetooth|Yes]]}}| No | No | No | Yes |

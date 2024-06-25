@@ -6,10 +6,8 @@ permissions:
 
 on:
   push:
-    branches:
-      - main
     tags:
-      - "*"
+      - "v.*"
 
 jobs:
   publish_github_release:
@@ -61,10 +59,11 @@ jobs:
 
   rust_publish:
     name: Rust Publish
+    needs: publish_github_release
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
+        working-directory: packages/codde_protocol/rust/
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v2
@@ -85,18 +84,19 @@ jobs:
   # PYTHON
   linux:
     name: Python (linux)
+    needs: publish_github_release
+    runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
-    runs-on: ubuntu-latest
+        working-directory: packages/codde_protocol/rust/
     strategy:
       matrix:
-        target: [x86_64, x86, aarch64, armv7, s390x, ppc64le]
+        target: [x86_64, x86, aarch64, armv7, s390x, ppc64le, armv6l]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -112,10 +112,11 @@ jobs:
 
   windows:
     name: Python (windows)
+    needs: publish_github_release
+    runs-on: windows-latest
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
-    runs-on: windows-latest
+        working-directory: packages/codde_protocol/rust/
     strategy:
       matrix:
         target: [x64, x86]
@@ -123,7 +124,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
           architecture: ${{ matrix.target }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -139,10 +140,11 @@ jobs:
 
   macos:
     name: Python (macOS)
+    needs: publish_github_release
+    runs-on: macos-latest
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
-    runs-on: macos-latest
+        working-directory: packages/codde_protocol/rust/
     strategy:
       matrix:
         target: [x86_64, aarch64]
@@ -150,7 +152,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -165,15 +167,16 @@ jobs:
 
   sdist:
     name: Python (sdist)
+    needs: publish_github_release
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
+        working-directory: packages/codde_protocol/rust/
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
@@ -189,7 +192,7 @@ jobs:
     name: Python Release (PyPI)
     defaults:
       run:
-        working-directory: packages/codde_protocol/native/
+        working-directory: packages/codde_protocol/rust/
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/')"
     needs: [linux, windows, macos, sdist]

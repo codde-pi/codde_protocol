@@ -1,0 +1,29 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "codde_protocol"
+description = "Multi Communication protocol in heart of the C.O.D.D.E. Pi framework"
+authors = [
+  { name="Mathis Lecomte", email="vm.lecomte@gmail.com" },
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+version = "0.1.6"
+keywords = ["rust", "python", "codde_pi", "iot"]
+
+[project.urls]
+Homepage = "https://github.com/codde-pi/codde_protocol"
+Issues = "https://github.com/codde-pi/codde_protocol/issues"
+Repository = "https://github.com/codde-pi/codde_protocol.git"
+Changelog = "https://github.com/codde-pi/codde_protocol/blob/main/CHANGELOG.md"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]

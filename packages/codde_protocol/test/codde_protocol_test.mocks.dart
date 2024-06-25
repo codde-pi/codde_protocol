@@ -3,11 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i5;
 
-import 'package:codde_protocol/src/api/base/frame.dart' as _i4;
-import 'package:codde_protocol/src/api/com_socket.dart' as _i2;
+import 'package:codde_protocol/src/base/frame.dart' as _i6;
+import 'package:codde_protocol/src/base/widget_registry.dart' as _i4;
+import 'package:codde_protocol/src/client/com_socket.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,10 +33,34 @@ class MockComSocketClient extends _i1.Mock implements _i2.ComSocketClient {
   }
 
   @override
-  set move(bool? move) => super.noSuchMethod(
+  String get address => (super.noSuchMethod(
+        Invocation.getter(#address),
+        returnValue: _i3.dummyValue<String>(
+          this,
+          Invocation.getter(#address),
+        ),
+      ) as String);
+
+  @override
+  _i4.ClientStatus get status => (super.noSuchMethod(
+        Invocation.getter(#status),
+        returnValue: _i4.ClientStatus.connected,
+      ) as _i4.ClientStatus);
+
+  @override
+  set address(String? address) => super.noSuchMethod(
         Invocation.setter(
-          #move,
-          move,
+          #address,
+          address,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set status(_i4.ClientStatus? status) => super.noSuchMethod(
+        Invocation.setter(
+          #status,
+          status,
         ),
         returnValueForMissingStub: null,
       );
@@ -46,101 +72,64 @@ class MockComSocketClient extends _i1.Mock implements _i2.ComSocketClient {
       ) as bool);
 
   @override
-  _i3.Future<void> connect({dynamic hint}) => (super.noSuchMethod(
+  _i5.Future<void> connect() => (super.noSuchMethod(
         Invocation.method(
           #connect,
           [],
-          {#hint: hint},
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i3.Future<void> disconnect({dynamic hint}) => (super.noSuchMethod(
+  _i5.Future<void> disconnect() => (super.noSuchMethod(
         Invocation.method(
           #disconnect,
           [],
-          {#hint: hint},
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i3.Future<bool> isConnected({dynamic hint}) => (super.noSuchMethod(
+  _i5.Future<bool> isConnected() => (super.noSuchMethod(
         Invocation.method(
           #isConnected,
           [],
-          {#hint: hint},
         ),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i3.Future<_i4.ResultFrame?> receive({dynamic hint}) => (super.noSuchMethod(
+  _i5.Future<_i6.ResultFrame?> receive() => (super.noSuchMethod(
         Invocation.method(
           #receive,
           [],
-          {#hint: hint},
         ),
-        returnValue: _i3.Future<_i4.ResultFrame?>.value(),
-      ) as _i3.Future<_i4.ResultFrame?>);
+        returnValue: _i5.Future<_i6.ResultFrame?>.value(),
+      ) as _i5.Future<_i6.ResultFrame?>);
 
   @override
-  _i3.Future<_i4.ResultFrame?> request({
-    required _i4.Frame? data,
-    dynamic hint,
-  }) =>
+  _i5.Future<_i6.ResultFrame?> request({required _i6.Frame? data}) =>
       (super.noSuchMethod(
         Invocation.method(
           #request,
           [],
-          {
-            #data: data,
-            #hint: hint,
-          },
+          {#data: data},
         ),
-        returnValue: _i3.Future<_i4.ResultFrame?>.value(),
-      ) as _i3.Future<_i4.ResultFrame?>);
+        returnValue: _i5.Future<_i6.ResultFrame?>.value(),
+      ) as _i5.Future<_i6.ResultFrame?>);
 
   @override
-  _i3.Future<void> send({
-    required _i4.Frame? data,
-    dynamic hint,
-  }) =>
-      (super.noSuchMethod(
+  _i5.Future<void> send({required _i6.Frame? data}) => (super.noSuchMethod(
         Invocation.method(
           #send,
           [],
-          {
-            #data: data,
-            #hint: hint,
-          },
+          {#data: data},
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
-
-  @override
-  int cstEncode({bool? move}) => (super.noSuchMethod(
-        Invocation.method(
-          #cstEncode,
-          [],
-          {#move: move},
-        ),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  int sseEncode({bool? move}) => (super.noSuchMethod(
-        Invocation.method(
-          #sseEncode,
-          [],
-          {#move: move},
-        ),
-        returnValue: 0,
-      ) as int);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   void dispose() => super.noSuchMethod(
