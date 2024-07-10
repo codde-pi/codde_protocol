@@ -1,4 +1,4 @@
 ---
-rust_input: "crate::client"
-rust_root: rust/
+rust_input: "crate::api"
+rust_root: rust/client
 dart_output: "lib/src/"

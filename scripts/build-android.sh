@@ -18,7 +18,7 @@ rustup target add \
 # i686-linux-android
 
 # Build the android libraries in the jniLibs directory
-cd "$ROOT/packages/codde_protocol/native/client" || exit
+cd "$ROOT/packages/codde_protocol/rust/client" || exit
 
 PYO3_PYTHON=python3.11 \
 	PYO3_CROSS=1 \

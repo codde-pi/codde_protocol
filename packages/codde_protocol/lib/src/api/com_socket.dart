@@ -3,10 +3,10 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../base/error.dart';
-import '../base/frame.dart';
-import '../base/widget_registry.dart';
 import '../frb_generated.dart';
+import 'base/error.dart';
+import 'base/frame.dart';
+import 'base/widget_registry.dart';
 import 'com.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -27,7 +27,7 @@ abstract class ComSocketClient implements RustOpaqueInterface, ClientCom {
   Future<bool> isConnected();
 
   factory ComSocketClient({required String address}) => RustLib.instance.api
-      .crateClientComSocketComSocketClientNew(address: address);
+      .crateApiComSocketComSocketClientNew(address: address);
 
   Future<ResultFrame?> receive();
 

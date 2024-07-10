@@ -10,7 +10,7 @@ cd $BUILD_DIR
 cargo install cargo-zigbuild
 
 zig_build() {
-	cd "$ROOT/packages/codde_protocol/native/client" || exit
+	cd "$ROOT/packages/codde_protocol/rust/client" || exit
 
 	local TARGET="$1"
 	local PLATFORM_NAME="$2"

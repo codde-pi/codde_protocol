@@ -3,10 +3,20 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
+import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'widget_registry.freezed.dart';
+
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
+
+Future<String> actionIdentity({required int id, required String widget}) =>
+    RustLib.instance.api
+        .crateApiBaseWidgetRegistryActionIdentity(id: id, widget: widget);
+
+Future<(int, String)> extractIdentity({required String value}) =>
+    RustLib.instance.api
+        .crateApiBaseWidgetRegistryExtractIdentity(value: value);
 
 enum ClientStatus {
   connected,
@@ -74,4 +84,9 @@ sealed class WidgetRegistry with _$WidgetRegistry {
     required Coord delta,
     required double intensity,
   }) = WidgetRegistry_Joystick;
+
+  Future<String> name() =>
+      RustLib.instance.api.crateApiBaseWidgetRegistryWidgetRegistryName(
+        that: this,
+      );
 }

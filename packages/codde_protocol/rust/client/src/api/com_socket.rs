@@ -5,13 +5,13 @@ use std::{
     net::{Shutdown, TcpStream},
 };
 
-use crate::base::{
+use crate::api::base::{
     error::ServerStateError,
     frame::{Frame, ResultFrame},
     widget_registry::ClientStatus,
 };
 
-use crate::client::ClientCom;
+use crate::api::com::ClientCom;
 
 #[frb(opaque)]
 pub struct ComSocketClient {

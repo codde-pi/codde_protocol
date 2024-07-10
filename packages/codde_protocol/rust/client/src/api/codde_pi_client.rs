@@ -1,7 +1,7 @@
-use crate::client::com_socket::ComSocketClient;
+use crate::api::com_socket::ComSocketClient;
 
 // use super::{client::ClientCom, ClientProtocol};
-use crate::base::protocol::Protocol;
+use crate::api::base::protocol::Protocol;
 
 pub struct CoddePiClient {}
 
