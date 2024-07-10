@@ -5,7 +5,7 @@ ROOT="$(pwd)"
 BUILD_DIR="$ROOT/platform-build"
 mkdir $BUILD_DIR
 
-cd "$ROOT/packages/codde_protocol/native/client" || exit
+cd "$ROOT/packages/codde_protocol/rust/client" || exit
 # Build static libs
 for TARGET in \
 	aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim \

@@ -27,7 +27,7 @@ pub enum Action {
 
 pub fn clone_action(action: &Action) -> Action {
     match action {
-        Action::RustFn(f) => Action::RustFn(f.clone()),
+        Action::RustFn(f) => Action::RustFn(*f),
         Action::PythonFn(f) => Python::with_gil(|py| Action::PythonFn(f.clone_ref(py))),
     }
 }
