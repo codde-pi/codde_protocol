@@ -7,7 +7,7 @@ use codde_protocol::{
     server::{
         codde_pi_server::CoddePiServer,
         com_socket::ComSocketServer,
-        models::widget_registry::{Action, ConfirmResult, ToggleButton},
+        models::widget_registry::{Action, ConfirmResult},
         server_com::ServerCom,
     },
 };
@@ -104,7 +104,7 @@ fn test_decorator() {
         let m = PyModule::new(py, "codde_protocol").unwrap();
         m.add_class::<ComSocketServer>().unwrap();
         m.add_class::<CoddePiServer>().unwrap();
-        m.add_class::<ToggleButton>().unwrap();
+        m.add_class::<WidgetRegistry>().unwrap();
         m.add_function(wrap_pyfunction!(codde_protocol::server::com_socket::on, m).unwrap())
             .unwrap();
         let sys = PyModule::import(py, "sys").unwrap();

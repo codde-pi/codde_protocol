@@ -85,16 +85,16 @@ impl ComSocketServer {
         ServerCom::register_action(self, id, widget, Action::PythonFn(action))
     }
 
-    /* pub fn _get_action(&mut self, key: &str) -> Result<Option<&Py<PyAny>>> {
+    pub fn _get_action(&mut self, key: &str) -> Result<Option<&Py<PyAny>>> {
         match self.actions.get(key) {
             Some(action) => match action {
-                Action::PythonFn(value) => Ok(Some(value.clone())),
+                Action::PythonFn(value) => Ok(Some(value)),
                 _ => Err(ServerStateError(String::from("RustFn is not compatible yet")).into()),
             },
 
             None => Ok(None),
         }
-    } */
+    }
 
     pub fn open(&mut self) -> Result<(), ServerStateError> {
         ServerCom::open(self)
