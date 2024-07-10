@@ -9,6 +9,10 @@ on:
     tags:
       - "v.*"
 
+defaults:
+  run:
+    working-directory: packages/codde_protocol/rust/
+
 jobs:
   publish_github_release:
     name: Binary release
