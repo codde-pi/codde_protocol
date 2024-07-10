@@ -209,4 +209,4 @@ jobs:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         with:
           command: upload
-          args: --non-interactive --skip-existing *
+          args: --username __token__ --password ${{ secrets.PYPI_TOKEN }} --non-interactive --skip-existing *
