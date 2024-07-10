@@ -16,7 +16,7 @@ homepage = "https://github.com/codde-pi/codde_protocol"
 flutter_rust_bridge = "=2.0.0"
 quote = "1.0.35"
 serde = {version= "1.0.196",  features = ["derive"] }
-syn = "2.0.48"
+syn = "2.0.70"
 codde_protocol_derive = "0.1.0"
 cbor = "0.4.1"
 typetag = "0.2.15"
