@@ -3,13 +3,13 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'base/error.dart';
-import 'base/frame.dart';
-import 'base/protocol.dart';
-import 'base/widget_registry.dart';
-import 'client/codde_pi_client.dart';
-import 'client/com.dart';
-import 'client/com_socket.dart';
+import 'api/base/error.dart';
+import 'api/base/frame.dart';
+import 'api/base/protocol.dart';
+import 'api/base/widget_registry.dart';
+import 'api/codde_pi_client.dart';
+import 'api/com.dart';
+import 'api/com_socket.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -62,54 +62,77 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.0.0';
 
   @override
-  int get rustContentHash => 2005077855;
+  int get rustContentHash => 367282784;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
     stem: 'codde_protocol',
-    ioDirectory: 'rust/target/release/',
+    ioDirectory: 'rust/client/target/release/',
     webPrefix: 'pkg/',
   );
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<void> crateClientCoddePiClientCoddePiClientDummy(
+  Future<ServerStateError> crateApiBaseErrorServerStateErrorNoStream();
+
+  Future<Uint8List> crateApiBaseFrameFrameBufferize({required Frame that});
+
+  Future<String> crateApiBaseFrameFrameIdentity({required Frame that});
+
+  Future<Frame?> crateApiBaseFrameFrameParse({required List<int> data});
+
+  Future<Uint8List> crateApiBaseFrameResultFrameBufferize(
+      {required ResultFrame that});
+
+  Future<ResultFrame?> crateApiBaseFrameResultFrameParse(
+      {required List<int> data});
+
+  Future<String> crateApiBaseWidgetRegistryActionIdentity(
+      {required int id, required String widget});
+
+  Future<(int, String)> crateApiBaseWidgetRegistryExtractIdentity(
+      {required String value});
+
+  Future<String> crateApiBaseWidgetRegistryWidgetRegistryName(
+      {required WidgetRegistry that});
+
+  Future<void> crateApiCoddePiClientCoddePiClientDummy(
       {required Protocol protocol, required String addr});
 
-  Future<ComSocketClient> crateClientCoddePiClientCoddePiClientUseSocket(
+  Future<ComSocketClient> crateApiCoddePiClientCoddePiClientUseSocket(
       {required String address});
 
-  String crateClientComSocketComSocketClientAutoAccessorGetAddress(
+  String crateApiComSocketComSocketClientAutoAccessorGetAddress(
       {required ComSocketClient that});
 
-  ClientStatus crateClientComSocketComSocketClientAutoAccessorGetStatus(
+  ClientStatus crateApiComSocketComSocketClientAutoAccessorGetStatus(
       {required ComSocketClient that});
 
-  void crateClientComSocketComSocketClientAutoAccessorSetAddress(
+  void crateApiComSocketComSocketClientAutoAccessorSetAddress(
       {required ComSocketClient that, required String address});
 
-  void crateClientComSocketComSocketClientAutoAccessorSetStatus(
+  void crateApiComSocketComSocketClientAutoAccessorSetStatus(
       {required ComSocketClient that, required ClientStatus status});
 
-  Future<void> crateClientComSocketComSocketClientConnect(
+  Future<void> crateApiComSocketComSocketClientConnect(
       {required ComSocketClient that});
 
-  Future<void> crateClientComSocketComSocketClientDisconnect(
+  Future<void> crateApiComSocketComSocketClientDisconnect(
       {required ComSocketClient that});
 
-  Future<bool> crateClientComSocketComSocketClientIsConnected(
+  Future<bool> crateApiComSocketComSocketClientIsConnected(
       {required ComSocketClient that});
 
-  ComSocketClient crateClientComSocketComSocketClientNew(
+  ComSocketClient crateApiComSocketComSocketClientNew(
       {required String address});
 
-  Future<ResultFrame?> crateClientComSocketComSocketClientReceive(
+  Future<ResultFrame?> crateApiComSocketComSocketClientReceive(
       {required ComSocketClient that});
 
-  Future<ResultFrame?> crateClientComSocketComSocketClientRequest(
+  Future<ResultFrame?> crateApiComSocketComSocketClientRequest(
       {required ComSocketClient that, required Frame data});
 
-  Future<void> crateClientComSocketComSocketClientSend(
+  Future<void> crateApiComSocketComSocketClientSend(
       {required ComSocketClient that, required Frame data});
 
   RustArcIncrementStrongCountFnType
@@ -131,7 +154,237 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<void> crateClientCoddePiClientCoddePiClientDummy(
+  Future<ServerStateError> crateApiBaseErrorServerStateErrorNoStream() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_server_state_error,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseErrorServerStateErrorNoStreamConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseErrorServerStateErrorNoStreamConstMeta =>
+      const TaskConstMeta(
+        debugName: "server_state_error_no_stream",
+        argNames: [],
+      );
+
+  @override
+  Future<Uint8List> crateApiBaseFrameFrameBufferize({required Frame that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_frame(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseFrameFrameBufferizeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseFrameFrameBufferizeConstMeta =>
+      const TaskConstMeta(
+        debugName: "frame_bufferize",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateApiBaseFrameFrameIdentity({required Frame that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_frame(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseFrameFrameIdentityConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseFrameFrameIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "frame_identity",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Frame?> crateApiBaseFrameFrameParse({required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_frame,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBaseFrameFrameParseConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseFrameFrameParseConstMeta =>
+      const TaskConstMeta(
+        debugName: "frame_parse",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<Uint8List> crateApiBaseFrameResultFrameBufferize(
+      {required ResultFrame that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_result_frame(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseFrameResultFrameBufferizeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseFrameResultFrameBufferizeConstMeta =>
+      const TaskConstMeta(
+        debugName: "result_frame_bufferize",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ResultFrame?> crateApiBaseFrameResultFrameParse(
+      {required List<int> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_result_frame,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBaseFrameResultFrameParseConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseFrameResultFrameParseConstMeta =>
+      const TaskConstMeta(
+        debugName: "result_frame_parse",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<String> crateApiBaseWidgetRegistryActionIdentity(
+      {required int id, required String widget}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_8(id, serializer);
+        sse_encode_String(widget, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseWidgetRegistryActionIdentityConstMeta,
+      argValues: [id, widget],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseWidgetRegistryActionIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "action_identity",
+        argNames: ["id", "widget"],
+      );
+
+  @override
+  Future<(int, String)> crateApiBaseWidgetRegistryExtractIdentity(
+      {required String value}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(value, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_record_u_8_string,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseWidgetRegistryExtractIdentityConstMeta,
+      argValues: [value],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseWidgetRegistryExtractIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "extract_identity",
+        argNames: ["value"],
+      );
+
+  @override
+  Future<String> crateApiBaseWidgetRegistryWidgetRegistryName(
+      {required WidgetRegistry that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_widget_registry(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBaseWidgetRegistryWidgetRegistryNameConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBaseWidgetRegistryWidgetRegistryNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "widget_registry_name",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> crateApiCoddePiClientCoddePiClientDummy(
       {required Protocol protocol, required String addr}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -139,109 +392,109 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_protocol(protocol, serializer);
         sse_encode_String(addr, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
-      constMeta: kCrateClientCoddePiClientCoddePiClientDummyConstMeta,
+      constMeta: kCrateApiCoddePiClientCoddePiClientDummyConstMeta,
       argValues: [protocol, addr],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientCoddePiClientCoddePiClientDummyConstMeta =>
+  TaskConstMeta get kCrateApiCoddePiClientCoddePiClientDummyConstMeta =>
       const TaskConstMeta(
         debugName: "codde_pi_client_dummy",
         argNames: ["protocol", "addr"],
       );
 
   @override
-  Future<ComSocketClient> crateClientCoddePiClientCoddePiClientUseSocket(
+  Future<ComSocketClient> crateApiCoddePiClientCoddePiClientUseSocket(
       {required String address}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(address, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
             sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient,
         decodeErrorData: null,
       ),
-      constMeta: kCrateClientCoddePiClientCoddePiClientUseSocketConstMeta,
+      constMeta: kCrateApiCoddePiClientCoddePiClientUseSocketConstMeta,
       argValues: [address],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientCoddePiClientCoddePiClientUseSocketConstMeta =>
+  TaskConstMeta get kCrateApiCoddePiClientCoddePiClientUseSocketConstMeta =>
       const TaskConstMeta(
         debugName: "codde_pi_client_use_socket",
         argNames: ["address"],
       );
 
   @override
-  String crateClientComSocketComSocketClientAutoAccessorGetAddress(
+  String crateApiComSocketComSocketClientAutoAccessorGetAddress(
       {required ComSocketClient that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
         decodeErrorData: null,
       ),
       constMeta:
-          kCrateClientComSocketComSocketClientAutoAccessorGetAddressConstMeta,
+          kCrateApiComSocketComSocketClientAutoAccessorGetAddressConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta
-      get kCrateClientComSocketComSocketClientAutoAccessorGetAddressConstMeta =>
+      get kCrateApiComSocketComSocketClientAutoAccessorGetAddressConstMeta =>
           const TaskConstMeta(
             debugName: "ComSocketClient_auto_accessor_get_address",
             argNames: ["that"],
           );
 
   @override
-  ClientStatus crateClientComSocketComSocketClientAutoAccessorGetStatus(
+  ClientStatus crateApiComSocketComSocketClientAutoAccessorGetStatus(
       {required ComSocketClient that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_client_status,
         decodeErrorData: null,
       ),
       constMeta:
-          kCrateClientComSocketComSocketClientAutoAccessorGetStatusConstMeta,
+          kCrateApiComSocketComSocketClientAutoAccessorGetStatusConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta
-      get kCrateClientComSocketComSocketClientAutoAccessorGetStatusConstMeta =>
+      get kCrateApiComSocketComSocketClientAutoAccessorGetStatusConstMeta =>
           const TaskConstMeta(
             debugName: "ComSocketClient_auto_accessor_get_status",
             argNames: ["that"],
           );
 
   @override
-  void crateClientComSocketComSocketClientAutoAccessorSetAddress(
+  void crateApiComSocketComSocketClientAutoAccessorSetAddress(
       {required ComSocketClient that, required String address}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
@@ -249,28 +502,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         sse_encode_String(address, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
       constMeta:
-          kCrateClientComSocketComSocketClientAutoAccessorSetAddressConstMeta,
+          kCrateApiComSocketComSocketClientAutoAccessorSetAddressConstMeta,
       argValues: [that, address],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta
-      get kCrateClientComSocketComSocketClientAutoAccessorSetAddressConstMeta =>
+      get kCrateApiComSocketComSocketClientAutoAccessorSetAddressConstMeta =>
           const TaskConstMeta(
             debugName: "ComSocketClient_auto_accessor_set_address",
             argNames: ["that", "address"],
           );
 
   @override
-  void crateClientComSocketComSocketClientAutoAccessorSetStatus(
+  void crateApiComSocketComSocketClientAutoAccessorSetStatus(
       {required ComSocketClient that, required ClientStatus status}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
@@ -278,28 +531,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         sse_encode_client_status(status, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
       constMeta:
-          kCrateClientComSocketComSocketClientAutoAccessorSetStatusConstMeta,
+          kCrateApiComSocketComSocketClientAutoAccessorSetStatusConstMeta,
       argValues: [that, status],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta
-      get kCrateClientComSocketComSocketClientAutoAccessorSetStatusConstMeta =>
+      get kCrateApiComSocketComSocketClientAutoAccessorSetStatusConstMeta =>
           const TaskConstMeta(
             debugName: "ComSocketClient_auto_accessor_set_status",
             argNames: ["that", "status"],
           );
 
   @override
-  Future<void> crateClientComSocketComSocketClientConnect(
+  Future<void> crateApiComSocketComSocketClientConnect(
       {required ComSocketClient that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -307,26 +560,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_server_state_error,
       ),
-      constMeta: kCrateClientComSocketComSocketClientConnectConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientConnectConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientConnectConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientConnectConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_connect",
         argNames: ["that"],
       );
 
   @override
-  Future<void> crateClientComSocketComSocketClientDisconnect(
+  Future<void> crateApiComSocketComSocketClientDisconnect(
       {required ComSocketClient that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -334,26 +587,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_server_state_error,
       ),
-      constMeta: kCrateClientComSocketComSocketClientDisconnectConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientDisconnectConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientDisconnectConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientDisconnectConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_disconnect",
         argNames: ["that"],
       );
 
   @override
-  Future<bool> crateClientComSocketComSocketClientIsConnected(
+  Future<bool> crateApiComSocketComSocketClientIsConnected(
       {required ComSocketClient that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -361,52 +614,52 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
         decodeErrorData: null,
       ),
-      constMeta: kCrateClientComSocketComSocketClientIsConnectedConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientIsConnectedConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientIsConnectedConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientIsConnectedConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_is_connected",
         argNames: ["that"],
       );
 
   @override
-  ComSocketClient crateClientComSocketComSocketClientNew(
+  ComSocketClient crateApiComSocketComSocketClientNew(
       {required String address}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(address, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
       },
       codec: SseCodec(
         decodeSuccessData:
             sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient,
         decodeErrorData: null,
       ),
-      constMeta: kCrateClientComSocketComSocketClientNewConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientNewConstMeta,
       argValues: [address],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientNewConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientNewConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_new",
         argNames: ["address"],
       );
 
   @override
-  Future<ResultFrame?> crateClientComSocketComSocketClientReceive(
+  Future<ResultFrame?> crateApiComSocketComSocketClientReceive(
       {required ComSocketClient that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -414,26 +667,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerComSocketClient(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_box_autoadd_result_frame,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateClientComSocketComSocketClientReceiveConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientReceiveConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientReceiveConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientReceiveConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_receive",
         argNames: ["that"],
       );
 
   @override
-  Future<ResultFrame?> crateClientComSocketComSocketClientRequest(
+  Future<ResultFrame?> crateApiComSocketComSocketClientRequest(
       {required ComSocketClient that, required Frame data}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -442,26 +695,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_box_autoadd_frame(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_box_autoadd_result_frame,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateClientComSocketComSocketClientRequestConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientRequestConstMeta,
       argValues: [that, data],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientRequestConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientRequestConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_request",
         argNames: ["that", "data"],
       );
 
   @override
-  Future<void> crateClientComSocketComSocketClientSend(
+  Future<void> crateApiComSocketComSocketClientSend(
       {required ComSocketClient that, required Frame data}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -470,19 +723,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_box_autoadd_frame(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_server_state_error,
       ),
-      constMeta: kCrateClientComSocketComSocketClientSendConstMeta,
+      constMeta: kCrateApiComSocketComSocketClientSendConstMeta,
       argValues: [that, data],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateClientComSocketComSocketClientSendConstMeta =>
+  TaskConstMeta get kCrateApiComSocketComSocketClientSendConstMeta =>
       const TaskConstMeta(
         debugName: "ComSocketClient_send",
         argNames: ["that", "data"],
@@ -571,6 +824,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  WidgetRegistry dco_decode_box_autoadd_widget_registry(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_widget_registry(raw);
+  }
+
+  @protected
   ClientStatus dco_decode_client_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ClientStatus.values[raw as int];
@@ -622,9 +881,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  Frame? dco_decode_opt_box_autoadd_frame(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_frame(raw);
   }
 
   @protected
@@ -637,6 +908,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Protocol dco_decode_protocol(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Protocol.values[raw as int];
+  }
+
+  @protected
+  (int, String) dco_decode_record_u_8_string(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_u_8(arr[0]),
+      dco_decode_String(arr[1]),
+    );
   }
 
   @protected
@@ -810,6 +1094,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  WidgetRegistry sse_decode_box_autoadd_widget_registry(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_widget_registry(deserializer));
+  }
+
+  @protected
   ClientStatus sse_decode_client_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -851,10 +1142,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  Frame? sse_decode_opt_box_autoadd_frame(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_frame(deserializer));
+    } else {
+      return null;
+    }
   }
 
   @protected
@@ -874,6 +1183,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return Protocol.values[inner];
+  }
+
+  @protected
+  (int, String) sse_decode_record_u_8_string(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_u_8(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
@@ -1041,6 +1358,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_widget_registry(
+      WidgetRegistry self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_widget_registry(self, serializer);
+  }
+
+  @protected
   void sse_encode_client_status(ClientStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
@@ -1079,11 +1403,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_prim_u_8_loose(
+      List<int> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer
+        .putUint8List(self is Uint8List ? self : Uint8List.fromList(self));
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_frame(Frame? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_frame(self, serializer);
+    }
   }
 
   @protected
@@ -1101,6 +1444,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_protocol(Protocol self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_record_u_8_string(
+      (int, String) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self.$1, serializer);
+    sse_encode_String(self.$2, serializer);
   }
 
   @protected
@@ -1208,48 +1559,48 @@ class ComSocketClientImpl extends RustOpaque implements ComSocketClient {
   );
 
   String get address => RustLib.instance.api
-          .crateClientComSocketComSocketClientAutoAccessorGetAddress(
+          .crateApiComSocketComSocketClientAutoAccessorGetAddress(
         that: this,
       );
 
   ClientStatus get status => RustLib.instance.api
-          .crateClientComSocketComSocketClientAutoAccessorGetStatus(
+          .crateApiComSocketComSocketClientAutoAccessorGetStatus(
         that: this,
       );
 
   void set address(String address) => RustLib.instance.api
-      .crateClientComSocketComSocketClientAutoAccessorSetAddress(
+      .crateApiComSocketComSocketClientAutoAccessorSetAddress(
           that: this, address: address);
 
   void set status(ClientStatus status) => RustLib.instance.api
-      .crateClientComSocketComSocketClientAutoAccessorSetStatus(
+      .crateApiComSocketComSocketClientAutoAccessorSetStatus(
           that: this, status: status);
 
   Future<void> connect() =>
-      RustLib.instance.api.crateClientComSocketComSocketClientConnect(
+      RustLib.instance.api.crateApiComSocketComSocketClientConnect(
         that: this,
       );
 
   Future<void> disconnect() =>
-      RustLib.instance.api.crateClientComSocketComSocketClientDisconnect(
+      RustLib.instance.api.crateApiComSocketComSocketClientDisconnect(
         that: this,
       );
 
   Future<bool> isConnected() =>
-      RustLib.instance.api.crateClientComSocketComSocketClientIsConnected(
+      RustLib.instance.api.crateApiComSocketComSocketClientIsConnected(
         that: this,
       );
 
   Future<ResultFrame?> receive() =>
-      RustLib.instance.api.crateClientComSocketComSocketClientReceive(
+      RustLib.instance.api.crateApiComSocketComSocketClientReceive(
         that: this,
       );
 
   /// Expose method twice for Dart port
   /// Rust Flutter Bridge only read direct struct implementations
   Future<ResultFrame?> request({required Frame data}) => RustLib.instance.api
-      .crateClientComSocketComSocketClientRequest(that: this, data: data);
+      .crateApiComSocketComSocketClientRequest(that: this, data: data);
 
   Future<void> send({required Frame data}) => RustLib.instance.api
-      .crateClientComSocketComSocketClientSend(that: this, data: data);
+      .crateApiComSocketComSocketClientSend(that: this, data: data);
 }

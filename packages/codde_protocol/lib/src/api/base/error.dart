@@ -3,15 +3,20 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
+import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class ServerStateError implements FrbException {
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`
+
+class ServerStateError {
   final String field0;
 
   const ServerStateError({
     required this.field0,
   });
+
+  static Future<ServerStateError> noStream() =>
+      RustLib.instance.api.crateApiBaseErrorServerStateErrorNoStream();
 
   @override
   int get hashCode => field0.hashCode;

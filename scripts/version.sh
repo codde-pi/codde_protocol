@@ -24,9 +24,11 @@ done
 # Workspace
 if [[ -n "$1" ]]; then sed -i "s/version: .*/version: $CURR_VERSION/" pubspec.yaml; fi
 # Rust
-sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/rust/Cargo.toml
+sed -i "0,/version = .*/{s/version = .*/version = \"$CURR_VERSION\"/}" packages/codde_protocol/rust/Cargo.toml
+# Rust client
+sed -i "0,/version = .*/{s/version = .*/version = \"$CURR_VERSION\"/}" packages/codde_protocol/rust/client/Cargo.toml
 # Python
-sed -i "s/version = .*/version = \"$CURR_VERSION\"/" packages/codde_protocol/rust/pyproject.toml
+sed -i "0,/version = .*/{s/version = .*/version = \"$CURR_VERSION\"/}" packages/codde_protocol/rust/pyproject.toml
 # Dart
 sed -i "s/version: .*/version: $CURR_VERSION/" packages/codde_protocol/pubspec.yaml
 # Flutter
@@ -40,3 +42,4 @@ cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/codde_
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/flutter_codde_protocol" -f
 # Rust
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/codde_protocol/rust" -f
+cp "$ROOT/LICENSE" "$ROOT/README.md" "$ROOT/CHANGELOG.md" "$ROOT/packages/codde_protocol/rust/client" -f

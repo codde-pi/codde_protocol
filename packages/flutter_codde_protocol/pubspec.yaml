@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   codde_protocol: ^0.1.6
-    # path: ../codde_protocol
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
@@ -28,6 +27,7 @@ dev_dependencies:
   freezed: ^2.4.7
   lints: ^4.0.0
   test: ^1.21.0
+  flutter_rust_bridge: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

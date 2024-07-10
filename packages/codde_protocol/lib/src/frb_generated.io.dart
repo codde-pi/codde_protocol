@@ -3,13 +3,13 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'base/error.dart';
-import 'base/frame.dart';
-import 'base/protocol.dart';
-import 'base/widget_registry.dart';
-import 'client/codde_pi_client.dart';
-import 'client/com.dart';
-import 'client/com_socket.dart';
+import 'api/base/error.dart';
+import 'api/base/frame.dart';
+import 'api/base/protocol.dart';
+import 'api/base/widget_registry.dart';
+import 'api/codde_pi_client.dart';
+import 'api/com.dart';
+import 'api/com_socket.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -70,6 +70,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame dco_decode_box_autoadd_result_frame(dynamic raw);
 
   @protected
+  WidgetRegistry dco_decode_box_autoadd_widget_registry(dynamic raw);
+
+  @protected
   ClientStatus dco_decode_client_status(dynamic raw);
 
   @protected
@@ -88,13 +91,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_i_32(dynamic raw);
 
   @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  Frame? dco_decode_opt_box_autoadd_frame(dynamic raw);
 
   @protected
   ResultFrame? dco_decode_opt_box_autoadd_result_frame(dynamic raw);
 
   @protected
   Protocol dco_decode_protocol(dynamic raw);
+
+  @protected
+  (int, String) dco_decode_record_u_8_string(dynamic raw);
 
   @protected
   ResultFrame dco_decode_result_frame(dynamic raw);
@@ -159,6 +171,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ResultFrame sse_decode_box_autoadd_result_frame(SseDeserializer deserializer);
 
   @protected
+  WidgetRegistry sse_decode_box_autoadd_widget_registry(
+      SseDeserializer deserializer);
+
+  @protected
   ClientStatus sse_decode_client_status(SseDeserializer deserializer);
 
   @protected
@@ -177,7 +193,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  Frame? sse_decode_opt_box_autoadd_frame(SseDeserializer deserializer);
 
   @protected
   ResultFrame? sse_decode_opt_box_autoadd_result_frame(
@@ -185,6 +207,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Protocol sse_decode_protocol(SseDeserializer deserializer);
+
+  @protected
+  (int, String) sse_decode_record_u_8_string(SseDeserializer deserializer);
 
   @protected
   ResultFrame sse_decode_result_frame(SseDeserializer deserializer);
@@ -251,6 +276,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ResultFrame self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_widget_registry(
+      WidgetRegistry self, SseSerializer serializer);
+
+  @protected
   void sse_encode_client_status(ClientStatus self, SseSerializer serializer);
 
   @protected
@@ -269,8 +298,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_frame(Frame? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_result_frame(
@@ -278,6 +313,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_protocol(Protocol self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_u_8_string(
+      (int, String) self, SseSerializer serializer);
 
   @protected
   void sse_encode_result_frame(ResultFrame self, SseSerializer serializer);

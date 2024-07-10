@@ -430,10 +430,26 @@ dependencies = [
  "cbor",
  "codde_protocol_derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dynamic",
- "flutter_rust_bridge",
- "flutter_rust_bridge_codegen",
  "log",
  "pyo3",
+ "quote",
+ "regex",
+ "rmp-serde",
+ "serde",
+ "syn 2.0.68",
+ "typetag",
+]
+
+[[package]]
+name = "codde_protocol_client"
+version = "0.1.6"
+dependencies = [
+ "anyhow",
+ "cbindgen 0.26.0",
+ "cbor",
+ "codde_protocol_derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "flutter_rust_bridge",
+ "flutter_rust_bridge_codegen",
  "quote",
  "regex",
  "rmp-serde",

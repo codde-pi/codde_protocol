@@ -3,8 +3,8 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../base/protocol.dart';
 import '../frb_generated.dart';
+import 'base/protocol.dart';
 import 'com_socket.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -13,12 +13,12 @@ class CoddePiClient {
 
   static Future<void> dummy(
           {required Protocol protocol, required String addr}) =>
-      RustLib.instance.api.crateClientCoddePiClientCoddePiClientDummy(
+      RustLib.instance.api.crateApiCoddePiClientCoddePiClientDummy(
           protocol: protocol, addr: addr);
 
   static Future<ComSocketClient> useSocket({required String address}) =>
       RustLib.instance.api
-          .crateClientCoddePiClientCoddePiClientUseSocket(address: address);
+          .crateApiCoddePiClientCoddePiClientUseSocket(address: address);
 
   @override
   int get hashCode => 0;

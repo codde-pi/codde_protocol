@@ -3,9 +3,11 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
+import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'widget_registry.dart';
+
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
 class Frame {
   final int id;
@@ -15,6 +17,19 @@ class Frame {
     required this.id,
     required this.data,
   });
+
+  Future<Uint8List> bufferize() =>
+      RustLib.instance.api.crateApiBaseFrameFrameBufferize(
+        that: this,
+      );
+
+  Future<String> identity() =>
+      RustLib.instance.api.crateApiBaseFrameFrameIdentity(
+        that: this,
+      );
+
+  static Future<Frame?> parse({required List<int> data}) =>
+      RustLib.instance.api.crateApiBaseFrameFrameParse(data: data);
 
   @override
   int get hashCode => id.hashCode ^ data.hashCode;
@@ -39,6 +54,14 @@ class ResultFrame {
     required this.status,
     required this.data,
   });
+
+  Future<Uint8List> bufferize() =>
+      RustLib.instance.api.crateApiBaseFrameResultFrameBufferize(
+        that: this,
+      );
+
+  static Future<ResultFrame?> parse({required List<int> data}) =>
+      RustLib.instance.api.crateApiBaseFrameResultFrameParse(data: data);
 
   @override
   int get hashCode => id.hashCode ^ status.hashCode ^ data.hashCode;

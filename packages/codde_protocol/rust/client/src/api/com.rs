@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use crate::base::{
+use crate::api::base::{
     error::ServerStateError,
     frame::{Frame, ResultFrame},
 };
