@@ -9,10 +9,6 @@ on:
     tags:
       - "v**"
 
-defaults:
-  run:
-    working-directory: packages/codde_protocol/rust/
-
 jobs:
   publish_github_release:
     name: Binary release
@@ -105,7 +101,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter -m packages/codde_protocol/rust/Cargo.toml
           sccache: "true"
           manylinux: auto
       - name: Upload wheels
@@ -134,7 +130,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter -m packages/codde_protocol/rust/Cargo.toml
           sccache: "true"
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -161,7 +157,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter -m packages/codde_protocol/rust/Cargo.toml
           sccache: "true"
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -185,7 +181,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist
+          args: --out dist -m packages/codde_protocol/rust/Cargo.toml
       - name: Upload sdist
         uses: actions/upload-artifact@v3
         with:
@@ -213,4 +209,4 @@ jobs:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         with:
           command: upload
-          args: --non-interactive --skip-existing *
+          args: --non-interactive --skip-existing * -m packages/codde_protocol/rust/Cargo.toml
