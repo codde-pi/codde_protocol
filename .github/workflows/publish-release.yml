@@ -5,9 +5,9 @@ permissions:
   contents: write
 
 on:
-  push:
+  release:
     tags:
-      - "v.*"
+      - "v**"
 
 defaults:
   run:

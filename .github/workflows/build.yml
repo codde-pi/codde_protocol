@@ -87,7 +87,7 @@ jobs:
         run: melos run build:apple
       - name: Copy the XCFramework to the needed location
         run: |
-          CURR_VERSION=codde_protocol-v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
+          CURR_VERSION=v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
           cp platform-build/CoddeProtocol.xcframework.zip packages/flutter_codde_protocol/macos/Frameworks/$CURR_VERSION.zip
           echo Copied file!
 
@@ -115,7 +115,7 @@ jobs:
       - name: Copy the binaries to the needed location
         shell: bash
         run: |
-          CURR_VERSION=codde_protocol-v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
+          CURR_VERSION=v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
           cp platform-build/other.tar.gz packages/flutter_codde_protocol/windows/$CURR_VERSION.tar.gz
           echo Copied file!
 
@@ -145,7 +145,7 @@ jobs:
         run: melos run build:other
       - name: Copy the binaries to the needed location
         run: |
-          CURR_VERSION=codde_protocol-v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
+          CURR_VERSION=v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
           cp platform-build/other.tar.gz packages/flutter_codde_protocol/linux/$CURR_VERSION.tar.gz
           echo Copied file!
 
@@ -176,7 +176,7 @@ jobs:
         run: melos run build:apple
       - name: Copy the XCFramework to the needed location
         run: |
-          CURR_VERSION=codde_protocol-v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
+          CURR_VERSION=v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
           mkdir -p packages/flutter_codde_protocol/ios/Frameworks
           cp platform-build/CoddeProtocol.xcframework.zip packages/flutter_codde_protocol/ios/Frameworks/$CURR_VERSION.zip
           echo Copied file!
@@ -206,9 +206,8 @@ jobs:
       - name: Build the binaries
         run: melos run build:android
       - name: Copy the binaries to the needed location
-        # FIXME: codde_protocol-VERSION ??
         run: |
-          CURR_VERSION=codde_protocol-v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
+          CURR_VERSION=v`awk '/^version: /{print $2}' packages/codde_protocol/pubspec.yaml`
           cp platform-build/android.tar.gz packages/flutter_codde_protocol/android/$CURR_VERSION.tar.gz
           echo Copied file!
       - name: Run Flutter integration tests
