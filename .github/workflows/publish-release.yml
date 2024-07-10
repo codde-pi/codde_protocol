@@ -5,7 +5,9 @@ permissions:
   contents: write
 
 on:
-  release:
+  push:
+    branches:
+      - main
     tags:
       - "v**"
 
