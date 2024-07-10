@@ -4,8 +4,8 @@ use std::collections::HashMap;
 use pyo3::{prelude::*, pyclass, Py, PyAny};
 use serde::{Deserialize, Serialize};
 
-use crate::base::widget_registry::{Coord, ResultRegistry, ResultWidget, Widget, WidgetRegistry};
-use codde_protocol_derive::{ResultWidget, Widget};
+use crate::base::widget_registry::{ResultRegistry, ResultWidget, WidgetRegistry};
+use codde_protocol_derive::ResultWidget;
 pub type WidgetAction = HashMap<String, Action>;
 
 pub type TypeFn = fn(s: WidgetRegistry) -> Result<()>;
@@ -27,7 +27,7 @@ pub enum Action {
 
 pub fn clone_action(action: &Action) -> Action {
     match action {
-        Action::RustFn(f) => Action::RustFn(f.clone()),
+        Action::RustFn(f) => Action::RustFn(*f),
         Action::PythonFn(f) => Python::with_gil(|py| Action::PythonFn(f.clone_ref(py))),
     }
 }
