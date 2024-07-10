@@ -15,7 +15,7 @@ arr_macro = "0.2.1"
 dynamic = "0.2.1"
 pyo3 = { version = "0.22.0", features = ["anyhow", "serde", "gil-refs"] }
 quote = "1.0.35"
-serde = { version = "1.0.196", features = ["derive"] }
+serde = { version = "1.0.204", features = ["derive"] }
 syn = "2.0.48"
 codde_protocol_derive = "0.1.0"
 cbor = "0.4.1"
