@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::{
-    borrow::{Borrow, BorrowMut},
+    borrow::BorrowMut,
     collections::HashMap,
     io::{Read, Write},
     net::{TcpListener, TcpStream},
@@ -15,14 +15,14 @@ use crate::{
         frame::{Frame, ResultFrame},
         widget_registry::{action_identity, extract_identity, ServerStatus},
     },
-    server::{models::widget_registry::clone_action, server_com::execute_action},
+    server::server_com::execute_action,
 };
 
 use crate::server::ServerCom;
 
 use pyo3::{
     prelude::*,
-    types::{PyCFunction, PyDict, PyTuple},
+    types::{PyCFunction, PyDict},
     PyObject,
 };
 
@@ -40,8 +40,8 @@ pub struct ComSocketServer {
 }
 
 #[pyfunction]
-pub fn on(py: Python, server: Py<PyCell<ComSocketServer>>) -> PyResult<&PyCFunction> {
-    let f = move |args: &PyTuple, _: Option<&PyDict>| -> PyResult<Py<PyCFunction>> {
+pub fn on(py: Python, server: Py<ComSocketServer>) -> PyResult<Bound<PyCFunction>> {
+    let f = move |args: &pyo3::Bound<pyo3::types::PyTuple>, _: Option<&pyo3::Bound<'_, PyDict>>| {
         Python::with_gil(|py| {
             let func: PyObject = args.get_item(0)?.into();
             let f_name = func
@@ -59,12 +59,12 @@ pub fn on(py: Python, server: Py<PyCell<ComSocketServer>>) -> PyResult<&PyCFunct
                 Python::with_gil(|py| func.call_bound(py, args, kwargs))
             };
             match PyCFunction::new_closure_bound(py, None, None, g) {
-                Ok(r) => Ok(r.into()),
+                Ok(r) => Ok(r.into_py(py)),
                 Err(e) => Err(e),
             }
         })
     };
-    PyCFunction::new_closure(py, None, None, f)
+    PyCFunction::new_closure_bound(py, None, None, f)
 }
 
 #[pymethods]
