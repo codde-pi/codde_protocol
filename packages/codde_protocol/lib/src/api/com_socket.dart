@@ -16,24 +16,30 @@ abstract class ComSocketClient implements RustOpaqueInterface, ClientCom {
 
   ClientStatus get status;
 
-  void set address(String address);
+  set address(String address);
 
-  void set status(ClientStatus status);
+  set status(ClientStatus status);
 
+  @override
   Future<void> connect();
 
+  @override
   Future<void> disconnect();
 
+  @override
   Future<bool> isConnected();
 
   factory ComSocketClient({required String address}) => RustLib.instance.api
       .crateApiComSocketComSocketClientNew(address: address);
 
+  @override
   Future<ResultFrame?> receive();
 
   /// Expose method twice for Dart port
   /// Rust Flutter Bridge only read direct struct implementations
+  @override
   Future<ResultFrame?> request({required Frame data});
 
+  @override
   Future<void> send({required Frame data});
 }
